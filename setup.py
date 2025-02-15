@@ -10,7 +10,7 @@ with open(directory / 'README.md', encoding='utf-8') as f:
 setup(
   name='snakehdl',
   version='0.0.1',
-  description='A simple, purely functional HDL',
+  description='A simple, purely functional Hardware Description Language',
   author='Joshua Moore',
   license='MIT',
   long_description=long_description,
