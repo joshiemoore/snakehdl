@@ -24,7 +24,7 @@ class BOps(Enum):
   XOR = auto()
   XNOR = auto()
 
-  def __repr__(self): return f'{self.__class__.__name__}.{self.name}'
+  def __str__(self) -> str: return super().__str__().split('.')[1]
 
 @dataclass
 class BOp:
@@ -40,6 +40,25 @@ class BOp:
 
   # only for BOps.CONST
   val: Optional[int] = None
+
+  def pretty(self, indent: int=0) -> str:
+    sep = '  '
+    NO_PARENTS = {BOps.CONST, BOps.INPUT, BOps.NOOP}
+    out = str(self.op)
+    if self.input_id is not None: out += f' {self.input_id}'
+    if self.bits is not None: out += f' {self.bits}'
+    if self.val is not None: out += f' {self.val}'
+    if self.op not in NO_PARENTS:
+      out += ' (\n'
+      if self.outputs is not None:
+        for k,v in self.outputs.items(): out += sep * (indent + 1) + f'{k}={v.pretty(indent=indent + 1)}'
+      elif self.src is not None:
+        for v in self.src: out += sep * (indent + 1) + f'{v.pretty(indent=indent + 1)}'
+      out += f'{sep * indent})\n'
+    else: out += '\n'
+    return out
+
+  def __repr__(self): return self.pretty()
 
 # special operations
 def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(BOps.INPUT, input_id=id, bits=bits if bits else [0])
