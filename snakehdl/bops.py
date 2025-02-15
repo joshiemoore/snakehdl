@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Iterable, Optional
+import numpy as np
 
 
 class BOps(Enum):
@@ -41,7 +42,7 @@ class BOp:
   outputs: Optional[dict] = None
 
   # only for BOps.CONST
-  val: Optional[int] = None
+  val: Optional[np.uint] = None
 
   def pretty(self, indent: int=0, whitespace: bool=False) -> str:
     sep = '  ' if whitespace else ''
@@ -74,9 +75,10 @@ class BOp:
     raise NotImplementedError()
 
 # special operations
+def const(val: np.uint | int, bits: Optional[Iterable[int]]=None) -> BOp:
+  return BOp(BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
 def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(BOps.INPUT, input_id=id, bits=bits if bits else [0])
 def output(**kwargs: BOp) -> BOp: return BOp(BOps.OUTPUT, outputs=kwargs)
-def const(val: str|int) -> BOp: return BOp(BOps.CONST, val=int(val, 2) if isinstance(val, str) else val)
 def noop() -> BOp: return BOp(BOps.NOOP)
 
 # combinational operations

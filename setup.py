@@ -25,6 +25,8 @@ setup(
     'Programming Language :: Python :: 3',
     'Development Status :: 3 - Alpha',
   ],
-  install_requires=[],
+  install_requires=[
+    'numpy',
+  ],
   python_requires='>=3.10'
 )

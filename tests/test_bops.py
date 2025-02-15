@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 from snakehdl.bops import (
   BOps,
   input_bits, output, const, noop,
@@ -29,10 +30,13 @@ class TestCreateBOps:
     assert op.outputs == {'out_a': const('0'), 'out_b': const('1')}
 
   def test_const(self):
-    op = const('1010')
+    op = const(0b1010)
     assert op.op is BOps.CONST
     assert str(op.op) == 'CONST'
     assert op.val == 0b1010
+
+    op = const(np.uint(1337))
+    assert op.val == 1337
 
     op = const(123)
     assert op.val == 123
