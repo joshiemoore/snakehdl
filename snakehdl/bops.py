@@ -26,14 +26,16 @@ class BOps(Enum):
 
   def __str__(self) -> str: return super().__str__().split('.')[1]
 
-@dataclass
+@dataclass(frozen=True)
 class BOp:
   op: BOps
   src: Optional[tuple[BOp, ...]] = None
+  bits: Optional[Iterable[int]] = None
+
+  validated: bool = False
 
   # only for BOps.INPUT
   input_id: Optional[str] = None
-  bits: Optional[Iterable[int]] = None
 
   # only for BOps.OUTPUT
   outputs: Optional[dict] = None
@@ -58,12 +60,18 @@ class BOp:
     return out
 
   def __repr__(self): return self.pretty()
+
   def __str__(self): return self.pretty(whitespace=True)
 
   def validate(self) -> None:
     # validate this BOp and all of its ancestors, throwing exceptions where errors are found
     # TODO
-    pass
+    object.__setattr__(self, 'validated', True)
+
+  def assign_bits(self) -> None:
+    # recurse up a validated tree and infer bit widths based on inputs
+    # TODO
+    raise NotImplementedError()
 
 # special operations
 def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(BOps.INPUT, input_id=id, bits=bits if bits else [0])

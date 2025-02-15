@@ -16,6 +16,7 @@ class Compiler:
     assert tree.op is BOps.OUTPUT, 'tree root must be OUTPUT'
     tree.validate()
     # TODO optimizations
+    tree.assign_bits()
     return Compiled(self._compile(tree))
 
   def _compile(self, tree: BOp) -> bytes:
