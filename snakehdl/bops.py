@@ -45,7 +45,7 @@ class BOp:
     sep = '  '
     NO_PARENTS = {BOps.CONST, BOps.INPUT, BOps.NOOP}
     out = _BOP_FUNCS[self.op].__name__ + '('
-    if self.input_id is not None: out += f'\n{sep * (indent + 1)}id={self.input_id},'
+    if self.input_id is not None: out += f'\n{sep * (indent + 1)}id="{self.input_id}",'
     if self.bits is not None: out += f'\n{sep * (indent + 1)}bits={self.bits},'
     if self.val is not None: out += f'\n{sep * (indent + 1)}val={self.val},'
     if self.outputs is not None:
