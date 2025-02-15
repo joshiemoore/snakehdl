@@ -24,6 +24,8 @@ class BOps(Enum):
   XOR = auto()
   XNOR = auto()
 
+  def __repr__(self): return self.name
+
 @dataclass
 class BOp:
   op: BOps
