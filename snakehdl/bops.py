@@ -41,23 +41,24 @@ class BOp:
   # only for BOps.CONST
   val: Optional[int] = None
 
-  def pretty(self, indent: int=0) -> str:
-    sep = '  '
-    NO_PARENTS = {BOps.CONST, BOps.INPUT, BOps.NOOP}
+  def pretty(self, indent: int=0, whitespace: bool=False) -> str:
+    sep = '  ' if whitespace else ''
+    nl = '\n' if whitespace else ''
     out = _BOP_FUNCS[self.op].__name__ + '('
-    if self.input_id is not None: out += f'\n{sep * (indent + 1)}id="{self.input_id}",'
-    if self.bits is not None: out += f'\n{sep * (indent + 1)}bits={self.bits},'
-    if self.val is not None: out += f'\n{sep * (indent + 1)}val={self.val},'
+    if self.input_id is not None: out += f'{nl + sep * (indent + 1)}id="{self.input_id}",'
+    if self.bits is not None: out += f'{nl + sep * (indent + 1)}bits={self.bits},'
+    if self.val is not None: out += f'{nl + sep * (indent + 1)}val={self.val},'
     if self.outputs is not None:
-      for k,v in self.outputs.items(): out += '\n' + sep * (indent + 1) + f'{k}={v.pretty(indent=indent + 1)},'
+      for k,v in self.outputs.items(): out += nl + sep * (indent + 1) + f'{k}={v.pretty(indent=indent + 1, whitespace=whitespace)},'
     elif self.src is not None:
-      out += f'\n{sep * (indent + 1)}src=(\n'
-      for v in self.src: out += sep * (indent + 2) + f'{v.pretty(indent=indent + 2)},\n'
+      out += f'{nl + sep * (indent + 1)}src=(' + nl
+      for v in self.src: out += sep * (indent + 2) + f'{v.pretty(indent=indent + 2, whitespace=whitespace)},' + nl
       out += sep * (indent + 1) + '),'
-    out += '\n' + (sep * indent) + ')'
+    out += nl + (sep * indent) + ')'
     return out
 
   def __repr__(self): return self.pretty()
+  def __str__(self): return self.pretty(whitespace=True)
 
 # special operations
 def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(BOps.INPUT, input_id=id, bits=bits if bits else [0])

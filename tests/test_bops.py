@@ -1,5 +1,9 @@
 import pytest
-from snakehdl.bops import *
+from snakehdl.bops import (
+  BOps,
+  input_bits, output, const, noop,
+  neg, conj, nand, disj, nor, xor, xnor,
+)
 
 
 class TestCreateBOps:
