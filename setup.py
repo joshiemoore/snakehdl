@@ -18,6 +18,7 @@ setup(
   url='https://github.com/joshiemoore/snakehdl',
   packages=[
     'snakehdl',
+    'snakehdl.compiler',
   ],
   classifiers=[
     'License :: OSI Approved :: MIT License',

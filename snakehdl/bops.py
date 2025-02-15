@@ -60,6 +60,11 @@ class BOp:
   def __repr__(self): return self.pretty()
   def __str__(self): return self.pretty(whitespace=True)
 
+  def validate(self) -> None:
+    # validate this BOp and all of its ancestors, throwing exceptions where errors are found
+    # TODO
+    pass
+
 # special operations
 def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(BOps.INPUT, input_id=id, bits=bits if bits else [0])
 def output(**kwargs: BOp) -> BOp: return BOp(BOps.OUTPUT, outputs=kwargs)
