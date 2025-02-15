@@ -1,5 +1,10 @@
 target-version = "py310"
 
+include = [
+  "snakehdl/**/*.py",
+  "tests/**/*.py",
+]
+
 line-length = 150
 indent-width = 2
 
