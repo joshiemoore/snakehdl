@@ -46,7 +46,7 @@ class TestCreateBOps:
 
   #### combinational operations ####
   def test_neg(self):
-    op = neg(const(1))
+    op = neg((const(1),))
     assert op.op is BOps.NOT
     assert str(op.op) == 'NOT'
     assert len(op.src) == 1
@@ -63,7 +63,7 @@ class TestCreateBOps:
     }
 
     for bop, func in ops.items():
-      op = func(const(0), const(1))
+      op = func((const(0), const(1)))
       assert op.op is bop
       assert str(op.op) == f'{bop.name}'
       assert len(op.src) == 2
