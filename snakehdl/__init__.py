@@ -1,1 +1,0 @@
-from snakehdl.bops import *

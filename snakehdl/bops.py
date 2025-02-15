@@ -9,6 +9,12 @@ class BOps(Enum):
   Primitive binary operations that must be implemented in hardware.
   """
 
+  # Special operations
+  INPUT = auto()
+  OUTPUT = auto()
+  CONST = auto()
+  NOOP = auto()
+
   # Combinational operations
   NOT = auto()
   AND = auto()
@@ -17,12 +23,6 @@ class BOps(Enum):
   NOR = auto()
   XOR = auto()
   XNOR = auto()
-
-  # Special operations
-  INPUT = auto()
-  OUTPUT = auto()
-  CONST = auto()
-  NOOP = auto()
 
 @dataclass
 class BOp:
@@ -39,6 +39,12 @@ class BOp:
   # only for BOps.CONST
   const: Optional[str] = None
 
+# special operations
+def input(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, input_bits=bits if bits else [0])
+def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
+def const(val: str) -> BOp: return BOp(op=BOps.CONST, const=val)
+def noop() -> BOp: return BOp(op=BOps.NOOP)
+
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
 def conj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.AND, src=(a, b))
@@ -47,9 +53,3 @@ def disj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.OR, src=(a, b))
 def nor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.NOR, src=(a, b))
 def xor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XOR, src=(a, b))
 def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a, b))
-
-# special operations
-def input(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, input_bits=bits if bits else [0])
-def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
-def const(val: str) -> BOp: return BOp(op=BOps.CONST, const=val)
-def noop() -> BOp: return BOp(op=BOps.NOOP)
