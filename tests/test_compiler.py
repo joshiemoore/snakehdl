@@ -5,6 +5,7 @@ from snakehdl import (
   output, input_bits,
   neg, conj, nand, disj, nor, xor, xnor
 )
+from snakehdl.compiler import PythonCompiler
 
 
 class TestPythonCompiler:
@@ -16,7 +17,7 @@ class TestPythonCompiler:
   def _get_func(self, tree: BOp) -> Callable:
     # compile the optree to a pickled python function,
     # then unpickle it and return the function
-    func_s = tree.compile('python')
+    func_s = tree.compile(PythonCompiler)
     return dill.loads(func_s.data)
 
   def test_basic_relay8(self):

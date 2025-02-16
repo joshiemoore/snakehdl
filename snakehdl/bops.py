@@ -82,11 +82,7 @@ class BOp:
     object.__setattr__(self, 'bits', parents_bits[0])
     return parents_bits[0]
 
-  def compile(self, compiler: str):
-    from snakehdl.compiler import _COMPILERS
-    kompiler_klass = _COMPILERS.get(compiler)
-    if not kompiler_klass: raise KeyError(compiler)
-    return kompiler_klass.compile(self)
+  def compile(self, kompiler_klass): return kompiler_klass.compile(self)
 
 # special operations
 def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp:
