@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from snakehdl.bops import (
   BOps,
-  input_bits, output, wire_in, wire_out, const, noop,
+  input_bits, output, wire_in, wire_out, const,
   neg, conj, nand, disj, nor, xor, xnor,
 )
 
@@ -71,11 +71,6 @@ class TestCreateBOps:
 
     assert const(13) == const(13)
     assert const(8) != const(14)
-
-  def test_noop(self):
-    op = noop()
-    assert op.op is BOps.NOOP
-    assert str(op.op) == 'NOOP'
 
   #### combinational operations ####
   def test_neg(self):

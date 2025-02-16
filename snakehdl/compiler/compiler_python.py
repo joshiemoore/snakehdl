@@ -28,8 +28,6 @@ class PythonCompiler(Compiler):
           return _func_helper(_op.src[0]) ^ _func_helper(_op.src[1])
         elif _op.op is BOps.XNOR:
           return ~(_func_helper(_op.src[0]) ^ _func_helper(_op.src[1]))
-        elif _op.op is BOps.NOOP:
-          return np.uint(0) # TODO is this right?
         elif _op.op is BOps.CONST:
           if _op.val is None: raise RuntimeError('missing val')
           if _op.bits is None: raise RuntimeError('missing bits')

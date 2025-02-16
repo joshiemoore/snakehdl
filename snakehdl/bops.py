@@ -16,7 +16,6 @@ class BOps(Enum):
   WIRE_OUT = auto()
   WIRE_IN = auto()
   CONST = auto()
-  NOOP = auto()
 
   # Combinational operations
   NOT = auto()
@@ -90,7 +89,6 @@ def input_bits(input_id: str, bits: Optional[Sequence[int]]=None) -> BOp: return
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def wire_in(src: BOp, input_id: str) -> BOp: return BOp(op=BOps.WIRE_IN, src=(src,), input_id=input_id)
 def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
-def noop() -> BOp: return BOp(op=BOps.NOOP)
 
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
@@ -107,7 +105,6 @@ _BOP_FUNCS = {
   BOps.WIRE_IN: wire_in,
   BOps.WIRE_OUT: wire_out,
   BOps.CONST: const,
-  BOps.NOOP: noop,
   BOps.NOT: neg,
   BOps.AND: conj,
   BOps.NAND: nand,
