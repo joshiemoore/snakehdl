@@ -71,7 +71,7 @@ class TestCreateBOps:
     }
 
     for bop, func in ops.items():
-      op = func((const(0), const(1)))
+      op = func(const(0), const(1))
       assert op.op is bop
       assert str(op.op) == f'{bop.name}'
       assert len(op.src) == 2
@@ -81,10 +81,10 @@ class TestCreateBOps:
   def test_pretty_print(self):
     # BOp pretty-print should be valid python syntax
     and3 = output(
-      and3=conj((
-        conj((input_bits('a'), input_bits('b'))),
+      and3=conj(
+        conj(input_bits('a'), input_bits('b')),
         input_bits('c'),
-      ))
+      )
     )
     and3_repr = eval(str(and3))
     assert and3_repr == and3

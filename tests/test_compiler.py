@@ -34,7 +34,7 @@ class TestPythonCompiler:
     assert func(ina=0b10101010) == {'out': 0b01010101}
 
   def test_and8(self):
-    tree = output(out=conj(self.inputs))
+    tree = output(out=conj(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0}
     assert func(ina=0b11110000, inb=0b10101111) == {'out': 0b10100000}
@@ -42,7 +42,7 @@ class TestPythonCompiler:
     assert func(ina=0b100000000, inb=0b100000000) == {'out': 0}
 
   def test_nand8(self):
-    tree = output(out=nand(self.inputs))
+    tree = output(out=nand(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0b11111111}
     assert func(ina=0b11111111, inb=0b11111111) == {'out': 0}
@@ -50,21 +50,21 @@ class TestPythonCompiler:
     assert func(ina=0b10101010, inb=0b11001111) == {'out': 0b01110101}
 
   def test_or8(self):
-    tree = output(out=disj(self.inputs))
+    tree = output(out=disj(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0}
     assert func(ina=0b11111111, inb=0b11111111) == {'out': 0b11111111}
     assert func(ina=0b00110011, inb=0b10101010) == {'out': 0b10111011}
 
   def test_nor8(self):
-    tree = output(out=nor(self.inputs))
+    tree = output(out=nor(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0b11111111}
     assert func(ina=0b11111111, inb=0b11111111) == {'out': 0}
     assert func(ina=0b10101010, inb=0b11001100) == {'out': 0b00010001}
 
   def test_xor8(self):
-    tree = output(out=xor(self.inputs))
+    tree = output(out=xor(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0}
     assert func(ina=0b11111111, inb=0) == {'out': 0b11111111}
@@ -72,7 +72,7 @@ class TestPythonCompiler:
     assert func(ina=0b10100101, inb=0b11111111) == {'out': 0b01011010}
 
   def test_xnor8(self):
-    tree = output(out=xnor(self.inputs))
+    tree = output(out=xnor(*self.inputs))
     func = self._get_func(tree)
     assert func(ina=0, inb=0) == {'out': 0b11111111}
     assert func(ina=0b11111111, inb=0b11111111) == {'out': 0b11111111}

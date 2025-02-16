@@ -50,16 +50,14 @@ class BOp:
     sep = '  ' if whitespace else ''
     nl = '\n' if whitespace else ''
     out = _BOP_FUNCS[self.op].__name__ + '('
-    if self.input_id is not None: out += f'{nl + sep * (indent + 1)}id="{self.input_id}",'
-    if self.bits is not None: out += f'{nl + sep * (indent + 1)}bits={self.bits},'
-    if self.val is not None: out += f'{nl + sep * (indent + 1)}val={self.val},'
+    if self.input_id is not None: out += nl + indent*sep + f'id="{self.input_id}",'
+    if self.bits is not None: out += nl + indent*sep + f'bits={self.bits},'
+    if self.val is not None: out += nl + indent*sep + f'val={self.val},'
     if self.outputs is not None:
-      for k,v in self.outputs.items(): out += nl + sep * (indent + 1) + f'{k}={v.pretty(indent=indent + 1, whitespace=whitespace)},'
+      for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
     elif len(self.src) > 0:
-      out += f'{nl + sep * (indent + 1)}src=(' + nl
-      for v in self.src: out += sep * (indent + 2) + f'{v.pretty(indent=indent + 2, whitespace=whitespace)},' + nl
-      out += sep * (indent + 1) + '),'
-    out += nl + (sep * indent) + ')'
+      for v in self.src: out += nl + indent*sep + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
+    out += nl + (indent-1)*sep + ')'
     return out
 
   def __repr__(self): return self.pretty()
@@ -91,20 +89,24 @@ def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp:
   return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
 def input_bits(id: str, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, bits=bits if bits else [0])
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
+#def wire_in(src: BOp, id: str) -> BOp: return BOp(op=BOps.WIRE_IN, input_id=id)
+#def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
 def noop() -> BOp: return BOp(op=BOps.NOOP)
 
 # combinational operations
-def neg(src: BOp) -> BOp: return BOp(op=BOps.NOT, src=(src,))
-def conj(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.AND, src=src)
-def nand(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.NAND, src=src)
-def disj(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.OR, src=src)
-def nor(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.NOR, src=src)
-def xor(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.XOR, src=src)
-def xnor(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.XNOR, src=src)
+def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
+def conj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.AND, src=(a,b))
+def nand(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.NAND, src=(a,b))
+def disj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.OR, src=(a,b))
+def nor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.NOR, src=(a,b))
+def xor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XOR, src=(a,b))
+def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a,b))
 
 _BOP_FUNCS = {
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
+#  BOps.WIRE_IN: wire_in,
+#  BOps.WIRE_OUT: wire_out,
   BOps.CONST: const,
   BOps.NOOP: noop,
   BOps.NOT: neg,
