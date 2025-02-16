@@ -8,7 +8,7 @@ from snakehdl.bops import (
 
 
 class TestCreateBOps:
-  #### special operations ####
+  #### I/O operations ####
   def test_input_bits(self):
     op = input_bits('a')
     assert op.op is BOps.INPUT

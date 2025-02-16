@@ -10,7 +10,7 @@ class BOps(Enum):
   Primitive binary operations that must be implemented in hardware.
   """
 
-  # Special operations
+  # I/O operations
   INPUT = auto()
   OUTPUT = auto()
   WIRE_OUT = auto()
@@ -83,7 +83,7 @@ class BOp:
 
   def compile(self, kompiler): return kompiler.compile(self)
 
-# special operations
+# I/O operations
 def const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
