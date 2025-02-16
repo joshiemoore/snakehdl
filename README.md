@@ -12,8 +12,7 @@ snakeHDL compiles trees of primitive binary operations into logic circuits with 
   >>> in_a, in_b = input_bits('a'), input_bits('b')
   >>> outputs = output(out_xor=xor(in_a, in_b), out_and=conj(in_a, in_b))
 ```
-BOps are composable because they are lazily evaluated. When you create a tree of BOps,
-nothing actually happens until you compile it:
+BOps are naturally composable into larger circuits because they are lazily evaluated. When you create a tree of BOps, nothing actually happens until you compile it:
 
 ```
   >>> from snakehdl.compiler import PythonCompiler
