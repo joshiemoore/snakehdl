@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from snakehdl.bops import (
   BOps,
-  input_bits, output, const, noop,
+  input_bits, output, wire_in, wire_out, const, noop,
   neg, conj, nand, disj, nor, xor, xnor,
 )
 
@@ -28,6 +28,31 @@ class TestCreateBOps:
 
     op = output(out_a=const('0'), out_b=const('1'))
     assert op.outputs == {'out_a': const('0'), 'out_b': const('1')}
+
+  def test_wire_out(self):
+    op = wire_out()
+    assert op.op is BOps.WIRE_OUT
+    assert str(op.op) == 'WIRE_OUT'
+    assert op.outputs == {}
+
+    op = wire_out(out_a=const(0), out_b=const(1))
+    assert op.outputs == {'out_a': const(0), 'out_b': const(1)}
+
+  def test_wire_in(self):
+    wout = wire_out(out_a=const(0), out_b=const(1))
+    win_a = wire_in(wout, 'out_a')
+    assert win_a.op is BOps.WIRE_IN
+    assert str(win_a.op) == 'WIRE_IN'
+    assert len(win_a.src) == 1
+    assert win_a.src[0] == wout
+    assert win_a.input_id == 'out_a'
+
+    win_b = wire_in(wout, 'out_b')
+    assert win_b.op is BOps.WIRE_IN
+    assert str(win_b.op) == 'WIRE_IN'
+    assert len(win_b.src) == 1
+    assert win_b.src[0] == wout
+    assert win_b.input_id == 'out_b'
 
   def test_const(self):
     op = const(0b1010)

@@ -50,7 +50,7 @@ class BOp:
     sep = '  ' if whitespace else ''
     nl = '\n' if whitespace else ''
     out = _BOP_FUNCS[self.op].__name__ + '('
-    if self.input_id is not None: out += nl + indent*sep + f'id="{self.input_id}",'
+    if self.input_id is not None: out += nl + indent*sep + f'input_id="{self.input_id}",'
     if self.bits is not None: out += nl + indent*sep + f'bits={self.bits},'
     if self.val is not None: out += nl + indent*sep + f'val={self.val},'
     if self.outputs is not None:
@@ -85,12 +85,11 @@ class BOp:
   def compile(self, kompiler_klass): return kompiler_klass.compile(self)
 
 # special operations
-def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp:
-  return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
-def input_bits(id: str, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, bits=bits if bits else [0])
+def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
+def input_bits(input_id: str, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits if bits else [0])
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
-#def wire_in(src: BOp, id: str) -> BOp: return BOp(op=BOps.WIRE_IN, input_id=id)
-#def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
+def wire_in(src: BOp, input_id: str) -> BOp: return BOp(op=BOps.WIRE_IN, src=(src,), input_id=input_id)
+def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
 def noop() -> BOp: return BOp(op=BOps.NOOP)
 
 # combinational operations
@@ -105,8 +104,8 @@ def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a,b))
 _BOP_FUNCS = {
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
-#  BOps.WIRE_IN: wire_in,
-#  BOps.WIRE_OUT: wire_out,
+  BOps.WIRE_IN: wire_in,
+  BOps.WIRE_OUT: wire_out,
   BOps.CONST: const,
   BOps.NOOP: noop,
   BOps.NOT: neg,
