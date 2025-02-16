@@ -82,7 +82,7 @@ class BOp:
     object.__setattr__(self, 'bits', parents_bits[0])
     return parents_bits[0]
 
-  def compile(self, kompiler_klass): return kompiler_klass.compile(self)
+  def compile(self, kompiler): return kompiler.compile(self)
 
 # special operations
 def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])

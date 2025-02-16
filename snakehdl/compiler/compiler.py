@@ -11,17 +11,15 @@ class Compiled:
     raise NotImplementedError()
 
 class Compiler:
-  @classmethod
-  def compile(klass, tree: BOp) -> Compiled:
+  def compile(self, tree: BOp) -> Compiled:
     # pre-compile validations, optimizations etc, not to be overridden
     assert tree.op is BOps.OUTPUT, 'compilation root must be OUTPUT'
     tree.validate()
     # TODO optimizations
     tree.assign_bits()
-    return Compiled(klass._compile(tree))
+    return Compiled(self._compile(tree))
 
-  @staticmethod
-  def _compile(tree: BOp) -> bytes:
+  def _compile(self, tree: BOp) -> bytes:
     # override with your compiler implementation
     # turn the validated BOp tree into compiled bytes for your target
     raise NotImplementedError()

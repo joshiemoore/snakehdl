@@ -17,7 +17,7 @@ class TestPythonCompiler:
   def _get_func(self, tree: BOp) -> Callable:
     # compile the optree to a pickled python function,
     # then unpickle it and return the function
-    func_s = tree.compile(PythonCompiler)
+    func_s = tree.compile(PythonCompiler())
     return dill.loads(func_s.data)
 
   def test_basic_relay8(self):

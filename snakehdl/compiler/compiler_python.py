@@ -7,8 +7,7 @@ from snakehdl import BOp
 
 
 class PythonCompiler(Compiler):
-  @staticmethod
-  def _compile(op: BOp) -> bytes:
+  def _compile(self, op: BOp) -> bytes:
     # recurse up the validated tree generating python lambdas for BOps
     assert op.validated
 
