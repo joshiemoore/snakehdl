@@ -13,11 +13,11 @@ class Compiled:
 class Compiler:
   @classmethod
   def compile(klass, tree: BOp) -> Compiled:
-    # pre-compile validations, optimizations etc, not to be overriden
+    # pre-compile validations, optimizations etc, not to be overridden
     assert tree.op is BOps.OUTPUT, 'compilation root must be OUTPUT'
     tree.validate()
     # TODO optimizations
-    # tree.assign_bits() TODO
+    tree.assign_bits()
     return Compiled(klass._compile(tree))
 
   @staticmethod

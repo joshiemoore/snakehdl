@@ -1,8 +1,8 @@
-from typing import Iterable
+from typing import Sequence
 import numpy as np
 
 
-def select_bits(val: np.uint, bits: Iterable[int]) -> np.uint:
+def select_bits(val: np.uint, bits: Sequence) -> np.uint:
   # shift selected bit indices into the LSBs
   # so if val is 0babcdefgh and bits is [0, 4, 6], result is 0b00000bdh
   out: np.uint = np.uint(0)

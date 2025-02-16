@@ -1,8 +1,9 @@
+from __future__ import annotations
 import numpy as np
 import dill
-from snakehdl import BOp, BOps
 from snakehdl.compiler import Compiler
 from snakehdl.utils import select_bits
+from snakehdl import BOp
 
 
 class PythonCompiler(Compiler):
@@ -12,32 +13,40 @@ class PythonCompiler(Compiler):
     assert op.validated
 
     def _func(**kwargs) -> dict[str, np.uint]:
-      def _func_helper(op: BOp) -> np.uint:
-        if op.op is BOps.NOT:
-          return ~_func_helper(op.src[0])
-        elif op.op is BOps.AND:
-          return _func_helper(op.src[0]) & _func_helper(op.src[1])
-        elif op.op is BOps.NAND:
-          return ~(_func_helper(op.src[0]) & _func_helper(op.src[1]))
-        elif op.op is BOps.OR:
-          return _func_helper(op.src[0]) | _func_helper(op.src[1])
-        elif op.op is BOps.NOR:
-          return ~(_func_helper(op.src[0]) | _func_helper(op.src[1]))
-        elif op.op is BOps.XOR:
-          return _func_helper(op.src[0]) ^ _func_helper(op.src[1])
-        elif op.op is BOps.XNOR:
-          return ~(_func_helper(op.src[0]) ^ _func_helper(op.src[1]))
-        elif op.op is BOps.NOOP:
+      from snakehdl import BOps  # noqa: E401
+      def _func_helper(_op: BOp) -> np.uint:
+        if _op.op is BOps.NOT:
+          return ~_func_helper(_op.src[0])
+        elif _op.op is BOps.AND:
+          return _func_helper(_op.src[0]) & _func_helper(_op.src[1])
+        elif _op.op is BOps.NAND:
+          return ~(_func_helper(_op.src[0]) & _func_helper(_op.src[1]))
+        elif _op.op is BOps.OR:
+          return _func_helper(_op.src[0]) | _func_helper(_op.src[1])
+        elif _op.op is BOps.NOR:
+          return ~(_func_helper(_op.src[0]) | _func_helper(_op.src[1]))
+        elif _op.op is BOps.XOR:
+          return _func_helper(_op.src[0]) ^ _func_helper(_op.src[1])
+        elif _op.op is BOps.XNOR:
+          return ~(_func_helper(_op.src[0]) ^ _func_helper(_op.src[1]))
+        elif _op.op is BOps.NOOP:
           return np.uint(0) # TODO is this right?
-        elif op.op is BOps.CONST:
-          if op.val is None: raise RuntimeError('missing val')
-          if op.bits is None: raise RuntimeError('missing bits')
-          return select_bits(op.val, op.bits)
-        elif op.op is BOps.INPUT:
-          if op.input_id not in kwargs: raise KeyError(op.input_id)
-          if op.bits is None: raise RuntimeError('missing bits')
-          return select_bits(kwargs[op.input_id], op.bits)
-        else: raise NotImplementedError(op.op)
+        elif _op.op is BOps.CONST:
+          if _op.val is None: raise RuntimeError('missing val')
+          if _op.bits is None: raise RuntimeError('missing bits')
+          return select_bits(_op.val, _op.bits)
+        elif _op.op is BOps.INPUT:
+          if _op.input_id not in kwargs: raise KeyError(_op.input_id)
+          if _op.bits is None: raise RuntimeError('missing bits')
+          return select_bits(np.uint(kwargs[_op.input_id]), _op.bits)
+        # python compiler does not support sequential ops
+        # we would have to write some kind of runtime to make that work I think
+        # not right now
+        else: raise NotImplementedError(_op.op)
       if not op.outputs: raise RuntimeError('missing outputs')
-      return {k: _func_helper(op.outputs[k]) for k in op.outputs}
+      res = { }
+      for k in op.outputs:
+        if op.bits is None: raise RuntimeError('missing output bits\n' + str(op))
+        res[k] = _func_helper(op.outputs[k]) & np.uint(2**len(op.bits) - 1)
+      return res
     return bytes(dill.dumps(_func))

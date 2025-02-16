@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Iterable, Optional
+from typing import Optional, Sequence
 import numpy as np
 
 
@@ -31,7 +31,7 @@ class BOps(Enum):
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
-  bits: Optional[Iterable[int]] = None
+  bits: Optional[Sequence[int]] = None
 
   validated: bool = False
 
@@ -67,24 +67,31 @@ class BOp:
   def validate(self) -> None:
     # validate this BOp and all of its ancestors, throwing exceptions where errors are found
     # TODO
+    if self.op is BOps.OUTPUT and self.outputs is not None:
+      for k,v in self.outputs.items(): v.validate()
+    else:
+      for v in self.src: v.validate()
     object.__setattr__(self, 'validated', True)
 
-  def assign_bits(self) -> None:
+  def assign_bits(self) -> Sequence:
     # recurse up a validated tree and infer bit widths based on inputs
-    # TODO
     assert self.validated
-    raise NotImplementedError()
+    if self.bits is not None: return self.bits
+    if self.op is BOps.OUTPUT and self.outputs is not None: parents_bits = list([v.assign_bits() for k,v in self.outputs.items()])
+    else: parents_bits = list([v.assign_bits() for v in self.src])
+    object.__setattr__(self, 'bits', parents_bits[0])
+    return parents_bits[0]
 
-  def compile(self, compiler: str) -> bytes:
+  def compile(self, compiler: str):
     from snakehdl.compiler import _COMPILERS
     kompiler_klass = _COMPILERS.get(compiler)
     if not kompiler_klass: raise KeyError(compiler)
-    return kompiler_klass.compile(self).data
+    return kompiler_klass.compile(self)
 
 # special operations
-def const(val: np.uint | int, bits: Optional[Iterable[int]]=None) -> BOp:
+def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp:
   return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
-def input_bits(id: str, bits: Optional[Iterable[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, bits=bits if bits else [0])
+def input_bits(id: str, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=id, bits=bits if bits else [0])
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def noop() -> BOp: return BOp(op=BOps.NOOP)
 
