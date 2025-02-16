@@ -54,7 +54,7 @@ class TestCreateBOps:
 
   #### combinational operations ####
   def test_neg(self):
-    op = neg((const(1),))
+    op = neg(const(1))
     assert op.op is BOps.NOT
     assert str(op.op) == 'NOT'
     assert len(op.src) == 1

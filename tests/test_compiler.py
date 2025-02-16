@@ -27,7 +27,7 @@ class TestPythonCompiler:
     assert func(ina=0b10101111) == {'out': 0b10101111}
 
   def test_not8(self):
-    tree = output(out=neg((self.inputs[0],)))
+    tree = output(out=neg(self.inputs[0]))
     func = self._get_func(tree)
     assert func(ina=0) == {'out': 0b11111111}
     assert func(ina=0b11111111) == {'out': 0}

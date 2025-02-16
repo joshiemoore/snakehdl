@@ -13,6 +13,8 @@ class BOps(Enum):
   # Special operations
   INPUT = auto()
   OUTPUT = auto()
+  WIRE_OUT = auto()
+  WIRE_IN = auto()
   CONST = auto()
   NOOP = auto()
 
@@ -35,13 +37,13 @@ class BOp:
 
   validated: bool = False
 
-  # only for BOps.INPUT
+  # only for INPUT and WIRE_IN
   input_id: Optional[str] = None
 
-  # only for BOps.OUTPUT
+  # only for OUTPUT and WIRE_OUT
   outputs: Optional[dict[str, BOp]] = None
 
-  # only for BOps.CONST
+  # only for CONST
   val: Optional[np.uint] = None
 
   def pretty(self, indent: int=0, whitespace: bool=False) -> str:
@@ -92,7 +94,7 @@ def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def noop() -> BOp: return BOp(op=BOps.NOOP)
 
 # combinational operations
-def neg(src: tuple[BOp]) -> BOp: return BOp(op=BOps.NOT, src=src)
+def neg(src: BOp) -> BOp: return BOp(op=BOps.NOT, src=(src,))
 def conj(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.AND, src=src)
 def nand(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.NAND, src=src)
 def disj(src: tuple[BOp, BOp]) -> BOp: return BOp(op=BOps.OR, src=src)
