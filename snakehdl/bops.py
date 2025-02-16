@@ -84,8 +84,8 @@ class BOp:
   def compile(self, kompiler): return kompiler.compile(self)
 
 # special operations
-def const(val: np.uint | int, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits if bits else [0])
-def input_bits(input_id: str, bits: Optional[Sequence[int]]=None) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits if bits else [0])
+def const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
+def input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def wire_in(src: BOp, input_id: str) -> BOp: return BOp(op=BOps.WIRE_IN, src=(src,), input_id=input_id)
 def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
