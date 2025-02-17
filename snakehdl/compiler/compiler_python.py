@@ -7,43 +7,40 @@ from snakehdl import BOp
 
 
 class PythonCompiler(Compiler):
-  def _compile(self, op: BOp) -> bytes:
+  def _compile(self, tree: BOp) -> bytes:
     # recurse up the validated tree generating python lambdas for BOps
-    assert op.validated
+    assert tree.validated
 
     def _func(**kwargs) -> dict[str, np.uint]:
       from snakehdl import BOps  # noqa: E401
-      def _func_helper(_op: BOp) -> np.uint:
-        if _op.op is BOps.NOT:
-          return ~_func_helper(_op.src[0])
-        elif _op.op is BOps.AND:
-          return _func_helper(_op.src[0]) & _func_helper(_op.src[1])
-        elif _op.op is BOps.NAND:
-          return ~(_func_helper(_op.src[0]) & _func_helper(_op.src[1]))
-        elif _op.op is BOps.OR:
-          return _func_helper(_op.src[0]) | _func_helper(_op.src[1])
-        elif _op.op is BOps.NOR:
-          return ~(_func_helper(_op.src[0]) | _func_helper(_op.src[1]))
-        elif _op.op is BOps.XOR:
-          return _func_helper(_op.src[0]) ^ _func_helper(_op.src[1])
-        elif _op.op is BOps.XNOR:
-          return ~(_func_helper(_op.src[0]) ^ _func_helper(_op.src[1]))
-        elif _op.op is BOps.CONST:
-          if _op.val is None: raise RuntimeError('missing val')
-          if _op.bits is None: raise RuntimeError('missing bits')
-          return select_bits(_op.val, _op.bits)
-        elif _op.op is BOps.INPUT:
-          if _op.input_id not in kwargs: raise KeyError(_op.input_id)
-          if _op.bits is None: raise RuntimeError('missing bits')
-          return select_bits(np.uint(kwargs[_op.input_id]), _op.bits)
-        # python compiler does not support sequential ops
-        # we would have to write some kind of runtime to make that work I think
-        # not right now
-        else: raise NotImplementedError(_op.op)
-      if not op.outputs: raise RuntimeError('missing outputs')
+      def _func_helper(op: BOp) -> np.uint:
+        if op.op is BOps.NOT:
+          return ~_func_helper(op.src[0])
+        elif op.op is BOps.AND:
+          return _func_helper(op.src[0]) & _func_helper(op.src[1])
+        elif op.op is BOps.NAND:
+          return ~(_func_helper(op.src[0]) & _func_helper(op.src[1]))
+        elif op.op is BOps.OR:
+          return _func_helper(op.src[0]) | _func_helper(op.src[1])
+        elif op.op is BOps.NOR:
+          return ~(_func_helper(op.src[0]) | _func_helper(op.src[1]))
+        elif op.op is BOps.XOR:
+          return _func_helper(op.src[0]) ^ _func_helper(op.src[1])
+        elif op.op is BOps.XNOR:
+          return ~(_func_helper(op.src[0]) ^ _func_helper(op.src[1]))
+        elif op.op is BOps.CONST:
+          if op.val is None: raise RuntimeError('missing val')
+          if op.bits is None: raise RuntimeError('missing bits')
+          return select_bits(op.val, op.bits)
+        elif op.op is BOps.INPUT:
+          if op.input_id not in kwargs: raise KeyError(op.input_id)
+          if op.bits is None: raise RuntimeError('missing bits')
+          return select_bits(np.uint(kwargs[op.input_id]), op.bits)
+        else: raise NotImplementedError(op.op)
+      if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }
-      for k in op.outputs:
-        if op.bits is None: raise RuntimeError('missing output bits\n' + str(op))
-        res[k] = _func_helper(op.outputs[k]) & np.uint(2**len(op.bits) - 1)
+      for k in tree.outputs:
+        if tree.bits is None: raise RuntimeError('missing OUTPUT bits\n' + str(tree))
+        res[k] = _func_helper(tree.outputs[k]) & np.uint(2**len(tree.bits) - 1)
       return res
     return bytes(dill.dumps(_func))
