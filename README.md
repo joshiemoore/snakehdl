@@ -1,3 +1,4 @@
+
  # snakeHDL: a simple and lazy HDL for Python
 
 snakeHDL is a tool for creating logic circuits with a focus on simplicity and accessibility. The goal is not to compete with the industry heavyweights, but to give hackers, makers, and educators a fun and easy way to build hardware with a few lines of Python.
@@ -30,7 +31,7 @@ the tree are automatically inferred from input widths at compile time.
 snakeHDL abstracts hardware-specific concerns away into the compiler backends,
 leaving you to focus on implementing the pure logic of your circuit.
 
-Since only a dozen primitive BOps are specified by snakeHDL, it is straightforward to
+Since only ten primitive BOps are specified by snakeHDL, it is straightforward to
 create compiler backends for new target platforms.
 
 Wanna use this to implement a Python bytecode interpreter as a real processor core and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
@@ -38,8 +39,8 @@ Wanna use this to implement a Python bytecode interpreter as a real processor co
 ## Compiler Targets
 - [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
     as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
-- [ ] Minecraft Redstone - .schematic files
-- [ ] Logisim Evolution - .circ files
+- [ ] Minecraft Redstone .schematic files
+- [ ] Logisim .circ files
 - [ ] Verilog
 - [ ] Arduino
 - [ ] OpenCL kernels
@@ -53,8 +54,12 @@ The following binary operations are specified by the snakeHDL API and must be im
 * CONST - `const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp`
 * INPUT - `input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp`
 * OUTPUT - `output(**kwargs: BOp)`
-* WIRE_IN - `wire_in(src: BOp, input_id: str)`
-* WIRE_OUT - `wire_out(**kwargs: BOp)`
+
+The `bits` argument to CONST and INPUT allows you to select a range of bits from the input signal by
+providing a sequence of bit indices. For example, for an 8-bit input signal `0Babcdefgh`, passing `[2, 4]` as
+the `bits` argument will result in the 2-bit signal `0Bdf` being emitted by the INPUT node.
+You could also say `range(2, 8)` to select the six most significant bits from the 8-bit input signal.
+The default argument `[0]` results in a 1-bit signal being emitted from the LSB of the input signal.
 
 ### Combinational Operations
 * NOT - `neg(a: BOp) -> BOp`

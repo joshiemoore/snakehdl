@@ -4,7 +4,7 @@ import numpy as np
 
 def select_bits(val: np.uint, bits: Sequence) -> np.uint:
   # shift selected bit indices into the LSBs
-  # so if val is 0babcdefgh and bits is [0, 4, 6], result is 0b00000bdh
+  # so if val is abcdefgh and bits is [0, 4, 6], result is bdh
   out: np.uint = np.uint(0)
   i: int= 0
   for bidx in bits:

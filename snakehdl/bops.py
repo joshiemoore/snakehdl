@@ -13,8 +13,6 @@ class BOps(Enum):
   # I/O operations
   INPUT = auto()
   OUTPUT = auto()
-  WIRE_OUT = auto()
-  WIRE_IN = auto()
   CONST = auto()
 
   # Combinational operations
@@ -36,10 +34,10 @@ class BOp:
 
   validated: bool = False
 
-  # only for INPUT and WIRE_IN
+  # only for INPUT
   input_id: Optional[str] = None
 
-  # only for OUTPUT and WIRE_OUT
+  # only for OUTPUT
   outputs: Optional[dict[str, BOp]] = None
 
   # only for CONST
@@ -87,8 +85,6 @@ class BOp:
 def const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
-def wire_in(src: BOp, input_id: str) -> BOp: return BOp(op=BOps.WIRE_IN, src=(src,), input_id=input_id)
-def wire_out(**kwargs: BOp) -> BOp: return BOp(op=BOps.WIRE_OUT, outputs=kwargs)
 
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
@@ -102,8 +98,6 @@ def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a,b))
 _BOP_FUNCS = {
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
-  BOps.WIRE_IN: wire_in,
-  BOps.WIRE_OUT: wire_out,
   BOps.CONST: const,
   BOps.NOT: neg,
   BOps.AND: conj,
