@@ -55,6 +55,10 @@ The following binary operations are specified by the snakeHDL API and must be im
 * INPUT - `input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp`
 * OUTPUT - `output(**kwargs: BOp)`
 
+At compile time, the root of the tree must be an OUTPUT node, and this node's named outputs
+will be your circuit's outputs. Any INPUT leaf nodes will be treated as your circuit's
+named inputs.
+
 The `bits` argument to CONST and INPUT allows you to select a range of bits from the input signal by
 providing a sequence of bit indices. For example, for an 8-bit input signal `0Babcdefgh`, passing `[2, 4]` as
 the `bits` argument will result in the 2-bit signal `0Bdf` being emitted by the INPUT node.
