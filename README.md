@@ -1,3 +1,4 @@
+
 # snakeHDL: a simple and lazy HDL for Python
 
 snakeHDL is a tool for creating logic circuits with a focus on simplicity and accessibility. The goal is not to compete with the industry heavyweights, but to give hackers, makers, and educators a fun and easy way to build hardware with a few lines of Python.
@@ -73,4 +74,4 @@ The default argument `[0]` results in a 1-bit signal being emitted from the LSB 
 * XOR - `xor(a: BOp, b: BOp) -> BOp`
 * XNOR - `xnor(a: BOp, b: BOp) -> BOp`
 
-...and that's it! See `examples/` for demonstrations of these operations. Sequential logic is not supported by snakeHDL yet, but the plan is to add support for it in a future expansion.
+...and that's it! See `examples/` for demonstrations of these operations. Sequential logic is not supported by snakeHDL, but sequential elements are in consideration for a future expansion.
