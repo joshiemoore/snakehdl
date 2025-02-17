@@ -74,4 +74,4 @@ The default argument `[0]` results in a 1-bit signal being emitted from the LSB 
 * XOR - `xor(a: BOp, b: BOp) -> BOp`
 * XNOR - `xnor(a: BOp, b: BOp) -> BOp`
 
-...and that's it! See `examples/` for demonstrations of these operations. Sequential logic is not supported by snakeHDL, but sequential elements are in consideration for a future expansion.
+...and that's it! See `examples/` for demonstrations of these operations. Sequential logic is not supported by snakeHDL, but sequential elements could be considered for a future expansion.
