@@ -1,5 +1,4 @@
-
- # snakeHDL: a simple and lazy HDL for Python
+# snakeHDL: a simple and lazy HDL for Python
 
 snakeHDL is a tool for creating logic circuits with a focus on simplicity and accessibility. The goal is not to compete with the industry heavyweights, but to give hackers, makers, and educators a fun and easy way to build hardware with a few lines of Python.
 
@@ -39,12 +38,12 @@ Wanna use this to implement a Python bytecode interpreter as a real processor co
 ## Compiler Targets
 - [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
     as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
-- [ ] Minecraft Redstone .schematic files
 - [ ] Logisim .circ files
 - [ ] Verilog
 - [ ] Arduino
 - [ ] OpenCL kernels
 - [ ] FPGAs+ASICs
+- [ ] Minecraft Redstone
 - [ ] ...
 
 ## Binary Operations (BOps)
