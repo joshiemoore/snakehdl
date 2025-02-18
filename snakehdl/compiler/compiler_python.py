@@ -30,7 +30,7 @@ class PythonCompiler(Compiler):
           return op.val
         elif op.op is BOps.INPUT:
           if op.input_id not in kwargs: raise KeyError(op.input_id)
-          return np.uint(kwargs[op.input_id])
+          return np.uint(kwargs[op.input_id]) & np.uint(2**op.bits - 1)
         else: raise NotImplementedError(op.op)
       if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }

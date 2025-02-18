@@ -76,7 +76,9 @@ class BOp:
         for k,v in self.outputs.items():
           v.assign_bits()
       return 0
-    elif self.op is BOps.INPUT or self.op is BOps.CONST: return self.bits
+    elif self.op is BOps.INPUT or self.op is BOps.CONST:
+      if self.bits < 1 or self.bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
+      return self.bits
     else:
       parent_bits = list([v.assign_bits() for v in self.src])
       if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(self))
