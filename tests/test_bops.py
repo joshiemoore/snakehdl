@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from snakehdl.bops import (
   BOps,
-  input_bits, output, const,
+  const_bits, input_bits, output,
   neg, conj, nand, disj, nor, xor, xnor,
 )
 
@@ -26,34 +26,34 @@ class TestCreateBOps:
     assert str(op.op) == 'OUTPUT'
     assert op.outputs == {}
 
-    op = output(out_a=const('0'), out_b=const('1'))
-    assert op.outputs == {'out_a': const('0'), 'out_b': const('1')}
+    op = output(out_a=const_bits('0'), out_b=const_bits('1'))
+    assert op.outputs == {'out_a': const_bits('0'), 'out_b': const_bits('1')}
 
-  def test_const(self):
-    op = const(0b1010)
+  def test_const_bits(self):
+    op = const_bits(0b1010)
     assert op.op is BOps.CONST
     assert str(op.op) == 'CONST'
     assert op.val == 0b1010
 
-    op = const(np.uint(1337))
+    op = const_bits(np.uint(1337))
     assert op.val == 1337
 
-    op = const(123)
+    op = const_bits(123)
     assert op.val == 123
 
     with pytest.raises(ValueError):
-      const('asdf')
+      const_bits('asdf')
 
-    assert const(13) == const(13)
-    assert const(8) != const(14)
+    assert const_bits(13) == const_bits(13)
+    assert const_bits(8) != const_bits(14)
 
   #### combinational operations ####
   def test_neg(self):
-    op = neg(const(1))
+    op = neg(const_bits(1))
     assert op.op is BOps.NOT
     assert str(op.op) == 'NOT'
     assert len(op.src) == 1
-    assert op.src[0] == const('1')
+    assert op.src[0] == const_bits('1')
 
   def test_binary_combinational_ops(self):
     ops = {
@@ -66,12 +66,12 @@ class TestCreateBOps:
     }
 
     for bop, func in ops.items():
-      op = func(const(0), const(1))
+      op = func(const_bits(0), const_bits(1))
       assert op.op is bop
       assert str(op.op) == f'{bop.name}'
       assert len(op.src) == 2
-      assert op.src[0] == const(0)
-      assert op.src[1] == const(1)
+      assert op.src[0] == const_bits(0)
+      assert op.src[1] == const_bits(1)
 
   def test_pretty_print(self):
     # BOp pretty-print should be valid python syntax
@@ -82,7 +82,7 @@ class TestCreateBOps:
       ),
       xor4=xor(
         xor(input_bits('d'), input_bits('e')),
-        xor(const(1), const(0)),
+        xor(const_bits(1), const_bits(0)),
       ),
     )
     gate_repr = eval(str(gate))

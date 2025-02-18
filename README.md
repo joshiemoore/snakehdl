@@ -51,7 +51,7 @@ Wanna use this to implement a Python bytecode interpreter as a real processor co
 The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
 
 ### I/O Operations
-* CONST - `const(val: np.uint | int, bits: int=1) -> BOp`
+* CONST - `const_bits(val: np.uint | int, bits: int=1) -> BOp`
 * INPUT - `input_bits(input_id: str, bits: int=1) -> BOp`
 * OUTPUT - `output(**kwargs: BOp)`
 

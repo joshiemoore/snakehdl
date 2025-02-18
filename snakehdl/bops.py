@@ -86,7 +86,7 @@ class BOp:
   def compile(self, kompiler): return kompiler.compile(self)
 
 # I/O operations
-def const(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
+def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(input_id: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 
@@ -100,9 +100,9 @@ def xor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XOR, src=(a,b))
 def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a,b))
 
 _BOP_FUNCS = {
+  BOps.CONST: const_bits,
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
-  BOps.CONST: const,
   BOps.NOT: neg,
   BOps.AND: conj,
   BOps.NAND: nand,
