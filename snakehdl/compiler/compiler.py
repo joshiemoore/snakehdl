@@ -12,8 +12,10 @@ class Compiled:
 
 class Compiler:
   def compile(self, tree: BOp) -> Compiled:
-    # pre-compile validations, optimizations etc, not to be overridden
-    assert tree.op is BOps.OUTPUT, 'compilation root must be OUTPUT'
+    # pre-compilation validations, optimizations etc
+    # not to be overridden
+    assert tree.op is BOps.OUTPUT, 'tree root must be OUTPUT'
+    # TODO collapse internal IO (submodules)
     tree.validate()
     # TODO optimizations
     tree.assign_bits()

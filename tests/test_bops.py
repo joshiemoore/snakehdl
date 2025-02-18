@@ -14,7 +14,7 @@ class TestCreateBOps:
     assert op.op is BOps.INPUT
     assert str(op.op) == 'INPUT'
     assert op.input_id == 'a'
-    assert op.bits == [0]
+    assert op.bits == 1
 
     op = input_bits('b', range(2,6))
     assert len(op.bits) == 4
@@ -75,11 +75,15 @@ class TestCreateBOps:
 
   def test_pretty_print(self):
     # BOp pretty-print should be valid python syntax
-    and3 = output(
+    gate = output(
       and3=conj(
         conj(input_bits('a'), input_bits('b')),
         input_bits('c'),
-      )
+      ),
+      xor4=xor(
+        xor(input_bits('d'), input_bits('e')),
+        xor(const(1), const(0)),
+      ),
     )
-    and3_repr = eval(str(and3))
-    assert and3_repr == and3
+    gate_repr = eval(str(gate))
+    assert gate_repr == gate

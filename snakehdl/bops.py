@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Optional, Sequence
+from typing import Optional
 import numpy as np
 
 
@@ -30,9 +30,7 @@ class BOps(Enum):
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
-  bits: Optional[Sequence[int]] = None
-
-  validated: bool = False
+  bits: int = 0
 
   # only for INPUT
   input_id: Optional[str] = None
@@ -47,12 +45,14 @@ class BOp:
     sep = '  ' if whitespace else ''
     nl = '\n' if whitespace else ''
     out = _BOP_FUNCS[self.op].__name__ + '('
-    if self.input_id is not None: out += nl + indent*sep + f'input_id="{self.input_id}",'
-    if self.bits is not None: out += nl + indent*sep + f'bits={self.bits},'
-    if self.val is not None: out += nl + indent*sep + f'val={self.val},'
-    if self.outputs is not None:
-      for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
-    elif len(self.src) > 0:
+    if self.op is BOps.INPUT or self.op is BOps.CONST:
+      out += nl + indent*sep + f'bits={self.bits},'
+      if self.op is BOps.INPUT: out += nl + indent*sep + f'input_id="{self.input_id}",'
+      elif self.op is BOps.CONST: out += nl + indent*sep + f'val={self.val},'
+    elif self.op is BOps.OUTPUT:
+      if self.outputs is not None:
+        for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
+    else:
       for v in self.src: out += nl + indent*sep + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
     out += nl + (indent-1)*sep + ')'
     return out
@@ -68,22 +68,26 @@ class BOp:
       for k,v in self.outputs.items(): v.validate()
     else:
       for v in self.src: v.validate()
-    object.__setattr__(self, 'validated', True)
 
-  def assign_bits(self) -> Sequence:
+  def assign_bits(self) -> int:
     # recurse up a validated tree and infer bit widths based on inputs
-    assert self.validated
-    if self.bits is not None: return self.bits
-    if self.op is BOps.OUTPUT and self.outputs is not None: parents_bits = list([v.assign_bits() for k,v in self.outputs.items()])
-    else: parents_bits = list([v.assign_bits() for v in self.src])
-    object.__setattr__(self, 'bits', parents_bits[0])
-    return parents_bits[0]
+    if self.op is BOps.OUTPUT:
+      if self.outputs is not None:
+        for k,v in self.outputs.items():
+          v.assign_bits()
+      return 0
+    elif self.op is BOps.INPUT or self.op is BOps.CONST: return self.bits
+    else:
+      parent_bits = list([v.assign_bits() for v in self.src])
+      if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(self))
+      object.__setattr__(self, 'bits', parent_bits[0])
+      return parent_bits[0]
 
   def compile(self, kompiler): return kompiler.compile(self)
 
 # I/O operations
-def const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
-def input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
+def const(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
+def input_bits(input_id: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 
 # combinational operations

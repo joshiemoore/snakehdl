@@ -51,19 +51,13 @@ Wanna use this to implement a Python bytecode interpreter as a real processor co
 The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
 
 ### I/O Operations
-* CONST - `const(val: np.uint | int, bits: Sequence[int]=[0]) -> BOp`
-* INPUT - `input_bits(input_id: str, bits: Sequence[int]=[0]) -> BOp`
+* CONST - `const(val: np.uint | int, bits: int=1) -> BOp`
+* INPUT - `input_bits(input_id: str, bits: int=1) -> BOp`
 * OUTPUT - `output(**kwargs: BOp)`
 
 At compile time, the root of the tree must be an OUTPUT node, and this node's named outputs
 will be your circuit's outputs. Any INPUT leaf nodes will be treated as your circuit's
 named inputs.
-
-The `bits` argument to CONST and INPUT allows you to select a range of bits from the input signal by
-providing a sequence of bit indices. For example, for an 8-bit input signal `0Babcdefgh`, passing `[2, 4]` as
-the `bits` argument will result in the 2-bit signal `0Bdf` being emitted by the INPUT node.
-You could also say `range(2, 8)` to select the six most significant bits from the 8-bit input signal.
-The default argument `[0]` results in a 1-bit signal being emitted from the LSB of the input signal.
 
 ### Combinational Operations
 * NOT - `neg(a: BOp) -> BOp`

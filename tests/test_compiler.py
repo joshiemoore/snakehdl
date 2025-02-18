@@ -10,8 +10,8 @@ from snakehdl.compiler import PythonCompiler
 
 class TestPythonCompiler:
   inputs = (
-    input_bits('ina', bits=range(8)),
-    input_bits('inb', bits=range(8)),
+    input_bits('ina', bits=8),
+    input_bits('inb', bits=8),
   )
 
   def _get_func(self, tree: BOp) -> Callable:
@@ -78,3 +78,5 @@ class TestPythonCompiler:
     assert func(ina=0b11111111, inb=0b11111111) == {'out': 0b11111111}
     assert func(ina=0b11111111, inb=0) == {'out': 0}
     assert func(ina=0b11000110, inb=0b10101010) == {'out': 0b10010011}
+
+  # TODO test composite gates
