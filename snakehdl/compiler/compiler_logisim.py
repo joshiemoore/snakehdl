@@ -185,6 +185,7 @@ class LogisimCompiler(Compiler):
   def _compile(self, tree: BOp) -> bytes:
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
+    layer_gates: DefaultDict[int, List[LogisimGate]] = defaultdict(list)
     outputs: List[LogisimIO] = []
     inputs: dict[BOp, LogisimIO] = {}
 
@@ -242,19 +243,12 @@ class LogisimCompiler(Compiler):
           layers[layer_num + 1].append(op)
         # render gate
         gate = LogisimGate(op, cursor['x'], cursor['y'], orientation)
+        layer_gates[layer_num].append(gate)
         gate.render(circuit)
         # render gate output wire
         if layer_num > 1:
           if orientation == 1: LogisimWire(gate.x, gate.y, gate.x, row_y - STEP*STRIDE).render(circuit)
           else: LogisimWire(gate.x, gate.y, row_x - STEP*STRIDE, gate.y).render(circuit)
-        # render gate input wires
-        if op.op is not BOps.CONST and layer_num < len(layers):
-          gate_inputs = gate.get_inputs()
-          for gate_input in gate_inputs:
-            in_to = (gate_input[1], gate_input[2])
-            in_idx = layers[layer_num + 1].index(gate_input[0])
-            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE + (STEP if op.op is BOps.BIT or op.op is BOps.JOIN else 0))
-            LogisimWire(in_to[0], in_to[1], in_from[0], in_from[1]).render(circuit)
         if op.op is BOps.JOIN:
           if orientation == 1: cursor['x'] += STEP*STRIDE * len(op.src)
           else: cursor['y'] += STEP*STRIDE * len(op.src)
@@ -267,6 +261,14 @@ class LogisimCompiler(Compiler):
       else:
         cursor['x'] += STEP*STRIDE * 2
         row_x = cursor['x']
+
+    # render gate input wires
+    for layer_num in range(len(layer_gates)):
+      for gate in layer_gates[layer_num]:
+        for inp in gate.get_inputs():
+          pgate = next(v for v in layer_gates[layer_num + 1] if v.op == inp[0])
+          if gate.orientation == 0: LogisimWire(pgate.x, inp[2], inp[1], inp[2]).render(circuit)
+          else: LogisimWire(inp[1], pgate.y, inp[1], inp[2]).render(circuit)
 
     # render input pins
     for op in layers[len(layers)]:
