@@ -82,10 +82,11 @@ class LogisimGate(LogisimRender):
       props['spacing'] = str(STRIDE)
       props['incoming'] = str(len(self.op.src))
       props['fanout'] = str(len(self.op.src))
-      src_len = len(self.op.src)
-      for i in range(src_len):
-        bit_key = 'bit' + str(i)
-        props[bit_key] = str(src_len - i - 1)
+      if self.orientation == 1:
+        src_len = len(self.op.src)
+        for i in range(src_len):
+          bit_key = 'bit' + str(i)
+          props[bit_key] = str(src_len - i - 1)
     el = Element('comp', attrib=attrib)
     LogisimProperties(props).render(el)
     parent.append(el)
