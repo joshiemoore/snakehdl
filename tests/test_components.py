@@ -12,7 +12,7 @@ def _get_func(tree: BOp) -> Callable:
   func_s = PythonCompiler().compile(tree).data
   return dill.loads(func_s)
 
-class TestComponents:
+class TestArithmeticComponents:
   def test_adder1(self):
     res, cout = adder1(input_bits('a'), input_bits('b'), input_bits('cin'))
     tree = output(res=res, cout=cout)
