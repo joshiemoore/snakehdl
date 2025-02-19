@@ -20,6 +20,11 @@ class TestPythonCompiler:
     func_s = PythonCompiler().compile(tree)
     return dill.loads(func_s.data)
 
+  def test_const_bits(self):
+    tree = output(out0=const_bits(0), out1=const_bits(1))
+    func = self._get_func(tree)
+    assert func() == {'out0': 0, 'out1': 1}
+
   def test_basic_relay8(self):
     tree = output(out=self.inputs[0])
     func = self._get_func(tree)
