@@ -17,6 +17,7 @@ OG_X, OG_Y = STEP*10, STEP*10
 # Map snakeHDL BOps to names of logisim components
 _BOP_MAP = {
   BOps.CONST: 'Constant',
+  BOps.BIT: 'Splitter',
   BOps.NOT: 'NOT Gate',
   BOps.AND: 'AND Gate',
   BOps.NAND: 'NAND Gate',
@@ -62,14 +63,26 @@ class LogisimGate(LogisimRender):
     if self.op.op is BOps.CONST:
       attrib['lib'] = '0'
       props['value'] = hex(self.op.val) if self.op.val else '0x0'
+    elif self.op.op is BOps.BIT:
+      attrib['lib'] = '0'
+      new_pos = raycast(self.x, self.y, self.orientation, STEP*2)
+      attrib['loc'] = f'({new_pos[0]},{new_pos[1]})'
+      props['appear'] = 'center'
+      props['incoming'] = str(self.op.src[0].bits)
+      props['fanout'] = '1'
+      for i in range(self.op.src[0].bits):
+        bit_key = 'bit' + str(i)
+        if i == self.op.bit_index: props[bit_key] = '0'
+        else: props[bit_key] = 'none'
     el = Element('comp', attrib=attrib)
     LogisimProperties(props).render(el)
     parent.append(el)
 
   def get_inputs(self) -> dict[BOp, tuple[int, int]]:
     if self.op.op is BOps.CONST: return {}
-    if self.op.op is BOps.INPUT: return {self.op: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
+    elif self.op.op is BOps.INPUT: return {self.op: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
     elif self.op.op is BOps.NOT: return {self.op.src[0]: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
+    elif self.op.op is BOps.BIT: return {self.op.src[0]: raycast(self.x, self.y, self.orientation, STEP*(STRIDE - 1))}
     if self.orientation not in {0, 1}: raise ValueError('invalid direction: ' + str(self.orientation))
     if self.orientation == 0:
       inputs = {
@@ -138,10 +151,9 @@ class LogisimProperties(LogisimRender):
 
 def raycast(xa: int, ya: int, direction: int, distance: int) -> tuple[int, int]:
   # given "from" (xa,ya), direction, and distance, return "to" (xb,yb)
-  if direction not in {0, 1}: raise ValueError('invalid direction: ' + str(direction))
   if direction == 1: return (xa, ya + distance)
   elif direction == 0: return (xa + distance, ya)
-  return (-1, -1) # should never hit this
+  raise ValueError('invalid direction: ' + str(direction))
 
 class LogisimCompiler(Compiler):
   def _compile(self, tree: BOp) -> bytes:
@@ -180,7 +192,6 @@ class LogisimCompiler(Compiler):
     def _populate(q: List[BOp], layer: int) -> None:
       if len(q) == 0: return
       next_q: List[BOp] = []
-      #orientation = layer % 2
       while len(q) > 0:
         op = q.pop(0)
         next_q.extend(op.src)
@@ -215,14 +226,14 @@ class LogisimCompiler(Compiler):
           for input in gate_inputs:
             in_to = gate_inputs[input]
             in_idx = layers[layer_num + 1].index(input)
-            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE)
+            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE + (STEP if op.op is BOps.BIT else 0))
             LogisimWire(in_to[0], in_to[1], in_from[0], in_from[1]).render(circuit)
         if orientation == 1: cursor['x'] += STEP*STRIDE
         else: cursor['y'] += STEP*STRIDE
       if orientation == 1: cursor['y'] += STEP*STRIDE * 2
       else: cursor['x'] += STEP*STRIDE * 2
 
-    # render input pins and rails
+    # render input pins
     for op in layers[len(layers)]:
       if op.op is not BOps.INPUT: continue
       if op.input_name is None: continue
@@ -239,16 +250,17 @@ class LogisimCompiler(Compiler):
       LogisimWire(gate_x, output.y, gate_x, OG_X + len(outputs) * STEP*STRIDE).render(circuit)
 
     # connect top layer inputs to input pins
+    top_len = len(layers[len(layers)])
     for input_pin in inputs:
       in_idx = layers[len(layers)].index(input_pin.op)
       if len(layers) % 2 == 0:
-        ix = cursor['x'] + in_idx * STEP*STRIDE
+        ix = cursor['x'] + (top_len - in_idx) * STEP*STRIDE
         LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
-        iy = cursor['y'] - (in_idx + 1) * STEP*STRIDE
+        iy = cursor['y'] - (top_len - in_idx) * STEP*STRIDE
         LogisimWire(ix, input_pin.y, ix, iy).render(circuit)
         LogisimWire(ix, iy, cursor['x'] - STEP*STRIDE, iy).render(circuit)
       else:
-        ix = cursor['x'] - (in_idx + 1) * STEP*STRIDE
+        ix = cursor['x'] - (top_len - in_idx) * STEP*STRIDE
         LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
         LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
 

@@ -81,6 +81,7 @@ class BOp:
         for k,v in self.outputs.items():
           v.assign_bits()
       return 0
+    elif self.op is BOps.BIT: return 1
     elif self.op is BOps.INPUT or self.op is BOps.CONST:
       if self.bits < 1 or self.bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
       return self.bits
