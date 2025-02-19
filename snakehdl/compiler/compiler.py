@@ -6,9 +6,9 @@ from snakehdl import BOp, BOps
 class Compiled:
   data: bytes
 
-  def save(self, filename: str) -> bool:
-    # TODO
-    raise NotImplementedError()
+  def save(self, filepath: str) -> None:
+    with open(filepath, 'wb') as f:
+      f.write(self.data)
 
 class Compiler:
   def compile(self, tree: BOp) -> Compiled:

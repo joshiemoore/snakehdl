@@ -39,7 +39,7 @@ Wanna use this to implement a Python bytecode interpreter as a real processor co
 ## Compiler Targets
 - [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
     as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
-- [ ] Logisim .circ files
+- [ ] Logisim Evolution 3.9.0 .circ files
 - [ ] Verilog
 - [ ] Arduino
 - [ ] OpenCL kernels
