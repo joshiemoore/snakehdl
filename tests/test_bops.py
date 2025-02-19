@@ -57,7 +57,7 @@ class TestCreateBOps:
     assert op.src[0] == inp
 
   def test_join(self):
-    op = join(src=(const_bits(1), const_bits(0)))
+    op = join(const_bits(1), const_bits(0))
     assert op.op is BOps.JOIN
     assert str(op.op) == 'JOIN'
     assert len(op.src) == 2

@@ -107,7 +107,7 @@ def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST
 def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index)
-def join(src: tuple[BOp, ...]) -> BOp: return BOp(op=BOps.JOIN, src=src)
+def join(*args: BOp) -> BOp: return BOp(op=BOps.JOIN, src=tuple(args))
 
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))

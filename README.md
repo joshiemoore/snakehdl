@@ -55,7 +55,7 @@ The following binary operations are specified by the snakeHDL API and must be im
 * INPUT - `input_bits(name: str, bits: int=1) -> BOp`
 * OUTPUT - `output(**kwargs: BOp) -> BOp`
 * BIT - `bit(src: BOp, index: int) -> BOp`
-* JOIN - `join(src: tuple[BOp, ...]) -> BOp`
+* JOIN - `join(*args: BOp) -> BOp`
 
 At compile time, the root of the tree must be an OUTPUT node, and this node's named outputs
 will be your circuit's outputs. Any INPUT nodes will be treated as your circuit's

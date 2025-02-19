@@ -32,6 +32,10 @@ class PythonCompiler(Compiler):
         elif op.op is BOps.BIT:
           if op.bit_index is None: raise RuntimeError('missing bit_index')
           return np.uint(_func_helper(op.src[0]) >> op.bit_index) & np.uint(1)
+        elif op.op is BOps.JOIN:
+          res = np.uint(0)
+          for i in range(len(op.src)): res |= (np.uint(_func_helper(op.src[i]) << i) & np.uint(1 << i))
+          return res
         else: raise NotImplementedError(op.op)
       if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }
