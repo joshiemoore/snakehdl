@@ -148,7 +148,7 @@ class LogisimCompiler(Compiler):
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
     outputs: List[LogisimIO] = []
-    #inputs: List[LogisimIO] = []
+    inputs: List[LogisimIO] = []
 
     if tree.outputs is None: raise RuntimeError('circuit has no outputs!')
 
@@ -175,12 +175,6 @@ class LogisimCompiler(Compiler):
       out.render(circuit)
       cursor['y'] += STEP*STRIDE
     cursor['x'] += STEP*STRIDE
-
-    # connect output pins to their gates
-    for i in range(len(outputs)):
-      output = outputs[i]
-      in_pos = raycast(output.x, output.y, 0, (i + 1) * STEP*STRIDE)
-      LogisimWire(output.x, output.y, in_pos[0], in_pos[1]).render(circuit)
 
     # breadth-first traversal to populate layer structure with ops
     def _populate(q: List[BOp], layer: int) -> None:
@@ -212,15 +206,14 @@ class LogisimCompiler(Compiler):
         gate = LogisimGate(op, cursor['x'], cursor['y'], orientation)
         gate.render(circuit)
         # render gate output wire
-        if layer_num == 1: out_pos = raycast(gate.x, gate.y, orientation, len(outputs) * -STEP*STRIDE)
-        else: out_pos = raycast(gate.x, gate.y, orientation, (len(layers[layer_num - 1]) + 1) * -STEP*STRIDE)
-        LogisimWire(gate.x, gate.y, out_pos[0], out_pos[1]).render(circuit)
+        if layer_num > 1:
+          out_pos = raycast(gate.x, gate.y, orientation, (len(layers[layer_num - 1]) + 1) * -STEP*STRIDE)
+          LogisimWire(gate.x, gate.y, out_pos[0], out_pos[1]).render(circuit)
         # render gate input wires
         if op.op is not BOps.CONST and layer_num < len(layers):
-          inputs = gate.get_inputs()
-          print(gate)
-          for input in inputs:
-            in_to = inputs[input]
+          gate_inputs = gate.get_inputs()
+          for input in gate_inputs:
+            in_to = gate_inputs[input]
             in_idx = layers[layer_num + 1].index(input)
             in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE)
             LogisimWire(in_to[0], in_to[1], in_from[0], in_from[1]).render(circuit)
@@ -230,10 +223,29 @@ class LogisimCompiler(Compiler):
       else: cursor['x'] += STEP*STRIDE * 2
 
     # render input pins and rails
-    # TODO
+    for op in layers[len(layers)]:
+      if op.op is not BOps.INPUT: continue
+      if op.input_id is None: continue
+      # input pin
+      input_pin = LogisimIO(op, op.input_id, False, OG_X, cursor['y'] + len(inputs) * STEP*STRIDE)
+      input_pin.render(circuit)
+      inputs.append(input_pin)
 
-    # connect input pins to top-layer input wires
-    # TODO
+    # connect output gates to output pins
+    for i, output in enumerate(outputs):
+      output = outputs[i]
+      gate_x = output.x + (i + 1) * STEP*STRIDE
+      LogisimWire(output.x, output.y, output.x + (i + 1) * STEP*STRIDE, output.y).render(circuit)
+      LogisimWire(gate_x, output.y, gate_x, OG_X + len(outputs) * STEP*STRIDE).render(circuit)
 
-    # convert XML tree to bytes and return it!
+    # connect top layer inputs to input pins
+    for i, input_pin in enumerate(inputs):
+      ix = cursor['x'] - (i + 1) * STEP*STRIDE
+      LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
+      if len(layers) % 2 == 0:
+        LogisimWire(ix, input_pin.y, ix, cursor['y'] - (i + 1) * STEP*STRIDE).render(circuit)
+      else:
+        LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
+
+    # convert XML tree to bytes and return it
     return bytes(ElementTree.tostring(xmltree.getroot(), encoding='ascii'))
