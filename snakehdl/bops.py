@@ -34,7 +34,7 @@ class BOp:
   bits: int = 0
 
   # only for INPUT
-  input_id: Optional[str] = None
+  input_name: Optional[str] = None
 
   # only for OUTPUT
   outputs: Optional[dict[str, BOp]] = None
@@ -51,7 +51,7 @@ class BOp:
     out = _BOP_FUNCS[self.op].__name__ + '('
     if self.op is BOps.INPUT or self.op is BOps.CONST:
       out += nl + indent*sep + f'bits={self.bits},'
-      if self.op is BOps.INPUT: out += nl + indent*sep + f'input_id="{self.input_id}",'
+      if self.op is BOps.INPUT: out += nl + indent*sep + f'name="{self.input_name}",'
       elif self.op is BOps.CONST: out += nl + indent*sep + f'val={self.val},'
     elif self.op is BOps.OUTPUT:
       if self.outputs is not None:
@@ -92,7 +92,7 @@ class BOp:
 
 # I/O operations
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
-def input_bits(input_id: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
+def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index, bits=1)
 

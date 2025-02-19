@@ -29,8 +29,8 @@ class PythonCompiler(Compiler):
           if op.val is None: raise RuntimeError('missing val')
           return op.val
         elif op.op is BOps.INPUT:
-          if op.input_id not in kwargs: raise KeyError(op.input_id)
-          return np.uint(kwargs[op.input_id]) & np.uint(2**op.bits - 1)
+          if op.input_name not in kwargs: raise KeyError(op.input_name)
+          return np.uint(kwargs[op.input_name]) & np.uint(2**op.bits - 1)
         else: raise NotImplementedError(op.op)
       if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }

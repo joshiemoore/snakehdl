@@ -13,7 +13,7 @@ class TestCreateBOps:
     op = input_bits('a')
     assert op.op is BOps.INPUT
     assert str(op.op) == 'INPUT'
-    assert op.input_id == 'a'
+    assert op.input_name == 'a'
     assert op.bits == 1
 
     op = input_bits('b', range(2,6))

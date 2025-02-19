@@ -225,9 +225,9 @@ class LogisimCompiler(Compiler):
     # render input pins and rails
     for op in layers[len(layers)]:
       if op.op is not BOps.INPUT: continue
-      if op.input_id is None: continue
+      if op.input_name is None: continue
       # input pin
-      input_pin = LogisimIO(op, op.input_id, False, OG_X, cursor['y'] + len(inputs) * STEP*STRIDE)
+      input_pin = LogisimIO(op, op.input_name, False, OG_X, cursor['y'] + len(inputs) * STEP*STRIDE)
       input_pin.render(circuit)
       inputs.append(input_pin)
 

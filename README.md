@@ -52,7 +52,7 @@ The following binary operations are specified by the snakeHDL API and must be im
 
 ### I/O Operations
 * CONST - `const_bits(val: np.uint | int, bits: int=1) -> BOp`
-* INPUT - `input_bits(input_id: str, bits: int=1) -> BOp`
+* INPUT - `input_bits(name: str, bits: int=1) -> BOp`
 * OUTPUT - `output(**kwargs: BOp) -> BOp`
 * BIT - `bit(src: BOp, index: int) -> BOp`
 
