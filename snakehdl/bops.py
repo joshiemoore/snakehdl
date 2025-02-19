@@ -14,6 +14,7 @@ class BOps(Enum):
   INPUT = auto()
   OUTPUT = auto()
   CONST = auto()
+  BIT = auto()
 
   # Combinational operations
   NOT = auto()
@@ -41,6 +42,9 @@ class BOp:
   # only for CONST
   val: Optional[np.uint] = None
 
+  # only for BIT
+  bit_index: Optional[int] = None
+
   def pretty(self, indent: int=0, whitespace: bool=False) -> str:
     sep = '  ' if whitespace else ''
     nl = '\n' if whitespace else ''
@@ -54,6 +58,7 @@ class BOp:
         for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
     else:
       for v in self.src: out += nl + indent*sep + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
+    if self.op is BOps.BIT: out += nl + indent*sep + f'index={self.bit_index},'
     out += nl + (indent-1)*sep + ')'
     return out
 
@@ -91,6 +96,7 @@ class BOp:
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(input_id: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
+def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index, bits=1)
 
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
@@ -105,6 +111,7 @@ _BOP_FUNCS = {
   BOps.CONST: const_bits,
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
+  BOps.BIT: bit,
   BOps.NOT: neg,
   BOps.AND: conj,
   BOps.NAND: nand,

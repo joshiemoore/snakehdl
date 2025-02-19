@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from snakehdl.bops import (
   BOps,
-  const_bits, input_bits, output,
+  const_bits, input_bits, output, bit,
   neg, conj, nand, disj, nor, xor, xnor,
 )
 
@@ -46,6 +46,15 @@ class TestCreateBOps:
 
     assert const_bits(13) == const_bits(13)
     assert const_bits(8) != const_bits(14)
+
+  def test_bit(self):
+    inp = input_bits('a', bits=16)
+    op = bit(src=inp, index=0)
+    assert op.op is BOps.BIT
+    assert str(op.op) == 'BIT'
+    assert op.bit_index == 0
+    assert len(op.src) == 1
+    assert op.src[0] == inp
 
   #### combinational operations ####
   def test_neg(self):
