@@ -1,5 +1,5 @@
 
-# snakeHDL: A simple and purely-functional HDL for Python
+# snakeHDL: A simple, purely-functional HDL for Python
 
 snakeHDL is a tool for creating logic circuits with a focus on simplicity and accessibility. The goal is not to compete with the industry heavyweights, but to give hackers, makers, and educators a fun and easy way to build hardware with a few lines of Python.
 
