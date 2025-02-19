@@ -12,7 +12,7 @@ STEP = 10    # distance between grid units
 STRIDE = 3   # grid units between output pins
 
 # origin to begin component placement at
-OG_X, OG_Y = STEP*20, STEP*20
+OG_X, OG_Y = STEP*10, STEP*10
 
 # Map snakeHDL BOps to names of logisim components
 _BOP_MAP = {
@@ -239,12 +239,17 @@ class LogisimCompiler(Compiler):
       LogisimWire(gate_x, output.y, gate_x, OG_X + len(outputs) * STEP*STRIDE).render(circuit)
 
     # connect top layer inputs to input pins
-    for i, input_pin in enumerate(inputs):
-      ix = cursor['x'] - (i + 1) * STEP*STRIDE
-      LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
+    for input_pin in inputs:
+      in_idx = layers[len(layers)].index(input_pin.op)
       if len(layers) % 2 == 0:
-        LogisimWire(ix, input_pin.y, ix, cursor['y'] - (i + 1) * STEP*STRIDE).render(circuit)
+        ix = cursor['x'] + in_idx * STEP*STRIDE
+        LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
+        iy = cursor['y'] - (in_idx + 1) * STEP*STRIDE
+        LogisimWire(ix, input_pin.y, ix, iy).render(circuit)
+        LogisimWire(ix, iy, cursor['x'] - STEP*STRIDE, iy).render(circuit)
       else:
+        ix = cursor['x'] - (in_idx + 1) * STEP*STRIDE
+        LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
         LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
 
     # convert XML tree to bytes and return it
