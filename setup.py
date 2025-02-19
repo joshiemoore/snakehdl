@@ -9,8 +9,8 @@ with open(directory / 'README.md', encoding='utf-8') as f:
 
 setup(
   name='snakehdl',
-  version='0.0.1',
-  description='A simple and lazy HDL for Python',
+  version='0.1.0',
+  description='A simple and purely functional HDL for Python',
   author='Josh Moore',
   license='MIT',
   long_description=long_description,

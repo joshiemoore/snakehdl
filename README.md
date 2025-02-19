@@ -1,5 +1,5 @@
 
-# snakeHDL: a simple and lazy HDL for Python
+# snakeHDL: A simple and purely functional HDL for Python
 
 snakeHDL is a tool for creating logic circuits with a focus on simplicity and accessibility. The goal is not to compete with the industry heavyweights, but to give hackers, makers, and educators a fun and easy way to build hardware with a few lines of Python.
 
@@ -34,7 +34,7 @@ leaving you to focus on implementing the pure logic of your circuit.
 Since only ten primitive BOps are specified by snakeHDL, it is straightforward to
 create compiler backends for new target platforms.
 
-Wanna use this to implement a Python bytecode interpreter as a real processor core and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
+Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
 ## Compiler Targets
 - [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
