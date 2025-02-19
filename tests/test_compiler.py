@@ -2,7 +2,7 @@ import dill
 from typing import Callable
 from snakehdl import (
   BOp,
-  output, input_bits,
+  output, input_bits, bit,
   neg, conj, nand, disj, nor, xor, xnor
 )
 from snakehdl.compiler import PythonCompiler
@@ -25,6 +25,12 @@ class TestPythonCompiler:
     func = self._get_func(tree)
     assert func(ina=0) == {'out': 0}
     assert func(ina=0b10101111) == {'out': 0b10101111}
+
+  def test_bit(self):
+    tree = output(out=bit(self.inputs[0], 1))
+    func = self._get_func(tree)
+    assert func(ina=0b00000010) == {'out': 1}
+    assert func(ina=0b11111101) == {'out': 0}
 
   def test_not8(self):
     tree = output(out=neg(self.inputs[0]))

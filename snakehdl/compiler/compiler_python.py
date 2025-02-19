@@ -2,14 +2,12 @@ from __future__ import annotations
 import numpy as np
 import dill
 from snakehdl.compiler import Compiler
-from snakehdl import BOp
+from snakehdl import BOp, BOps
 
 
 class PythonCompiler(Compiler):
   def _compile(self, tree: BOp) -> bytes:
-    # recurse up the validated tree generating python lambdas for BOps
     def _func(**kwargs) -> dict[str, np.uint]:
-      from snakehdl import BOps  # noqa: E401
       def _func_helper(op: BOp) -> np.uint:
         if op.op is BOps.NOT:
           return ~_func_helper(op.src[0])
@@ -31,6 +29,9 @@ class PythonCompiler(Compiler):
         elif op.op is BOps.INPUT:
           if op.input_name not in kwargs: raise KeyError(op.input_name)
           return np.uint(kwargs[op.input_name]) & np.uint(2**op.bits - 1)
+        elif op.op is BOps.BIT:
+          if op.bit_index is None: raise RuntimeError('missing bit_index')
+          return np.uint(_func_helper(op.src[0]) >> op.bit_index) & np.uint(1)
         else: raise NotImplementedError(op.op)
       if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }
