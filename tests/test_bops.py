@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from snakehdl.bops import (
   BOps,
-  const_bits, input_bits, output, bit,
+  const_bits, input_bits, output, bit, join,
   neg, conj, nand, disj, nor, xor, xnor,
 )
 
@@ -55,6 +55,14 @@ class TestCreateBOps:
     assert op.bit_index == 0
     assert len(op.src) == 1
     assert op.src[0] == inp
+
+  def test_join(self):
+    op = join(src=(const_bits(1), const_bits(0)))
+    assert op.op is BOps.JOIN
+    assert str(op.op) == 'JOIN'
+    assert len(op.src) == 2
+    assert op.src[0] == const_bits(1)
+    assert op.src[1] == const_bits(0)
 
   #### combinational operations ####
   def test_neg(self):

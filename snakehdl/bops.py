@@ -15,6 +15,7 @@ class BOps(Enum):
   OUTPUT = auto()
   CONST = auto()
   BIT = auto()
+  JOIN = auto()
 
   # Combinational operations
   NOT = auto()
@@ -76,15 +77,25 @@ class BOp:
 
   def assign_bits(self) -> int:
     # recurse up a validated tree and infer bit widths based on inputs
-    if self.op is BOps.OUTPUT:
+    if self.op is BOps.INPUT or self.op is BOps.CONST:
+      if self.bits < 1 or self.bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
+      return self.bits
+    elif self.op is BOps.OUTPUT:
       if self.outputs is not None:
         for k,v in self.outputs.items():
           v.assign_bits()
       return 0
-    elif self.op is BOps.BIT: return 1
-    elif self.op is BOps.INPUT or self.op is BOps.CONST:
-      if self.bits < 1 or self.bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
-      return self.bits
+    elif self.op is BOps.BIT:
+      self.src[0].assign_bits()
+      object.__setattr__(self, 'bits', 1)
+      return 1
+    elif self.op is BOps.JOIN:
+      for v in self.src:
+        v.assign_bits()
+        if v.bits != 1: raise RuntimeError('All JOIN inputs must be 1 bit wide\n' + str(self))
+      b = len(self.src)
+      object.__setattr__(self, 'bits', b)
+      return b
     else:
       parent_bits = list([v.assign_bits() for v in self.src])
       if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(self))
@@ -95,7 +106,8 @@ class BOp:
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
-def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index, bits=1)
+def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index)
+def join(src: tuple[BOp, ...]) -> BOp: return BOp(op=BOps.JOIN, src=src)
 
 # combinational operations
 def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
@@ -111,6 +123,7 @@ _BOP_FUNCS = {
   BOps.INPUT: input_bits,
   BOps.OUTPUT: output,
   BOps.BIT: bit,
+  BOps.JOIN: join,
   BOps.NOT: neg,
   BOps.AND: conj,
   BOps.NAND: nand,
