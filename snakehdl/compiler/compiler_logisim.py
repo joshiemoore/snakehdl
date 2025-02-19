@@ -77,29 +77,49 @@ class LogisimGate(LogisimRender):
         else: props[bit_key] = 'none'
     elif self.op.op is BOps.JOIN:
       attrib['lib'] = '0'
+      props['facing'] = 'east' if self.orientation == 0 else 'south'
+      props['appear'] = 'right' if self.orientation == 0 else 'left'
+      props['spacing'] = str(STRIDE)
       props['incoming'] = str(len(self.op.src))
       props['fanout'] = str(len(self.op.src))
+      src_len = len(self.op.src)
+      for i in range(src_len):
+        bit_key = 'bit' + str(i)
+        props[bit_key] = str(src_len - i - 1)
     el = Element('comp', attrib=attrib)
     LogisimProperties(props).render(el)
     parent.append(el)
 
-  def get_inputs(self) -> dict[BOp, tuple[int, int]]:
-    if self.op.op is BOps.CONST: return {}
-    elif self.op.op is BOps.INPUT: return {self.op: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
-    elif self.op.op is BOps.NOT: return {self.op.src[0]: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
-    elif self.op.op is BOps.BIT: return {self.op.src[0]: raycast(self.x, self.y, self.orientation, STEP*(STRIDE - 1))}
+  def get_inputs(self) -> tuple[tuple[BOp, int, int], ...]:
     if self.orientation not in {0, 1}: raise ValueError('invalid direction: ' + str(self.orientation))
+    if self.op.op is BOps.CONST: return tuple()
+    elif self.op.op is BOps.INPUT:
+      inp = raycast(self.x, self.y, self.orientation, STEP*STRIDE)
+      return ((self.op, inp[0], inp[1]),)
+    elif self.op.op is BOps.NOT:
+      inp = raycast(self.x, self.y, self.orientation, STEP*STRIDE)
+      return ((self.op.src[0], inp[0], inp[1]),)
+    elif self.op.op is BOps.BIT:
+      inp = raycast(self.x, self.y, self.orientation, STEP*(STRIDE - 1))
+      return ((self.op.src[0], inp[0], inp[1]),)
+    elif self.op.op is BOps.JOIN:
+      res = []
+      for i in reversed(range(len(self.op.src))):
+        pop = self.op.src[i]
+        if self.orientation == 0: res.append((pop, self.x + STEP*(STRIDE-1), self.y + STEP  + i * STEP*STRIDE))
+        else: res.append((pop, self.x + STEP + i * STEP*STRIDE, self.y + STEP*(STRIDE-1)))
+      return tuple(res)
     if self.orientation == 0:
-      inputs = {
-        self.op.src[0]: (self.x + STEP*STRIDE, self.y - STEP),
-        self.op.src[1]: (self.x + STEP*STRIDE, self.y + STEP),
-      }
+      return (
+        (self.op.src[0], self.x + STEP*STRIDE, self.y - STEP),
+        (self.op.src[1], self.x + STEP*STRIDE, self.y + STEP),
+      )
     elif self.orientation == 1:
-      inputs = {
-        self.op.src[0]: (self.x - STEP, self.y + STEP*STRIDE),
-        self.op.src[1]: (self.x + STEP, self.y + STEP*STRIDE),
-      }
-    return inputs
+      return (
+        (self.op.src[0], self.x - STEP, self.y + STEP*STRIDE),
+        (self.op.src[1], self.x + STEP, self.y + STEP*STRIDE),
+      )
+    return tuple() # should never end up here
 
 @dataclass(frozen=True)
 class LogisimIO(LogisimRender):
@@ -204,10 +224,15 @@ class LogisimCompiler(Compiler):
       return _populate(next_q, layer + 1)
     _populate(init_q, 1)
 
+    # collapse duplicates
+    for layer in layers: layers[layer] = list(dict.fromkeys(layers[layer]))
+
     # run through layers 1 -> n
     # propagate leaf INPUTs to the next layer up so they can "snake through"
     # and so everything in the top layer should be INPUT or CONST
     # also render the gates and draw gate output wires
+    row_x = cursor['x']
+    row_y = cursor['y']
     for layer_num in layers:
       orientation = layer_num % 2
       for op in layers[layer_num]:
@@ -219,20 +244,28 @@ class LogisimCompiler(Compiler):
         gate.render(circuit)
         # render gate output wire
         if layer_num > 1:
-          out_pos = raycast(gate.x, gate.y, orientation, (len(layers[layer_num - 1]) + 1) * -STEP*STRIDE)
-          LogisimWire(gate.x, gate.y, out_pos[0], out_pos[1]).render(circuit)
+          if orientation == 1: LogisimWire(gate.x, gate.y, gate.x, row_y - STEP*STRIDE).render(circuit)
+          else: LogisimWire(gate.x, gate.y, row_x - STEP*STRIDE, gate.y).render(circuit)
         # render gate input wires
         if op.op is not BOps.CONST and layer_num < len(layers):
           gate_inputs = gate.get_inputs()
-          for input in gate_inputs:
-            in_to = gate_inputs[input]
-            in_idx = layers[layer_num + 1].index(input)
-            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE + (STEP if op.op is BOps.BIT else 0))
+          for gate_input in gate_inputs:
+            in_to = (gate_input[1], gate_input[2])
+            in_idx = layers[layer_num + 1].index(gate_input[0])
+            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE + (STEP if op.op is BOps.BIT or op.op is BOps.JOIN else 0))
             LogisimWire(in_to[0], in_to[1], in_from[0], in_from[1]).render(circuit)
-        if orientation == 1: cursor['x'] += STEP*STRIDE
-        else: cursor['y'] += STEP*STRIDE
-      if orientation == 1: cursor['y'] += STEP*STRIDE * 2
-      else: cursor['x'] += STEP*STRIDE * 2
+        if op.op is BOps.JOIN:
+          if orientation == 1: cursor['x'] += STEP*STRIDE * len(op.src)
+          else: cursor['y'] += STEP*STRIDE * len(op.src)
+        else:
+          if orientation == 1: cursor['x'] += STEP*STRIDE
+          else: cursor['y'] += STEP*STRIDE
+      if orientation == 1:
+        cursor['y'] += STEP*STRIDE * 2
+        row_y = cursor['y']
+      else:
+        cursor['x'] += STEP*STRIDE * 2
+        row_x = cursor['x']
 
     # render input pins
     for op in layers[len(layers)]:
@@ -245,11 +278,13 @@ class LogisimCompiler(Compiler):
       inputs[op] = input_pin
 
     # connect output gates to output pins
+    gate_x = OG_X + STEP*STRIDE
     for i, output in enumerate(outputs):
       output = outputs[i]
-      gate_x = output.x + (i + 1) * STEP*STRIDE
-      LogisimWire(output.x, output.y, output.x + (i + 1) * STEP*STRIDE, output.y).render(circuit)
+      LogisimWire(OG_X, output.y, gate_x, output.y).render(circuit)
       LogisimWire(gate_x, output.y, gate_x, OG_X + len(outputs) * STEP*STRIDE).render(circuit)
+      if output.op.op is BOps.JOIN: gate_x += len(output.op.src) * STEP*STRIDE
+      else: gate_x += STEP*STRIDE
 
     # connect top layer inputs to input pins
     top_len = len(layers[len(layers)])
