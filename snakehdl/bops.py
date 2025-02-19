@@ -87,6 +87,8 @@ class BOp:
       return 0
     elif self.op is BOps.BIT:
       self.src[0].assign_bits()
+      if self.bit_index is None: raise RuntimeError('BIT missing index\n' + str(self))
+      if self.bit_index < 0 or self.bit_index >= self.src[0].bits: raise IndexError(f'bit index {self.bit_index} out of range\n' + str(self))
       object.__setattr__(self, 'bits', 1)
       return 1
     elif self.op is BOps.JOIN:
