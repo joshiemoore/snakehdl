@@ -53,11 +53,16 @@ The following binary operations are specified by the snakeHDL API and must be im
 ### I/O Operations
 * CONST - `const_bits(val: np.uint | int, bits: int=1) -> BOp`
 * INPUT - `input_bits(input_id: str, bits: int=1) -> BOp`
-* OUTPUT - `output(**kwargs: BOp)`
+* OUTPUT - `output(**kwargs: BOp) -> BOp`
+* BIT - `bit(src: BOp, index: int) -> BOp`
 
 At compile time, the root of the tree must be an OUTPUT node, and this node's named outputs
-will be your circuit's outputs. Any INPUT leaf nodes will be treated as your circuit's
+will be your circuit's outputs. Any INPUT nodes will be treated as your circuit's
 named inputs.
+
+The `BIT` operation is used to select one bit from an n-bit signal.
+
+The `JOIN` operation is used to combine n 1-bit signals into one n-bit signal.
 
 ### Combinational Operations
 * NOT - `neg(a: BOp) -> BOp`
