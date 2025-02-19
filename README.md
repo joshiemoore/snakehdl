@@ -17,7 +17,7 @@ BOps are naturally composable into larger circuits because they are lazily evalu
 
 ```
   >>> from snakehdl.compiler import PythonCompiler
-  >>> pickled_func = outputs.compile(PythonCompiler()).data
+  >>> pickled_func = PythonCompiler().compile(outputs).data
   >>> import dill
   >>> func = dill.loads(pickled_func)
   >>> func(a=1, b=1)

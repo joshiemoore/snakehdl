@@ -90,8 +90,6 @@ class BOp:
       object.__setattr__(self, 'bits', parent_bits[0])
       return parent_bits[0]
 
-  def compile(self, kompiler): return kompiler.compile(self)
-
 # I/O operations
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
 def input_bits(input_id: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_id=input_id, bits=bits)
