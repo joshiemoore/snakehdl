@@ -67,10 +67,9 @@ class LogisimGate(LogisimRender):
     parent.append(el)
 
   def get_inputs(self) -> dict[BOp, tuple[int, int]]:
-    if self.op.op is BOps.INPUT or self.op.op is BOps.NOT:
-      in_pos = raycast(self.x, self.y, self.orientation, STEP*STRIDE)
-      return {self.op: in_pos}
-    if len(self.op.src) != 2: raise ValueError('invalid number of inputs\n' + str(self.op))
+    if self.op.op is BOps.CONST: return {}
+    if self.op.op is BOps.INPUT: return {self.op: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
+    elif self.op.op is BOps.NOT: return {self.op.src[0]: raycast(self.x, self.y, self.orientation, STEP*STRIDE)}
     if self.orientation not in {0, 1}: raise ValueError('invalid direction: ' + str(self.orientation))
     if self.orientation == 0:
       inputs = {
@@ -101,8 +100,9 @@ class LogisimIO(LogisimRender):
     el = Element('comp', attrib=attrib)
     props = {
       'appearance': 'classic',
+      'facing': 'east',
       'label': self.name,
-      'output': 'true',
+      'output': 'true' if self.output else 'false',
       'width': str(self.op.bits),
       'radix': '16',
     }
@@ -190,11 +190,13 @@ class LogisimCompiler(Compiler):
       while len(q) > 0:
         op = q.pop(0)
         next_q.extend(op.src)
-        #gate = LogisimGate(op, cursor['x'], cursor['y'], orientation)
-        #layers[layer].append(gate)
         layers[layer].append(op)
       return _populate(next_q, layer + 1)
     _populate(init_q, 1)
+
+    # collapse duplicate ops in layers
+    for layer in layers:
+      layers[layer] = list(dict.fromkeys(layers[layer]))
 
     # run through layers 1 -> n
     # propagate leaf INPUTs to the next layer up so they can "snake through"
@@ -203,7 +205,9 @@ class LogisimCompiler(Compiler):
     for layer_num in layers:
       orientation = layer_num % 2
       for op in layers[layer_num]:
-        if op.op is BOps.INPUT and layer_num < len(layers) and len(op.src) == 0 and op not in layers[layer_num + 1]: layers[layer_num + 1].append(op)
+        # propagate inputs
+        if op.op is BOps.INPUT and layer_num < len(layers) and len(op.src) == 0 and op not in layers[layer_num + 1]:
+          layers[layer_num + 1].append(op)
         # render gate
         gate = LogisimGate(op, cursor['x'], cursor['y'], orientation)
         gate.render(circuit)
@@ -211,13 +215,19 @@ class LogisimCompiler(Compiler):
         if layer_num == 1: out_pos = raycast(gate.x, gate.y, orientation, len(outputs) * -STEP*STRIDE)
         else: out_pos = raycast(gate.x, gate.y, orientation, (len(layers[layer_num - 1]) + 1) * -STEP*STRIDE)
         LogisimWire(gate.x, gate.y, out_pos[0], out_pos[1]).render(circuit)
+        # render gate input wires
+        if op.op is not BOps.CONST and layer_num < len(layers):
+          inputs = gate.get_inputs()
+          print(gate)
+          for input in inputs:
+            in_to = inputs[input]
+            in_idx = layers[layer_num + 1].index(input)
+            in_from = raycast(in_to[0], in_to[1], orientation, (in_idx + 1) * STEP*STRIDE)
+            LogisimWire(in_to[0], in_to[1], in_from[0], in_from[1]).render(circuit)
         if orientation == 1: cursor['x'] += STEP*STRIDE
         else: cursor['y'] += STEP*STRIDE
       if orientation == 1: cursor['y'] += STEP*STRIDE * 2
       else: cursor['x'] += STEP*STRIDE * 2
-
-    # render gate input lines based on index of input gate the next layer up
-    # TODO
 
     # render input pins and rails
     # TODO
