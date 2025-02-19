@@ -18,6 +18,7 @@ OG_X, OG_Y = STEP*10, STEP*10
 _BOP_MAP = {
   BOps.CONST: 'Constant',
   BOps.BIT: 'Splitter',
+  BOps.JOIN: 'Splitter',
   BOps.NOT: 'NOT Gate',
   BOps.AND: 'AND Gate',
   BOps.NAND: 'NAND Gate',
@@ -74,6 +75,10 @@ class LogisimGate(LogisimRender):
         bit_key = 'bit' + str(i)
         if i == self.op.bit_index: props[bit_key] = '0'
         else: props[bit_key] = 'none'
+    elif self.op.op is BOps.JOIN:
+      attrib['lib'] = '0'
+      props['incoming'] = str(len(self.op.src))
+      props['fanout'] = str(len(self.op.src))
     el = Element('comp', attrib=attrib)
     LogisimProperties(props).render(el)
     parent.append(el)
@@ -160,7 +165,7 @@ class LogisimCompiler(Compiler):
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
     outputs: List[LogisimIO] = []
-    inputs: List[LogisimIO] = []
+    inputs: dict[BOp, LogisimIO] = {}
 
     if tree.outputs is None: raise RuntimeError('circuit has no outputs!')
 
@@ -199,10 +204,6 @@ class LogisimCompiler(Compiler):
       return _populate(next_q, layer + 1)
     _populate(init_q, 1)
 
-    # collapse duplicate ops in layers
-    for layer in layers:
-      layers[layer] = list(dict.fromkeys(layers[layer]))
-
     # run through layers 1 -> n
     # propagate leaf INPUTs to the next layer up so they can "snake through"
     # and so everything in the top layer should be INPUT or CONST
@@ -236,11 +237,12 @@ class LogisimCompiler(Compiler):
     # render input pins
     for op in layers[len(layers)]:
       if op.op is not BOps.INPUT: continue
+      if op in inputs: continue
       if op.input_name is None: continue
       # input pin
       input_pin = LogisimIO(op, op.input_name, False, OG_X, cursor['y'] + len(inputs) * STEP*STRIDE)
       input_pin.render(circuit)
-      inputs.append(input_pin)
+      inputs[op] = input_pin
 
     # connect output gates to output pins
     for i, output in enumerate(outputs):
@@ -251,18 +253,20 @@ class LogisimCompiler(Compiler):
 
     # connect top layer inputs to input pins
     top_len = len(layers[len(layers)])
-    for input_pin in inputs:
-      in_idx = layers[len(layers)].index(input_pin.op)
-      if len(layers) % 2 == 0:
-        ix = cursor['x'] + (top_len - in_idx) * STEP*STRIDE
-        LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
-        iy = cursor['y'] - (top_len - in_idx) * STEP*STRIDE
-        LogisimWire(ix, input_pin.y, ix, iy).render(circuit)
-        LogisimWire(ix, iy, cursor['x'] - STEP*STRIDE, iy).render(circuit)
-      else:
-        ix = cursor['x'] - (top_len - in_idx) * STEP*STRIDE
-        LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
-        LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
+    for input_op in inputs:
+      input_pin = inputs[input_op]
+      for in_idx in range(top_len):
+        if layers[len(layers)][in_idx] != input_pin.op: continue
+        if len(layers) % 2 == 0:
+          ix = cursor['x'] + (top_len - in_idx) * STEP*STRIDE
+          LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
+          iy = cursor['y'] - (top_len - in_idx) * STEP*STRIDE
+          LogisimWire(ix, input_pin.y, ix, iy).render(circuit)
+          LogisimWire(ix, iy, cursor['x'] - STEP*STRIDE, iy).render(circuit)
+        else:
+          ix = cursor['x'] - (top_len - in_idx) * STEP*STRIDE
+          LogisimWire(input_pin.x, input_pin.y, ix, input_pin.y).render(circuit)
+          LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
 
     # convert XML tree to bytes and return it
     return bytes(ElementTree.tostring(xmltree.getroot(), encoding='ascii'))
