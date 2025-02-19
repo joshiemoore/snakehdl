@@ -19,7 +19,7 @@ out = output(
       input_bits('b'),
     ),
     input_bits('c'),
-  )
+  ),
 )
 
 # BOps are printed as valid Python syntax, so they
