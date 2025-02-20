@@ -111,3 +111,7 @@ class TestValidations:
       bit(const_bits(0, 2), 2).assign_bits()
     with pytest.raises(IndexError):
       bit(const_bits(0, 2), -1).assign_bits()
+
+  def test_validation_join_1_bit(self):
+    with pytest.raises(ValueError):
+      join(const_bits(0, 2), const_bits(0, 2)).assign_bits()

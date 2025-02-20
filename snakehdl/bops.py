@@ -94,7 +94,7 @@ class BOp:
     elif self.op is BOps.JOIN:
       for v in self.src:
         v.assign_bits()
-        if v.bits != 1: raise RuntimeError('All JOIN inputs must be 1 bit wide\n' + str(self))
+        if v.bits != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(self))
       b = len(self.src)
       object.__setattr__(self, 'bits', b)
       return b
