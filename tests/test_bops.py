@@ -115,3 +115,25 @@ class TestValidations:
   def test_validation_join_1_bit(self):
     with pytest.raises(ValueError):
       join(const_bits(0, 2), const_bits(0, 2)).assign_bits()
+
+  def test_validation_duplicate_input_labels_different_widths(self):
+    # no duplicate input labels for inputs of differing widths
+    with pytest.raises(RuntimeError):
+      output(a=input_bits('in_a', 2), b=input_bits('in_a', 3)).validate()
+
+  def test_validation_duplicate_input_labels_same_widths(self):
+    # duplicate input labels with same widths allowed
+    output(a=input_bits('in_a', 2), b=input_bits('in_a', 2)).validate()
+
+  def test_validation_duplicate_input_output_labels(self):
+    # input and output labels must be unique from each other
+    with pytest.raises(RuntimeError):
+      output(label_a=input_bits('label_a')).validate()
+
+  def test_validation_multiple_output_nodes(self):
+    with pytest.raises(RuntimeError):
+      output(a=output(a=const_bits(0))).validate()
+
+  def test_validation_input_missing_label(self):
+    with pytest.raises(RuntimeError):
+      output(a=input_bits(None)).validate()
