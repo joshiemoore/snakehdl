@@ -20,13 +20,10 @@ def adderN(bits: int, a: BOp, b: BOp, cin: BOp) -> tuple[BOp, BOp]:
   N-bit full adder.
   Returns (sum, cout)
   """
-  assert 1 <= bits <= 64
+  assert bits > 0
   out = []
-  _cin = cin
+  cout = cin
   for i in range(bits):
-    bit_a = bit(a, i)
-    bit_b = bit(b, i)
-    res, cout = adder1(bit_a, bit_b, _cin)
+    res, cout = adder1(bit(a, i), bit(b, i), cout)
     out.append(res)
-    _cin = cout
   return join(*out), cout
