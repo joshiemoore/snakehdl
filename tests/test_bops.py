@@ -106,6 +106,28 @@ class TestCreateBOps:
     assert gate_repr == gate
 
 class TestValidations:
+  def test_assign_bits(self):
+    out = output(
+      a=neg(input_bits('in_a', 3)),
+      b=conj(
+        input_bits('in_b', 4),
+        input_bits('in_c', 4),
+      ),
+    )
+    out.assign_bits()
+    assert out.outputs['a'].bits == 3
+    assert out.outputs['b'].bits == 4
+
+  def test_assign_bits_invalid_src(self):
+    # all of a node's src nodes must have the same bit width
+    with pytest.raises(RuntimeError):
+      output(
+        a=conj(
+          const_bits(0, 2),
+          const_bits(0, 3),
+        ),
+      ).assign_bits()
+
   def test_validation_bit_index(self):
     with pytest.raises(IndexError):
       bit(const_bits(0, 2), 2).assign_bits()
