@@ -104,3 +104,10 @@ class TestCreateBOps:
     )
     gate_repr = eval(str(gate))
     assert gate_repr == gate
+
+class TestValidations:
+  def test_validation_bit_index(self):
+    with pytest.raises(IndexError):
+      bit(const_bits(0, 2), 2).assign_bits()
+    with pytest.raises(IndexError):
+      bit(const_bits(0, 2), -1).assign_bits()
