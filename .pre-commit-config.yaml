@@ -15,7 +15,7 @@ repos:
         pass_filenames: false
       - id: tests
         name: tests
-        entry: python -m pytest -n 4
+        entry: python -m pytest
         language: system
         always_run: true
         pass_filenames: false

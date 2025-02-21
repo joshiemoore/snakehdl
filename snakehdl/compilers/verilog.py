@@ -19,8 +19,8 @@ class VerilogCompiler(Compiler):
     elif op.op is BOps.CONST:
       if op.val is None: raise RuntimeError('CONST missing val:\n' + str(op))
       return str(op.bits) + '\'' + bin(op.val)[1:]
-    elif op.op is BOps.BIT: return f'(({self._render(op.src[0])} >> {op.bit_index}) & 1\'b1)'
-    elif op.op is BOps.JOIN: return '{' + ', '.join([self._render(v) for v in op.src]) + '}'
+    elif op.op is BOps.BIT: return f'1\'({self._render(op.src[0])} >> {op.bit_index})'
+    elif op.op is BOps.JOIN: return '{' + ', '.join([self._render(v) for v in reversed(op.src)]) + '}'
     elif op.op is BOps.NOT: return f'~({self._render(op.src[0])})'
     elif op.op is BOps.AND: return f'({self._render(op.src[0])} & {self._render(op.src[1])})'
     elif op.op is BOps.NAND: return f'~({self._render(op.src[0])} & {self._render(op.src[1])})'

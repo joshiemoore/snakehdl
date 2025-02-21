@@ -29,5 +29,11 @@ setup(
   install_requires=[
     'numpy',
   ],
+  extras_require={
+    'testing': [
+      'pytest',
+      'cocotb',
+    ],
+  },
   python_requires='>=3.10'
 )
