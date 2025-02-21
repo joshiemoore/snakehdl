@@ -3,9 +3,10 @@
 
 snakeHDL is a tool for creating digital logic circuits with a focus on simplicity and accessibility.
 This project is intended to be a fun and easy way for anyone to design real hardware with a few lines of Python.
+Compile your circuit to Logisim, Verilog, or a dill-pickled Python function!
 
 ![](HACK_ALU.png)
-*Screenshot of part of the HACK ALU from* [Elements of Computing Systems](https://www.nand2tetris.org/book) *implemented in* [examples/HACK_ALU.py](https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py) *and imported to Logisim*
+*Screenshot of part of the HACK ALU from* [Elements of Computing Systems](https://www.nand2tetris.org/book) *implemented in* [examples/HACK_ALU.py](https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py) *and compiled to Logisim*
 
 ## Introduction
 snakeHDL compiles trees of primitive binary operations into logic circuits with named inputs and outputs:
