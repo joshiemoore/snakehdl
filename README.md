@@ -26,8 +26,8 @@ BOps are naturally composable into larger circuits because they are lazily evalu
 ```
 
 We can build composite logical structures like adders, multiplexers,
-and even full ALUs starting from these fundamental BOps. Bit widths throughout
-the tree are automatically inferred from input widths at compile time.
+and even full ALUs starting from these fundamental BOps. Output bit widths
+are automatically inferred based on the tree structure at compile time.
 
 snakeHDL abstracts hardware-specific concerns away into the compiler backends,
 leaving you to focus on implementing the pure logic of your circuit.
