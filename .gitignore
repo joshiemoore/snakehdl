@@ -1,6 +1,7 @@
 *.egg-info
 *.pyc
 *.circ
+*.v
 
 __pycache__/
 tmp/

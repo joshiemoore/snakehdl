@@ -67,7 +67,7 @@ class BOp:
 
   def __str__(self): return self.pretty(whitespace=True)
 
-  def validate(self) -> None:
+  def validate(self) -> tuple[BOp, ...]:
     # validate this BOp and all of its ancestors, throwing exceptions where errors are found
     inputs: dict[str, BOp] = {}
     outputs: dict[str, BOp] = {}
@@ -87,6 +87,7 @@ class BOp:
         inputs[op.input_name] = op
     dupes = set(inputs).intersection(set(outputs))
     if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
+    return tuple(inputs.values())
 
   def assign_bits(self) -> int:
     # recurse up a validated tree and infer bit widths based on inputs

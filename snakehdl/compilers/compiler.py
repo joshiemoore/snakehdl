@@ -20,11 +20,11 @@ class Compiler:
     # not to be overridden
     # TODO optimizations
     assert tree.op is BOps.OUTPUT, 'compilation tree root must be OUTPUT'
-    tree.validate()
+    inputs = tree.validate()
     tree.assign_bits()
-    return Compiled(self._compile(tree))
+    return Compiled(self._compile(tree, inputs=inputs))
 
-  def _compile(self, tree: BOp) -> bytes:
+  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     # override with your compiler implementation
     # turn the validated BOp tree into compiled bytes for your target
     raise NotImplementedError()

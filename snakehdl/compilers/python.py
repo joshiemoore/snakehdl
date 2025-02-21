@@ -5,7 +5,7 @@ from snakehdl import BOp, BOps
 
 
 class PythonCompiler(Compiler):
-  def _compile(self, tree: BOp) -> bytes:
+  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     def _func(**kwargs) -> dict[str, np.uint]:
       def _func_helper(op: BOp) -> np.uint:
         if op.op is BOps.NOT:

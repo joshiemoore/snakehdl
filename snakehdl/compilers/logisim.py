@@ -183,12 +183,12 @@ def raycast(xa: int, ya: int, direction: int, distance: int) -> tuple[int, int]:
   raise ValueError('invalid direction: ' + str(direction))
 
 class LogisimCompiler(Compiler):
-  def _compile(self, tree: BOp) -> bytes:
+  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
     layer_gates: DefaultDict[int, List[LogisimGate]] = defaultdict(list)
     outputs: List[LogisimIO] = []
-    inputs: dict[BOp, LogisimIO] = {}
+    input_dict: dict[BOp, LogisimIO] = {}
 
     if tree.outputs is None: raise RuntimeError('circuit has no outputs!')
 
@@ -278,12 +278,12 @@ class LogisimCompiler(Compiler):
     # render input pins
     for op in layers[len(layers)]:
       if op.op is not BOps.INPUT: continue
-      if op in inputs: continue
+      if op in input_dict: continue
       if op.input_name is None: continue
       # input pin
-      input_pin = LogisimIO(op, op.input_name, False, OG_X, cursor['y'] + len(inputs) * STEP*STRIDE)
+      input_pin = LogisimIO(op, op.input_name, False, OG_X, cursor['y'] + len(input_dict) * STEP*STRIDE)
       input_pin.render(circuit)
-      inputs[op] = input_pin
+      input_dict[op] = input_pin
 
     # connect output gates to output pins
     for i, output in enumerate(outputs):
@@ -294,8 +294,8 @@ class LogisimCompiler(Compiler):
 
     # connect top layer inputs to input pins
     top_len = len(layers[len(layers)])
-    for input_op in inputs:
-      input_pin = inputs[input_op]
+    for input_op in input_dict:
+      input_pin = input_dict[input_op]
       for in_idx in range(top_len):
         if layers[len(layers)][in_idx] != input_pin.op: continue
         if len(layers) % 2 == 0:
