@@ -19,6 +19,7 @@ setup(
   packages=[
     'snakehdl',
     'snakehdl.compiler',
+    'snakehdl.components',
   ],
   classifiers=[
     'License :: OSI Approved :: MIT License',
