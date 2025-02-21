@@ -45,7 +45,6 @@ Wanna use this to implement a Python bytecode interpreter on an FPGA and then ma
 - [x] Logisim Evolution 3.9.0 .circ files
 - [x] Verilog
 - [ ] Arduino
-- [ ] FPGAs+ASICs
 - [ ] Minecraft Redstone
 - [ ] ...
 
