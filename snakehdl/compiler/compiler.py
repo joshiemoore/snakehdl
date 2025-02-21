@@ -1,8 +1,9 @@
 from dataclasses import dataclass
+from typing import Optional
 from snakehdl import BOp, BOps
 
 
-@dataclass
+@dataclass(frozen=True)
 class Compiled:
   data: bytes
 
@@ -10,14 +11,16 @@ class Compiled:
     with open(filepath, 'wb') as f:
       f.write(self.data)
 
+@dataclass(frozen=True)
 class Compiler:
+  name: Optional[str] = None
+
   def compile(self, tree: BOp) -> Compiled:
     # pre-compilation validations, optimizations etc
     # not to be overridden
-    assert tree.op is BOps.OUTPUT, 'tree root must be OUTPUT'
-    # TODO collapse internal IO (submodules)
-    tree.validate()
     # TODO optimizations
+    assert tree.op is BOps.OUTPUT, 'compilation tree root must be OUTPUT'
+    tree.validate()
     tree.assign_bits()
     return Compiled(self._compile(tree))
 

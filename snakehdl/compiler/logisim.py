@@ -198,6 +198,15 @@ class LogisimCompiler(Compiler):
     circuit: Element | Any | None = xmltree.getroot().find('circuit')
     if circuit is None or type(circuit) is not Element: raise RuntimeError('circuit root not found in template.circ')
 
+    if self.name is not None:
+      main_node = xmltree.getroot().find('main')
+      if main_node is None or type(main_node) is not Element: raise RuntimeError('<main /> not found in template.circ')
+      circuit_name_prop = circuit.find('./a[@name="circuit"]')
+      if circuit_name_prop is None or type(circuit_name_prop) is not Element: raise RuntimeError('circuit name prop not found circuit node')
+      main_node.set('name', self.name)
+      circuit.set('name', self.name)
+      circuit_name_prop.set('val', self.name)
+
     # cursor for placing gates and IO pins
     cursor = {
       'x': OG_X,
