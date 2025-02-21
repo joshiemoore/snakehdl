@@ -31,7 +31,8 @@ no = input_bits('no')
 
 ###### ALU IMPLEMENTATION ######
 
-print('building tree...')
+print('building BOp tree...', end='', flush=True)
+
 # preset x
 x_zero = mux(DATA_BITS, zx, x, const_bits(0, DATA_BITS))
 x_neg = mux(DATA_BITS, nx, x_zero, neg(x_zero))
@@ -42,13 +43,17 @@ y_neg = mux(DATA_BITS, ny, y_zero, neg(y_zero))
 
 # x&y or x+y
 out = mux(DATA_BITS, f, conj(x_neg, y_neg), adder(DATA_BITS, x_neg, y_neg, const_bits(0))[0])
+
 # negate output
 out_neg = mux(DATA_BITS, no, out, neg(out))
 
 # HACK ALU!
 hack_alu = output(out=out_neg, ng=bit(out_neg, DATA_BITS-1))
+print(' done')
 
-print('compiling HACK ALU...')
-LogisimCompiler('HACK_ALU').compile(hack_alu).save('HACK_ALU.circ')
+print('compiling HACK ALU from BOp tree to Logisim circuit...', end='', flush=True)
+cres = LogisimCompiler('HACK_ALU').compile(hack_alu)
+print(' done')
 
-print('HACK ALU circuit written to HACK_ALU.circ!')
+cres.save('HACK_ALU.circ')
+print('HACK ALU Logisim circuit saved to HACK_ALU.circ')
