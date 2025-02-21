@@ -5,7 +5,7 @@ from snakehdl import (
   output, const_bits, input_bits, bit, join,
   neg, conj, nand, disj, nor, xor, xnor
 )
-from snakehdl.compiler import PythonCompiler
+from snakehdl.compilers import PythonCompiler
 
 
 class TestPythonCompiler:

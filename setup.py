@@ -18,7 +18,7 @@ setup(
   url='https://github.com/joshiemoore/snakehdl',
   packages=[
     'snakehdl',
-    'snakehdl.compiler',
+    'snakehdl.compilers',
     'snakehdl.components',
   ],
   classifiers=[

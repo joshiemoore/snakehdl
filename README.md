@@ -22,7 +22,7 @@ This creates a BOp tree representing a circuit with one output named `res` that 
 BOps are naturally composable into larger circuits because they are lazily evaluated. When you create a tree of BOps, nothing actually happens until you compile it:
 
 ```
-  >>> from snakehdl.compiler import LogisimCompiler
+  >>> from snakehdl.compilers import LogisimCompiler
   >>> LogisimCompiler(name='xor_ab').compile(out).save('xor_ab.circ')
 ```
 

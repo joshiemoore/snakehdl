@@ -6,7 +6,7 @@ from xml.dom import minidom
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from snakehdl import BOp, BOps
-from snakehdl.compiler import Compiler
+from .compiler import Compiler
 
 
 STEP = 10    # distance between grid units

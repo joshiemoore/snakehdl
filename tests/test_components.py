@@ -5,7 +5,7 @@ from snakehdl import (
   BOp,
   input_bits, output,
 )
-from snakehdl.compiler import PythonCompiler
+from snakehdl.compilers import PythonCompiler
 from snakehdl.components import adder, mux
 
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import dill
-from snakehdl.compiler import Compiler
+from .compiler import Compiler
 from snakehdl import BOp, BOps
 
 
