@@ -285,13 +285,11 @@ class LogisimCompiler(Compiler):
       inputs[op] = input_pin
 
     # connect output gates to output pins
-    gate_x = OG_X + STEP*STRIDE
     for i, output in enumerate(outputs):
       output = outputs[i]
-      LogisimWire(OG_X, output.y, gate_x, output.y).render(circuit)
-      LogisimWire(gate_x, output.y, gate_x, OG_X + len(outputs) * STEP*STRIDE).render(circuit)
-      if output.op.op is BOps.JOIN: gate_x += len(output.op.src) * STEP*STRIDE
-      else: gate_x += STEP*STRIDE
+      gate = layer_gates[1][layers[1].index(output.op)]
+      LogisimWire(OG_X, output.y, gate.x, output.y).render(circuit)
+      LogisimWire(gate.x, output.y, gate.x, gate.y).render(circuit)
 
     # connect top layer inputs to input pins
     top_len = len(layers[len(layers)])
