@@ -1,6 +1,6 @@
 # A simple 3-bit AND gate, 3-bit OR gate, and 3-bit negation
 
-from snakehdl import *
+from snakehdl import output, input_bits, join, conj, disj, neg
 from snakehdl.compiler import LogisimCompiler
 
 
