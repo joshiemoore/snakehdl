@@ -5,7 +5,7 @@ from snakehdl import (
   input_bits, output,
 )
 from snakehdl.compiler import PythonCompiler
-from snakehdl.components.arithmetic import adder
+from snakehdl.components import adder
 
 
 def _get_func(tree: BOp) -> Callable:
