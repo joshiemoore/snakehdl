@@ -75,4 +75,4 @@ The `JOIN` operation is used to combine n 1-bit signals into one n-bit signal.
 * XOR - `xor(a: BOp, b: BOp) -> BOp`
 * XNOR - `xnor(a: BOp, b: BOp) -> BOp`
 
-...and that's it! See `examples/` for demonstrations of these operations. Sequential logic is not supported by snakeHDL, but sequential elements could be considered for a future expansion.
+...and that's it! See `examples/` for demonstrations of these operations.
