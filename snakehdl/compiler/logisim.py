@@ -2,6 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 import os.path
 from typing import List, DefaultDict, Any
+from xml.dom import minidom
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from snakehdl import BOp, BOps
@@ -309,4 +310,4 @@ class LogisimCompiler(Compiler):
           LogisimWire(ix, input_pin.y, ix, cursor['y'] - STEP*STRIDE).render(circuit)
 
     # convert XML tree to bytes and return it
-    return bytes(ElementTree.tostring(xmltree.getroot(), encoding='ascii'))
+    return bytes(minidom.parseString(ElementTree.tostring(xmltree.getroot())).toprettyxml(indent='  '), encoding='ascii')
