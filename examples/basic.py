@@ -1,7 +1,8 @@
 # A simple 3-bit AND gate, 3-bit OR gate, and 3-bit negation
 
+import dill
 from snakehdl import output, input_bits, join, conj, disj, neg
-from snakehdl.compiler import LogisimCompiler
+from snakehdl.compilers import PythonCompiler
 
 
 out = output(  # compilation tree root must be an OUTPUT node
@@ -30,6 +31,13 @@ out = output(  # compilation tree root must be an OUTPUT node
 # can be copy-pasted and recreated
 print(out)
 
-# Compile and save Logisim circuit file
-# Open basic.circ in Logisim Evolution to see the result!
-LogisimCompiler().compile(out).save('basic.circ')
+# The PythonCompiler compiles your circuit to a pickled Python function
+# that accepts your named inputs as kwargs and returns a dict of your named outputs
+out_compiled = PythonCompiler().compile(out)
+
+out_func = dill.loads(out_compiled.data)
+
+print('\na=0, b=0, c=0')
+print(out_func(a=0, b=0, c=0))
+print('\na=1, b=1, c=1')
+print(out_func(a=1, b=1, c=1))
