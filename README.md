@@ -13,17 +13,15 @@ snakeHDL compiles trees of primitive binary operations into logic circuits with 
 ```
   $ pip install snakehdl
   $ python3
-  >>> from snakehdl import input_bits, output
-  >>> from snakehdl.components.arithmetic import adder
-  >>> BITS = 32
-  >>> result, carry = adder(BITS, input_bits('a', BITS), input_bits('b', BITS), input_bits('cin', 1))
-  >>> out = output(result=result, cout=carry)
+  >>> from snakehdl import input_bits, output, xor
+  >>> xor_ab = xor(input_bits('a'), input_bits('b'))
+  >>> out = output(xor_ab=xor_ab)
 ```
 BOps are naturally composable into larger circuits because they are lazily evaluated. When you create a tree of BOps, nothing actually happens until you compile it:
 
 ```
   >>> from snakehdl.compiler import LogisimCompiler
-  >>> LogisimCompiler().compile(out).save('adder32.circ')
+  >>> LogisimCompiler().compile(out).save('xor_ab.circ')
 ```
 
 We can build composite logical structures like adders, multiplexers,
