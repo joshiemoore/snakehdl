@@ -10,7 +10,10 @@ Compile your circuit to Logisim, Verilog, or a dill-pickled Python function!
 
 ## Introduction
 snakeHDL has two main components: an API for expressing abstract trees of boolean logic, and an optimizing compiler that converts
-these abstract logic trees into logic circuits. In a sentence, snakeHDL lets you express *what* your circuit should do instead of *how* it should do it.
+these abstract logic trees into logic circuits. snakeHDL abstracts hardware-specific concerns away into the compiler backends,
+leaving you to focus on implementing the pure logic of your circuit.
+
+In a sentence, snakeHDL lets you express *what* your circuit should do instead of *how* it should do it.
 
 ```
   $ pip install snakehdl
@@ -31,9 +34,6 @@ BOps are naturally composable into larger circuits because they are lazily evalu
 We can build composite logical structures like adders, multiplexers,
 and even full ALUs starting from these fundamental BOps. Output bit widths
 are automatically inferred based on the tree structure at compile time.
-
-snakeHDL abstracts hardware-specific concerns away into the compiler backends,
-leaving you to focus on implementing the pure logic of your circuit.
 
 Since only twelve primitive BOps are specified by snakeHDL, it is straightforward to
 create compiler backends for new target platforms.
