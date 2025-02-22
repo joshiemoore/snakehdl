@@ -28,7 +28,11 @@ class BOps(Enum):
 
   def __str__(self) -> str: return super().__str__().split('.')[1]
 
-@dataclass(frozen=True, kw_only=True)
+class BOpGroup:
+  IO = {BOps.INPUT, BOps.OUTPUT, BOps.CONST, BOps.BIT, BOps.JOIN}
+  COMBINATIONAL = {BOps.NOT, BOps.AND, BOps.NAND, BOps.OR, BOps.NOR, BOps.XOR, BOps.XNOR}
+
+@dataclass(frozen=True)
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
@@ -68,20 +72,20 @@ class BOp:
   def __str__(self): return self.pretty(whitespace=True)
 
 # I/O operations
-def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), _bits=bits)
-def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, _bits=bits)
-def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
-def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index)
-def join(*args: BOp) -> BOp: return BOp(op=BOps.JOIN, src=tuple(args))
+def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(BOps.CONST, val=np.uint(val), _bits=bits)
+def input_bits(name: str, bits: int=1) -> BOp: return BOp(BOps.INPUT, input_name=name, _bits=bits)
+def output(**kwargs: BOp) -> BOp: return BOp(BOps.OUTPUT, outputs=kwargs)
+def bit(src: BOp, index: int) -> BOp: return BOp(BOps.BIT, src=(src,), bit_index=index)
+def join(*args: BOp) -> BOp: return BOp(BOps.JOIN, src=tuple(args))
 
 # combinational operations
-def neg(a: BOp) -> BOp: return BOp(op=BOps.NOT, src=(a,))
-def conj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.AND, src=(a,b))
-def nand(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.NAND, src=(a,b))
-def disj(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.OR, src=(a,b))
-def nor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.NOR, src=(a,b))
-def xor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XOR, src=(a,b))
-def xnor(a: BOp, b: BOp) -> BOp: return BOp(op=BOps.XNOR, src=(a,b))
+def neg(a: BOp) -> BOp: return BOp(BOps.NOT, src=(a,))
+def conj(a: BOp, b: BOp) -> BOp: return BOp(BOps.AND, src=(a,b))
+def nand(a: BOp, b: BOp) -> BOp: return BOp(BOps.NAND, src=(a,b))
+def disj(a: BOp, b: BOp) -> BOp: return BOp(BOps.OR, src=(a,b))
+def nor(a: BOp, b: BOp) -> BOp: return BOp(BOps.NOR, src=(a,b))
+def xor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XOR, src=(a,b))
+def xnor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XNOR, src=(a,b))
 
 _BOP_FUNCS = {
   BOps.CONST: const_bits,
