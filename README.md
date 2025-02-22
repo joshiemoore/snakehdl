@@ -13,7 +13,7 @@ snakeHDL has two main components: an API for expressing abstract trees of boolea
 these abstract logic trees into logic circuits. The compiler handles hardware-specific concerns, so you can focus purely on your
 circuit's logic.
 
-In short, snakeHDL lets you express **what** your circuit should do, not **how** it should do it.
+In short, snakeHDL lets you express **what** your circuit should do, instead of **how** it should do it.
 
 ```
   $ pip install snakehdl
