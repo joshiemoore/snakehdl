@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 from snakehdl import BOp, BOps
 
@@ -15,6 +15,7 @@ class Compiled:
 class Compiler:
   tree: BOp
   name: Optional[str] = None
+  shared: dict[int, BOp] = field(default_factory=lambda: {})
 
   def compile(self) -> Compiled:
     # pre-compilation validations, optimizations etc
@@ -35,6 +36,7 @@ class Compiler:
     inputs: dict[str, BOp] = {}
     outputs: dict[str, BOp] = {}
     q = [self.tree]
+    seen: set[int] = set()
     while len(q) > 0:
       op = q.pop(0)
       if op.op is BOps.OUTPUT:
@@ -42,12 +44,19 @@ class Compiler:
         if op.outputs is None: raise RuntimeError('compilation outputs cannot be None')
         outputs = op.outputs
         q.extend(op.outputs.values())
-      else: q.extend(op.src)
-      if op.op is BOps.INPUT:
+      elif op.op is BOps.INPUT:
         if op.input_name is None: raise RuntimeError('input missing label:\n' + str(op))
         if op.input_name in inputs and inputs[op.input_name]._bits != op._bits:
           raise RuntimeError(f'duplicate labels for differing inputs not allowed: {op.input_name}')
         inputs[op.input_name] = op
+      else:
+        op_hash = hash(op)
+        if op_hash in self.shared: continue
+        if op_hash in seen:
+          if op.op is not BOps.INPUT: self.shared[op_hash] = op
+          continue
+        seen.add(op_hash)
+        q.extend(op.src)
     dupes = set(inputs).intersection(set(outputs))
     if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
     return tuple(inputs.values())

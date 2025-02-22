@@ -1,14 +1,18 @@
 import pytest
-from cocotb.runner import get_runner
 import dill
 from typing import Callable
 from pathlib import Path
+import warnings
 from snakehdl import (
   BOp,
   output, const_bits, input_bits, bit, join,
   neg, conj, nand, disj, nor, xor, xnor
 )
 from snakehdl.compilers import Compiler, PythonCompiler, VerilogCompiler
+
+with warnings.catch_warnings():
+  warnings.filterwarnings(action='ignore', category=UserWarning)
+  from cocotb.runner import get_runner
 
 
 inputs = (
@@ -240,3 +244,12 @@ class TestValidations:
   def test_validation_input_missing_label(self):
     with pytest.raises(RuntimeError):
       Compiler(output(a=input_bits(None)))._validate()
+
+class TestOptimizations:
+  def test_opt_populate_shared(self):
+    x = xor(input_bits('a'), input_bits('b'))
+    out = output(x=x, nx=neg(x))
+    c = Compiler(out)
+    c._validate()
+    assert len(c.shared) == 1
+    assert c.shared[hash(x)] == x
