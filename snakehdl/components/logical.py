@@ -2,21 +2,20 @@ import math
 from snakehdl import BOp, BOps, BOpGroup, conj, disj, neg, bit, join
 
 
-def _multiway(*args: BOp) -> BOp:
-  if len(args) == 2: return BOp(args[0].op, src=args)
-  return BOp(args[0].op, src=(
-    _multiway(*args[:len(args) // 2]),
-    _multiway(*args[len(args) // 2:]),
+def _multiway(op: BOps, *args: BOp) -> BOp:
+  if len(args) == 2: return BOp(op, src=args)
+  return BOp(op, src=(
+    _multiway(op, *args[:len(args) // 2]),
+    _multiway(op, *args[len(args) // 2:]),
   ))
 
-def multiway(*args: BOp) -> BOp:
+def multiway(op: BOps, *args: BOp) -> BOp:
   assert len(args) >= 2, 'multiway component must have at least two inputs'
-  assert args[0].op is not BOps.NOT, 'NOT cannot be made multiway'
-  assert args[0].op in BOpGroup.COMBINATIONAL, 'only combinational BOps can be made multiway'
-  for op in args: assert op.op is args[0].op, 'all multiway gate inputs must be the same op'
+  assert op is not BOps.NOT, 'NOT cannot be made multiway'
+  assert op in BOpGroup.COMBINATIONAL, 'only combinational BOps can be made multiway'
   num_layers = math.log2(len(args))
   assert num_layers.is_integer(), 'number of multiway gate inputs must be an even power of 2'
-  return _multiway(*args)
+  return _multiway(op, *args)
 
 def _mux(sel: BOp, sel_idx: int, *args: BOp) -> BOp:
   if sel_idx == 0:
