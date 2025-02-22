@@ -9,11 +9,11 @@ Compile your circuit to Logisim, Verilog, or a dill-pickled Python function!
 *Screenshot of part of the HACK ALU from* [Elements of Computing Systems](https://www.nand2tetris.org/book) *implemented in* [examples/HACK_ALU.py](https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py) *and compiled to Logisim*
 
 ## Introduction
-snakeHDL has two main components: an API for expressing abstract trees of boolean logic, and an optimizing compiler that converts
-these abstract logic trees into logic circuits. snakeHDL abstracts hardware-specific concerns away into the compiler backends,
-leaving you to focus on implementing the pure logic of your circuit.
+snakeHDL has two main components: an API for expressing abstract trees of boolean logic, and an optimizing compiler that translates
+these abstract logic trees into logic circuits. The compiler handles hardware-specific concerns, so you can focus purely on your
+circuit's logic.
 
-In a sentence, snakeHDL lets you express *what* your circuit should do instead of *how* it should do it.
+In short, snakeHDL lets you express **what** your circuit should do, not **how** it should do it.
 
 ```
   $ pip install snakehdl
