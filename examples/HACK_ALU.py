@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from snakehdl import BOp, input_bits, output, const_bits, neg, conj, bit
-from snakehdl.components import adder, mux
+from snakehdl import BOp, BOps, input_bits, output, const_bits, neg, conj, bit
+from snakehdl.components import adder, mux, multiway
 from snakehdl.compilers import LogisimCompiler, VerilogCompiler
 
 
@@ -45,8 +45,10 @@ def hack_alu(DATA_BITS: int) -> BOp:
   # negate output
   out_neg = mux(DATA_BITS, no, out, neg(out))
 
+  zr = multiway(BOps.NOR, *[bit(out_neg, i) for i in range(DATA_BITS)])
+
   # HACK ALU!
-  return output(out=out_neg, ng=bit(out_neg, DATA_BITS-1))
+  return output(out=out_neg, ng=bit(out_neg, DATA_BITS-1), zr=zr)
 
 if __name__ == '__main__':
   compiler_classes = {

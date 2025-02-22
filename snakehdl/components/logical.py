@@ -10,11 +10,12 @@ def _multiway(op: BOps, *args: BOp) -> BOp:
   ))
 
 def multiway(op: BOps, *args: BOp) -> BOp:
-  assert len(args) >= 2, 'multiway component must have at least two inputs'
+  num_inputs = len(args)
+  assert num_inputs > 0, 'multiway component must have at least one input'
+  if num_inputs == 1: return args[0]
   assert op is not BOps.NOT, 'NOT cannot be made multiway'
   assert op in BOpGroup.COMBINATIONAL, 'only combinational BOps can be made multiway'
-  num_layers = math.log2(len(args))
-  assert num_layers.is_integer(), 'number of multiway gate inputs must be an even power of 2'
+  assert math.log2(num_inputs).is_integer(), 'number of multiway gate inputs must be an even power of 2'
   return _multiway(op, *args)
 
 def _mux(sel: BOp, sel_idx: int, *args: BOp) -> BOp:
