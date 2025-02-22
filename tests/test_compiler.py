@@ -187,6 +187,17 @@ class TestVerilogCompiler:
     tree = output(out=xnor(*inputs))
     self.run(tree, tmp_path, 'xnor8')
 
+  def test_verilog_cse(self, tmp_path):
+    x = xor(*inputs)
+    nx = neg(x)
+    out = output(out=x, nout=nx)
+    tmp_c = VerilogCompiler(out)
+    tmp_c._validate()
+    assert len(tmp_c.shared) == 1
+    assert tmp_c.shared[hash(x)] == x
+    assert tmp_c.shared[hash(nx.src[0])] == x
+    self.run(out, tmp_path, 'verilog_cse')
+
   # TODO test components
 
 
@@ -248,8 +259,10 @@ class TestValidations:
 class TestOptimizations:
   def test_opt_populate_shared(self):
     x = xor(input_bits('a'), input_bits('b'))
-    out = output(x=x, nx=neg(x))
+    nx = neg(x)
+    out = output(x=x, nx=nx)
     c = Compiler(out)
     c._validate()
     assert len(c.shared) == 1
     assert c.shared[hash(x)] == x
+    assert c.shared[hash(nx.src[0])] == x
