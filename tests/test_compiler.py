@@ -1,3 +1,4 @@
+import pytest
 from cocotb.runner import get_runner
 import dill
 from typing import Callable
@@ -183,3 +184,64 @@ class TestVerilogCompiler:
     self.run(tree, tmp_path, 'xnor8')
 
   # TODO test components
+
+
+class TestValidations:
+  def test_assign_bits(self):
+    out = output(
+      a=neg(input_bits('in_a', 3)),
+      b=conj(
+        input_bits('in_b', 4),
+        input_bits('in_c', 4),
+      ),
+    )
+    out.assign_bits()
+    assert out.outputs['a']._bits == 3
+    assert out.outputs['b']._bits == 4
+
+  def test_assign_bits_invalid_src(self):
+    # all of a node's src nodes must have the same bit width
+    with pytest.raises(RuntimeError):
+      output(
+        a=conj(
+          const_bits(0, 2),
+          const_bits(0, 3),
+        ),
+      ).assign_bits()
+
+  def test_validation_bit_index(self):
+    with pytest.raises(IndexError):
+      bit(const_bits(0, 2), 2).assign_bits()
+    with pytest.raises(IndexError):
+      bit(const_bits(0, 2), -1).assign_bits()
+
+  def test_validation_join_1_bit(self):
+    with pytest.raises(ValueError):
+      join(const_bits(0, 2), const_bits(0, 2)).assign_bits()
+
+  def test_validation_duplicate_input_labels_different_widths(self):
+    # no duplicate input labels for inputs of differing widths
+    c = PythonCompiler()
+    with pytest.raises(RuntimeError):
+      c.validate(output(a=input_bits('in_a', 2), b=input_bits('in_a', 3)))
+
+  def test_validation_duplicate_input_labels_same_widths(self):
+    # duplicate input labels with same widths allowed
+    c = PythonCompiler()
+    c.validate(output(a=input_bits('in_a', 2), b=input_bits('in_a', 2)))
+
+  def test_validation_duplicate_input_output_labels(self):
+    # input and output labels must be unique from each other
+    c = PythonCompiler()
+    with pytest.raises(RuntimeError):
+      c.validate(output(label_a=input_bits('label_a')))
+
+  def test_validation_multiple_output_nodes(self):
+    c = PythonCompiler()
+    with pytest.raises(RuntimeError):
+      c.validate(output(a=output(a=const_bits(0))))
+
+  def test_validation_input_missing_label(self):
+    c = PythonCompiler()
+    with pytest.raises(RuntimeError):
+      c.validate(output(a=input_bits(None)))

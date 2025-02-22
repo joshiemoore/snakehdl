@@ -67,28 +67,6 @@ class BOp:
 
   def __str__(self): return self.pretty(whitespace=True)
 
-  def validate(self) -> tuple[BOp, ...]:
-    # validate this BOp and all of its ancestors, throwing exceptions where errors are found
-    inputs: dict[str, BOp] = {}
-    outputs: dict[str, BOp] = {}
-    q = [self]
-    while len(q) > 0:
-      op = q.pop(0)
-      if op.op is BOps.OUTPUT:
-        if len(outputs) > 0: raise RuntimeError('only one OUTPUT node allowed in tree')
-        if op.outputs is None: raise RuntimeError('compilation outputs cannot be None')
-        outputs = op.outputs
-        q.extend(op.outputs.values())
-      else: q.extend(op.src)
-      if op.op is BOps.INPUT:
-        if op.input_name is None: raise RuntimeError('input missing label:\n' + str(op))
-        if op.input_name in inputs and inputs[op.input_name]._bits != op._bits:
-          raise RuntimeError(f'duplicate labels for differing inputs not allowed: {op.input_name}')
-        inputs[op.input_name] = op
-    dupes = set(inputs).intersection(set(outputs))
-    if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
-    return tuple(inputs.values())
-
   def assign_bits(self) -> int:
     # recurse up a validated tree and infer bit widths based on inputs
     if self.op is BOps.INPUT or self.op is BOps.CONST:
