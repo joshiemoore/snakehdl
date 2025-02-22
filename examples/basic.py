@@ -33,7 +33,7 @@ print(out)
 
 # The PythonCompiler compiles your circuit to a pickled Python function
 # that accepts your named inputs as kwargs and returns a dict of your named outputs
-out_compiled = PythonCompiler().compile(out)
+out_compiled = PythonCompiler(out).compile()
 
 out_func = dill.loads(out_compiled.data)
 

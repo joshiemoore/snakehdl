@@ -10,7 +10,7 @@ from snakehdl.components import adder, mux
 
 
 def _get_func(tree: BOp) -> Callable:
-  func_s = PythonCompiler().compile(tree).data
+  func_s = PythonCompiler(tree).compile().data
   return dill.loads(func_s)
 
 class TestArithmeticComponents:

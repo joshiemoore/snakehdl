@@ -52,7 +52,7 @@ hack_alu = output(out=out_neg, ng=bit(out_neg, DATA_BITS-1))
 print(' done')
 
 print('compiling HACK ALU from BOp tree to Logisim circuit...', end='', flush=True)
-cres = LogisimCompiler('HACK_ALU').compile(hack_alu)
+cres = LogisimCompiler(hack_alu, 'HACK_ALU').compile()
 print(' done')
 
 cres.save('HACK_ALU.circ')

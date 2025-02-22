@@ -5,7 +5,7 @@ from snakehdl import BOp, BOps
 
 
 class PythonCompiler(Compiler):
-  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     def _func(**kwargs) -> dict[str, np.uint]:
       def _func_helper(op: BOp) -> np.uint:
         if op.op is BOps.NOT:
@@ -36,10 +36,10 @@ class PythonCompiler(Compiler):
           for i in range(len(op.src)): res |= (np.uint(_func_helper(op.src[i]) << i) & np.uint(1 << i))
           return res
         else: raise NotImplementedError(op.op)
-      if not tree.outputs: raise RuntimeError('missing outputs')
+      if not self.tree.outputs: raise RuntimeError('missing outputs')
       res = { }
-      for k in tree.outputs:
-        if tree.outputs[k]._bits is None: raise RuntimeError(f'missing bits for output {k}\n' + str(tree))
-        res[k] = _func_helper(tree.outputs[k]) & np.uint(2**tree.outputs[k]._bits - 1)
+      for k in self.tree.outputs:
+        if self.tree.outputs[k]._bits is None: raise RuntimeError(f'missing bits for output {k}\n' + str(self.tree))
+        res[k] = _func_helper(self.tree.outputs[k]) & np.uint(2**self.tree.outputs[k]._bits - 1)
       return res
     return bytes(dill.dumps(_func))

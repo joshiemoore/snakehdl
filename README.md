@@ -24,7 +24,7 @@ BOps are naturally composable into larger circuits because they are lazily evalu
 
 ```
   >>> from snakehdl.compilers import LogisimCompiler
-  >>> LogisimCompiler(name='xor_ab').compile(out).save('xor_ab.circ')
+  >>> LogisimCompiler(out, name='xor_ab').compile().save('xor_ab.circ')
 ```
 
 We can build composite logical structures like adders, multiplexers,

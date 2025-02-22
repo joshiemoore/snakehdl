@@ -183,14 +183,14 @@ def raycast(xa: int, ya: int, direction: int, distance: int) -> tuple[int, int]:
   raise ValueError('invalid direction: ' + str(direction))
 
 class LogisimCompiler(Compiler):
-  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
     layer_gates: DefaultDict[int, List[LogisimGate]] = defaultdict(list)
     outputs: List[LogisimIO] = []
     input_dict: dict[BOp, LogisimIO] = {}
 
-    if tree.outputs is None: raise RuntimeError('circuit has no outputs!')
+    if self.tree.outputs is None: raise RuntimeError('circuit has no outputs!')
 
     # init XML tree from template
     template_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/logisim/template.circ')
@@ -216,8 +216,8 @@ class LogisimCompiler(Compiler):
 
     # populate and render output pins
     init_q = []
-    for out_id in tree.outputs:
-      op = tree.outputs[out_id]
+    for out_id in self.tree.outputs:
+      op = self.tree.outputs[out_id]
       init_q.append(op)
       out = LogisimIO(op, out_id, True, cursor['x'], cursor['y'])
       outputs.append(out)

@@ -30,7 +30,7 @@ class VerilogCompiler(Compiler):
     elif op.op is BOps.XNOR: return f'~({self._render(op.src[0])} ^ {self._render(op.src[1])})'
     else: raise NotImplementedError()
 
-  def _compile(self, tree: BOp, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
     if self.name is None: module_name = 'circuit'
     else: module_name = self.name
 
@@ -43,14 +43,11 @@ class VerilogCompiler(Compiler):
       out += _SEP + 'input ' + (f'[{op._bits - 1}:0] ' if op._bits > 1 else '') + op.input_name + f',{_NL}'
 
     # outputs
-    if tree.outputs is None: raise RuntimeError('OUTPUT missing outputs:\n' + str(op))
-    out += (',' + _NL).join([_SEP + 'output wire ' + (f'[{op._bits - 1}:0] ' if op._bits > 1 else '') + on for on, op in tree.outputs.items()])
+    if self.tree.outputs is None: raise RuntimeError('OUTPUT missing outputs:\n' + str(op))
+    out += (',' + _NL).join([_SEP + 'output wire ' + (f'[{op._bits - 1}:0] ' if op._bits > 1 else '') + on for on, op in self.tree.outputs.items()])
     out += _NL + ');' + _NL
 
-    # render tree
-    out += self._render(tree)
-
-    # module footer
+    out += self._render(self.tree)
     out += 'endmodule' + _NL
 
     return bytes(out, 'ascii')
