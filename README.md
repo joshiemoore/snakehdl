@@ -41,10 +41,10 @@ create compiler backends for new target platforms.
 Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
 ## Compiler Targets
-- [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
-    as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
 - [x] Logisim Evolution 3.9.0 .circ files
 - [x] Verilog
+- [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
+    as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
 - [ ] Arduino
 - [ ] Minecraft Redstone
 - [ ] ...
