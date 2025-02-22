@@ -8,7 +8,7 @@ from snakehdl import (
   output, const_bits, input_bits, bit, join,
   neg, conj, nand, disj, nor, xor, xnor
 )
-from snakehdl.compilers import PythonCompiler, VerilogCompiler
+from snakehdl.compilers import Compiler, PythonCompiler, VerilogCompiler
 
 
 inputs = (
@@ -188,6 +188,7 @@ class TestVerilogCompiler:
 
 class TestValidations:
   def test_assign_bits(self):
+    c = Compiler()
     out = output(
       a=neg(input_bits('in_a', 3)),
       b=conj(
@@ -195,53 +196,56 @@ class TestValidations:
         input_bits('in_c', 4),
       ),
     )
-    out.assign_bits()
+    c.assign_bits(out)
     assert out.outputs['a']._bits == 3
     assert out.outputs['b']._bits == 4
 
   def test_assign_bits_invalid_src(self):
     # all of a node's src nodes must have the same bit width
+    c = Compiler()
     with pytest.raises(RuntimeError):
-      output(
+      c.assign_bits(output(
         a=conj(
           const_bits(0, 2),
           const_bits(0, 3),
         ),
-      ).assign_bits()
+      ))
 
   def test_validation_bit_index(self):
+    c = Compiler()
     with pytest.raises(IndexError):
-      bit(const_bits(0, 2), 2).assign_bits()
+      c.assign_bits(bit(const_bits(0, 2), 2))
     with pytest.raises(IndexError):
-      bit(const_bits(0, 2), -1).assign_bits()
+      c.assign_bits(bit(const_bits(0, 2), -1))
 
   def test_validation_join_1_bit(self):
+    c = Compiler()
     with pytest.raises(ValueError):
-      join(const_bits(0, 2), const_bits(0, 2)).assign_bits()
+      c.assign_bits(join(const_bits(0, 2), const_bits(0, 2)))
 
   def test_validation_duplicate_input_labels_different_widths(self):
     # no duplicate input labels for inputs of differing widths
-    c = PythonCompiler()
+    c = Compiler()
     with pytest.raises(RuntimeError):
       c.validate(output(a=input_bits('in_a', 2), b=input_bits('in_a', 3)))
 
   def test_validation_duplicate_input_labels_same_widths(self):
     # duplicate input labels with same widths allowed
-    c = PythonCompiler()
+    c = Compiler()
     c.validate(output(a=input_bits('in_a', 2), b=input_bits('in_a', 2)))
 
   def test_validation_duplicate_input_output_labels(self):
     # input and output labels must be unique from each other
-    c = PythonCompiler()
+    c = Compiler()
     with pytest.raises(RuntimeError):
       c.validate(output(label_a=input_bits('label_a')))
 
   def test_validation_multiple_output_nodes(self):
-    c = PythonCompiler()
+    c = Compiler()
     with pytest.raises(RuntimeError):
       c.validate(output(a=output(a=const_bits(0))))
 
   def test_validation_input_missing_label(self):
-    c = PythonCompiler()
+    c = Compiler()
     with pytest.raises(RuntimeError):
       c.validate(output(a=input_bits(None)))

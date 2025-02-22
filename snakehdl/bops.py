@@ -67,35 +67,6 @@ class BOp:
 
   def __str__(self): return self.pretty(whitespace=True)
 
-  def assign_bits(self) -> int:
-    # recurse up a validated tree and infer bit widths based on inputs
-    if self.op is BOps.INPUT or self.op is BOps.CONST:
-      if self._bits < 1 or self._bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
-      return self._bits
-    elif self.op is BOps.OUTPUT:
-      if self.outputs is not None:
-        for k,v in self.outputs.items():
-          v.assign_bits()
-      return 0
-    elif self.op is BOps.BIT:
-      self.src[0].assign_bits()
-      if self.bit_index is None: raise RuntimeError('BIT missing index\n' + str(self))
-      if self.bit_index < 0 or self.bit_index >= self.src[0]._bits: raise IndexError(f'bit index {self.bit_index} out of range\n' + str(self))
-      object.__setattr__(self, '_bits', 1)
-      return 1
-    elif self.op is BOps.JOIN:
-      for v in self.src:
-        v.assign_bits()
-        if v._bits != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(self))
-      b = len(self.src)
-      object.__setattr__(self, '_bits', b)
-      return b
-    else:
-      parent_bits = list([v.assign_bits() for v in self.src])
-      if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(self))
-      object.__setattr__(self, '_bits', parent_bits[0])
-      return parent_bits[0]
-
 # I/O operations
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), _bits=bits)
 def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, _bits=bits)
