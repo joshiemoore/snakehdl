@@ -26,7 +26,7 @@ class VerilogCompiler(Compiler):
 
     # render tree
     out += _NL + self._render(self.tree)
-    out += _NL + 'endmodule'
+    out += _NL + 'endmodule' + _NL
 
     return bytes(out, 'ascii')
 
