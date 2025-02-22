@@ -14,11 +14,11 @@ class TestCreateBOps:
     assert op.op is BOps.INPUT
     assert str(op.op) == 'INPUT'
     assert op.input_name == 'a'
-    assert op.bits == 1
+    assert op._bits == 1
 
     op = input_bits('b', range(2,6))
-    assert len(op.bits) == 4
-    for i in range(2, 6): assert i in op.bits
+    assert len(op._bits) == 4
+    for i in range(2, 6): assert i in op._bits
 
   def test_output(self):
     op = output()
@@ -115,8 +115,8 @@ class TestValidations:
       ),
     )
     out.assign_bits()
-    assert out.outputs['a'].bits == 3
-    assert out.outputs['b'].bits == 4
+    assert out.outputs['a']._bits == 3
+    assert out.outputs['b']._bits == 4
 
   def test_assign_bits_invalid_src(self):
     # all of a node's src nodes must have the same bit width

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Optional
 import numpy as np
@@ -32,7 +32,7 @@ class BOps(Enum):
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
-  bits: int = 0
+  _bits: int = field(default=0, compare=False)
 
   # only for INPUT
   input_name: Optional[str] = None
@@ -51,7 +51,7 @@ class BOp:
     nl = '\n' if whitespace else ''
     out = _BOP_FUNCS[self.op].__name__ + '('
     if self.op is BOps.INPUT or self.op is BOps.CONST:
-      out += nl + indent*sep + f'bits={self.bits},'
+      out += nl + indent*sep + f'bits={self._bits},'
       if self.op is BOps.INPUT: out += nl + indent*sep + f'name="{self.input_name}",'
       elif self.op is BOps.CONST: out += nl + indent*sep + f'val={self.val},'
     elif self.op is BOps.OUTPUT:
@@ -82,7 +82,7 @@ class BOp:
       else: q.extend(op.src)
       if op.op is BOps.INPUT:
         if op.input_name is None: raise RuntimeError('input missing label:\n' + str(op))
-        if op.input_name in inputs and inputs[op.input_name] != op:
+        if op.input_name in inputs and inputs[op.input_name]._bits != op._bits:
           raise RuntimeError(f'duplicate labels for differing inputs not allowed: {op.input_name}')
         inputs[op.input_name] = op
     dupes = set(inputs).intersection(set(outputs))
@@ -92,8 +92,8 @@ class BOp:
   def assign_bits(self) -> int:
     # recurse up a validated tree and infer bit widths based on inputs
     if self.op is BOps.INPUT or self.op is BOps.CONST:
-      if self.bits < 1 or self.bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
-      return self.bits
+      if self._bits < 1 or self._bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
+      return self._bits
     elif self.op is BOps.OUTPUT:
       if self.outputs is not None:
         for k,v in self.outputs.items():
@@ -102,25 +102,25 @@ class BOp:
     elif self.op is BOps.BIT:
       self.src[0].assign_bits()
       if self.bit_index is None: raise RuntimeError('BIT missing index\n' + str(self))
-      if self.bit_index < 0 or self.bit_index >= self.src[0].bits: raise IndexError(f'bit index {self.bit_index} out of range\n' + str(self))
-      object.__setattr__(self, 'bits', 1)
+      if self.bit_index < 0 or self.bit_index >= self.src[0]._bits: raise IndexError(f'bit index {self.bit_index} out of range\n' + str(self))
+      object.__setattr__(self, '_bits', 1)
       return 1
     elif self.op is BOps.JOIN:
       for v in self.src:
         v.assign_bits()
-        if v.bits != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(self))
+        if v._bits != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(self))
       b = len(self.src)
-      object.__setattr__(self, 'bits', b)
+      object.__setattr__(self, '_bits', b)
       return b
     else:
       parent_bits = list([v.assign_bits() for v in self.src])
       if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(self))
-      object.__setattr__(self, 'bits', parent_bits[0])
+      object.__setattr__(self, '_bits', parent_bits[0])
       return parent_bits[0]
 
 # I/O operations
-def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), bits=bits)
-def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, bits=bits)
+def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(op=BOps.CONST, val=np.uint(val), _bits=bits)
+def input_bits(name: str, bits: int=1) -> BOp: return BOp(op=BOps.INPUT, input_name=name, _bits=bits)
 def output(**kwargs: BOp) -> BOp: return BOp(op=BOps.OUTPUT, outputs=kwargs)
 def bit(src: BOp, index: int) -> BOp: return BOp(op=BOps.BIT, src=(src,), bit_index=index)
 def join(*args: BOp) -> BOp: return BOp(op=BOps.JOIN, src=tuple(args))

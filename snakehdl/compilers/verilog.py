@@ -18,7 +18,7 @@ class VerilogCompiler(Compiler):
       return op.input_name
     elif op.op is BOps.CONST:
       if op.val is None: raise RuntimeError('CONST missing val:\n' + str(op))
-      return str(op.bits) + '\'' + bin(op.val)[1:]
+      return str(op._bits) + '\'' + bin(op.val)[1:]
     elif op.op is BOps.BIT: return f'1\'({self._render(op.src[0])} >> {op.bit_index})'
     elif op.op is BOps.JOIN: return '{' + ', '.join([self._render(v) for v in reversed(op.src)]) + '}'
     elif op.op is BOps.NOT: return f'~({self._render(op.src[0])})'
@@ -40,11 +40,11 @@ class VerilogCompiler(Compiler):
     # inputs
     for op in inputs:
       if op.input_name is None: raise RuntimeError('INPUT missing name:\n' + str(op))
-      out += _SEP + 'input ' + (f'[{op.bits - 1}:0] ' if op.bits > 1 else '') + op.input_name + f',{_NL}'
+      out += _SEP + 'input ' + (f'[{op._bits - 1}:0] ' if op._bits > 1 else '') + op.input_name + f',{_NL}'
 
     # outputs
     if tree.outputs is None: raise RuntimeError('OUTPUT missing outputs:\n' + str(op))
-    out += (',' + _NL).join([_SEP + 'output wire ' + (f'[{op.bits - 1}:0] ' if op.bits > 1 else '') + on for on, op in tree.outputs.items()])
+    out += (',' + _NL).join([_SEP + 'output wire ' + (f'[{op._bits - 1}:0] ' if op._bits > 1 else '') + on for on, op in tree.outputs.items()])
     out += _NL + ');' + _NL
 
     # render tree

@@ -58,7 +58,7 @@ class LogisimGate(LogisimRender):
     }
     props = {
       'facing': _DIRECTION[self.orientation],
-      'width': str(self.op.bits),
+      'width': str(self.op._bits),
     }
     if self.op.op is not BOps.NOT:
       props['size'] = '30'
@@ -70,9 +70,9 @@ class LogisimGate(LogisimRender):
       new_pos = raycast(self.x, self.y, self.orientation, STEP*2)
       attrib['loc'] = f'({new_pos[0]},{new_pos[1]})'
       props['appear'] = 'center'
-      props['incoming'] = str(self.op.src[0].bits)
+      props['incoming'] = str(self.op.src[0]._bits)
       props['fanout'] = '1'
-      for i in range(self.op.src[0].bits):
+      for i in range(self.op.src[0]._bits):
         bit_key = 'bit' + str(i)
         if i == self.op.bit_index: props[bit_key] = '0'
         else: props[bit_key] = 'none'
@@ -143,7 +143,7 @@ class LogisimIO(LogisimRender):
       'facing': 'east',
       'label': self.name,
       'output': 'true' if self.output else 'false',
-      'width': str(self.op.bits),
+      'width': str(self.op._bits),
       'radix': '16',
     }
     propel = LogisimProperties(props)

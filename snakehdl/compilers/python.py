@@ -27,7 +27,7 @@ class PythonCompiler(Compiler):
           return op.val
         elif op.op is BOps.INPUT:
           if op.input_name not in kwargs: raise KeyError(op.input_name)
-          return np.uint(kwargs[op.input_name]) & np.uint(2**op.bits - 1)
+          return np.uint(kwargs[op.input_name]) & np.uint(2**op._bits - 1)
         elif op.op is BOps.BIT:
           if op.bit_index is None: raise RuntimeError('missing bit_index')
           return np.uint(_func_helper(op.src[0]) >> op.bit_index) & np.uint(1)
@@ -39,7 +39,7 @@ class PythonCompiler(Compiler):
       if not tree.outputs: raise RuntimeError('missing outputs')
       res = { }
       for k in tree.outputs:
-        if tree.outputs[k].bits is None: raise RuntimeError(f'missing bits for output {k}\n' + str(tree))
-        res[k] = _func_helper(tree.outputs[k]) & np.uint(2**tree.outputs[k].bits - 1)
+        if tree.outputs[k]._bits is None: raise RuntimeError(f'missing bits for output {k}\n' + str(tree))
+        res[k] = _func_helper(tree.outputs[k]) & np.uint(2**tree.outputs[k]._bits - 1)
       return res
     return bytes(dill.dumps(_func))
