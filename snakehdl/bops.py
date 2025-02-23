@@ -53,18 +53,18 @@ class BOp:
   def pretty(self, indent: int=0, whitespace: bool=False) -> str:
     sep = '  ' if whitespace else ''
     nl = '\n' if whitespace else ''
-    out = _BOP_FUNCS[self.op].__name__ + '('
+    out = indent*sep + _BOP_FUNCS[self.op].__name__ + '('
     if self.op is BOps.INPUT or self.op is BOps.CONST:
-      out += nl + indent*sep + f'bits={self._bits},'
-      if self.op is BOps.INPUT: out += nl + indent*sep + f'name="{self.input_name}",'
-      elif self.op is BOps.CONST: out += nl + indent*sep + f'val={self.val},'
+      out += nl + (indent+1)*sep + f'bits={self._bits},'
+      if self.op is BOps.INPUT: out += nl + (indent+1)*sep + f'name="{self.input_name}",'
+      elif self.op is BOps.CONST: out += nl + (indent+1)*sep + f'val={self.val},'
     elif self.op is BOps.OUTPUT:
       if self.outputs is not None:
         for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
     else:
-      for v in self.src: out += nl + indent*sep + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
-    if self.op is BOps.BIT: out += nl + indent*sep + f'index={self.bit_index},'
-    out += nl + (indent-1)*sep + ')'
+      for v in self.src: out += nl + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
+    if self.op is BOps.BIT: out += nl + (indent+1)*sep + f'index={self.bit_index},'
+    out += nl + indent*sep + ')'
     return out
 
   def __repr__(self): return self.pretty()
