@@ -183,7 +183,7 @@ def raycast(xa: int, ya: int, direction: int, distance: int) -> tuple[int, int]:
   raise ValueError('invalid direction: ' + str(direction))
 
 class LogisimCompiler(Compiler):
-  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self) -> bytes:
     # init compilation state
     layers: DefaultDict[int, List[BOp]] = defaultdict(list)
     layer_gates: DefaultDict[int, List[LogisimGate]] = defaultdict(list)

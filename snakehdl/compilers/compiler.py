@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, List
 from snakehdl import BOp, BOps
 
 
@@ -15,51 +15,47 @@ class Compiled:
 class Compiler:
   tree: BOp
   name: Optional[str] = None
-  shared: dict[int, BOp] = field(default_factory=lambda: {})
+  _shared: set[BOp] = field(default_factory=set)
+  _sorted: List[BOp] = field(default_factory=list)
+  _inputs: dict[str, BOp] = field(default_factory=dict)
+  _outputs: dict[str, BOp] = field(default_factory=dict)
 
   def compile(self) -> Compiled:
     # pre-compilation validations, optimizations etc
     # not to be overridden
     assert self.tree.op is BOps.OUTPUT, 'compilation tree root must be OUTPUT'
     # TODO optimizations
-    inputs = self._validate()
+    self._toposort(self.tree, set())
+    dupes = set(self._inputs.keys()).intersection(set(self._outputs.keys()))
+    if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
     self._assign_bits()
-    return Compiled(self._compile(inputs=inputs))
+    return Compiled(self._compile())
 
-  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self) -> bytes:
     # override with your compiler implementation
     # turn the validated BOp tree into compiled bytes for your target
     raise NotImplementedError()
 
-  def _validate(self) -> tuple[BOp, ...]:
-    # validate tree and all of its ancestors, throwing exceptions where errors are found
-    inputs: dict[str, BOp] = {}
-    outputs: dict[str, BOp] = {}
-    q = [self.tree]
-    seen: set[int] = set()
-    while len(q) > 0:
-      op = q.pop(0)
-      if op.op is BOps.OUTPUT:
-        if len(outputs) > 0: raise RuntimeError('only one OUTPUT node allowed in tree')
-        if op.outputs is None: raise RuntimeError('compilation outputs cannot be None')
-        outputs = op.outputs
-        q.extend(op.outputs.values())
-      elif op.op is BOps.INPUT:
-        if op.input_name is None: raise RuntimeError('input missing label:\n' + str(op))
-        if op.input_name in inputs and inputs[op.input_name]._bits != op._bits:
-          raise RuntimeError(f'duplicate labels for differing inputs not allowed: {op.input_name}')
-        inputs[op.input_name] = op
-      else:
-        op_hash = hash(op)
-        if op_hash in self.shared: continue
-        if op_hash in seen:
-          if op.op is not BOps.INPUT: self.shared[op_hash] = op
-          continue
-        seen.add(op_hash)
-        q.extend(op.src)
-    dupes = set(inputs).intersection(set(outputs))
-    if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
-    return tuple(inputs.values())
+  def _toposort(self, op: BOp, seen: set[BOp]) -> None:
+    if op.op is BOps.OUTPUT:
+      if len(self._outputs) > 0: raise RuntimeError('only one OUTPUT node allowed in tree')
+      if op.outputs is None: raise RuntimeError('outputs cannot be None')
+      self._outputs.update(op.outputs)
+      for out in self._outputs.values(): self._toposort(out, seen)
+      return
+    elif op.op is BOps.INPUT:
+      if op.input_name is None: raise RuntimeError('input missing label:\n' + str(op))
+      if op.input_name in self._inputs and self._inputs[op.input_name]._bits != op._bits:
+        raise RuntimeError(f'duplicate labels for differing inputs not allowed: {op.input_name}')
+      self._inputs[op.input_name] = op
+      return
+    if op in self._shared: return
+    if op in seen:
+      self._shared.add(op)
+      return
+    seen.add(op)
+    for v in op.src: self._toposort(v, seen)
+    self._sorted.append(op)
 
   def _assign_bits(self, tree: Optional[BOp]=None) -> int:
     # recurse up the tree and infer bit widths based on inputs

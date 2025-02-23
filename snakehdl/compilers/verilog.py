@@ -6,26 +6,24 @@ _SEP = '  '
 _NL = '\n'
 
 class VerilogCompiler(Compiler):
-  def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
+  def _compile(self) -> bytes:
     # module header
     out = f'module {"circuit" if self.name is None else self.name} (' + _NL
 
     # inputs
-    for op in inputs:
-      if op.input_name is None: raise RuntimeError('INPUT missing name:\n' + str(op))
-      out += _SEP + 'input ' + self._render_bits(op) + op.input_name + f',{_NL}'
+    for on in self._inputs:
+      out += _SEP + 'input ' + self._render_bits(self._inputs[on]) + on + f',{_NL}'
 
     # outputs
-    if self.tree.outputs is None: raise RuntimeError('OUTPUT missing outputs:\n' + str(op))
-    out += (',' + _NL).join([_SEP + 'output wire ' + self._render_bits(op) + on for on, op in self.tree.outputs.items()])
+    out += (',' + _NL).join([_SEP + 'output wire ' + self._render_bits(self._outputs[on]) + on for on in self._outputs])
     out += _NL + ');' + _NL
 
     # CSE - intermediate wires
-    for op_hash, op in self.shared.items():
-      out += _NL+ _SEP + 'wire ' + self._render_bits(op) + self._cse_id(op_hash) + ' = ' + self._render(op, cseroot=True) + ';'
+    for op in self._shared:
+      out += _NL+ _SEP + 'wire ' + self._render_bits(op) + self._cse_id(hash(op)) + ' = ' + self._render(op, cseroot=True) + ';'
 
-    # render tree
-    out += _NL + self._render(self.tree)
+    for on, op in self._outputs.items(): out += _NL + _SEP + f'assign {on} = {self._render(op)};'
+
     out += _NL + 'endmodule' + _NL
 
     return bytes(out, 'ascii')
@@ -37,15 +35,8 @@ class VerilogCompiler(Compiler):
   def _render(self, op: BOp, cseroot=False) -> str:
     if not cseroot and op.op is not BOps.OUTPUT:
       # CSE
-      op_hash = hash(op)
-      if op_hash in self.shared: return self._cse_id(op_hash)
-    if op.op is BOps.OUTPUT:
-      res = ''
-      if op.outputs is None: raise RuntimeError('OUTPUT missing outputs:\n' + str(op))
-      for output_name, output_op in op.outputs.items():
-        res += _NL + _SEP + f'assign {output_name} = {self._render(output_op)};'
-      return res
-    elif op.op is BOps.INPUT:
+      if op in self._shared: return self._cse_id(hash(op))
+    if op.op is BOps.INPUT:
       if op.input_name is None: raise RuntimeError('INPUT missing name:\n' + str(op))
       return op.input_name
     elif op.op is BOps.CONST:

@@ -192,10 +192,10 @@ class TestVerilogCompiler:
     nx = neg(x)
     out = output(out=x, nout=nx)
     tmp_c = VerilogCompiler(out)
-    tmp_c._validate()
-    assert len(tmp_c.shared) == 1
-    assert tmp_c.shared[hash(x)] == x
-    assert tmp_c.shared[hash(nx.src[0])] == x
+    tmp_c.compile()
+    assert len(tmp_c._shared) == 1
+    assert x in tmp_c._shared
+    assert nx.src[0] in tmp_c._shared
     self.run(out, tmp_path, 'verilog_cse')
 
   # TODO test components
@@ -237,32 +237,32 @@ class TestValidations:
   def test_validation_duplicate_input_labels_different_widths(self):
     # no duplicate input labels for inputs of differing widths
     with pytest.raises(RuntimeError):
-      Compiler(output(a=input_bits('in_a', 2), b=input_bits('in_a', 3)))._validate()
+      PythonCompiler(output(a=input_bits('in_a', 2), b=input_bits('in_a', 3))).compile()
 
   def test_validation_duplicate_input_labels_same_widths(self):
     # duplicate input labels with same widths allowed
-    Compiler(output(a=input_bits('in_a', 2), b=input_bits('in_a', 2)))._validate()
+    PythonCompiler(output(a=input_bits('in_a', 2), b=input_bits('in_a', 2))).compile()
 
   def test_validation_duplicate_input_output_labels(self):
     # input and output labels must be unique from each other
     with pytest.raises(RuntimeError):
-      Compiler(output(label_a=input_bits('label_a')))._validate()
+      PythonCompiler(output(label_a=input_bits('label_a'))).compile()
 
   def test_validation_multiple_output_nodes(self):
     with pytest.raises(RuntimeError):
-      Compiler(output(a=output(a=const_bits(0))))._validate()
+      PythonCompiler(output(a=output(a=const_bits(0)))).compile()
 
   def test_validation_input_missing_label(self):
     with pytest.raises(RuntimeError):
-      Compiler(output(a=input_bits(None)))._validate()
+      PythonCompiler(output(a=input_bits(None))).compile()
 
 class TestOptimizations:
   def test_opt_populate_shared(self):
     x = xor(input_bits('a'), input_bits('b'))
     nx = neg(x)
     out = output(x=x, nx=nx)
-    c = Compiler(out)
-    c._validate()
-    assert len(c.shared) == 1
-    assert c.shared[hash(x)] == x
-    assert c.shared[hash(nx.src[0])] == x
+    c = PythonCompiler(out)
+    c.compile()
+    assert len(c._shared) == 1
+    assert x in c._shared
+    assert nx.src[0] in c._shared

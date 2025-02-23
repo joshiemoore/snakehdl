@@ -57,7 +57,7 @@ if __name__ == '__main__':
   }
   alu_bits = {
     'logisim': 4,
-    'verilog': 8,
+    'verilog': 4,
   }
 
   if len(sys.argv) != 2 or sys.argv[1] not in compiler_classes:
