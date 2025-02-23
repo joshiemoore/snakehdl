@@ -17,6 +17,6 @@ def adder(bits: int, a: BOp, b: BOp, cin: BOp) -> tuple[BOp, BOp]:
     bit_a = bit(a, i)
     bit_b = bit(b, i)
     res = xor(xor(bit_a, bit_b), cout)
-    cout = disj(conj(bit_a, bit_b), conj(xor(bit_a, bit_b), cin))
+    cout = disj(conj(bit_a, bit_b), conj(xor(bit_a, bit_b), cout))
     out.append(res)
   return join(*out), cout
