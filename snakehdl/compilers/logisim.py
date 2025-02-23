@@ -233,11 +233,10 @@ class LogisimCompiler(Compiler):
         op = q.pop(0)
         next_q.extend(op.src)
         layers[layer].append(op)
+      # collapse duplicates
+      layers[layer] = list(dict.fromkeys(layers[layer]))
       return _populate(next_q, layer + 1)
     _populate(init_q, 1)
-
-    # collapse duplicates
-    for layer in layers: layers[layer] = list(dict.fromkeys(layers[layer]))
 
     # run through layers 1 -> n
     # propagate leaf INPUTs to the next layer up so they can "snake through"
