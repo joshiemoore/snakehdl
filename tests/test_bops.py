@@ -103,4 +103,17 @@ class TestCreateBOps:
       ),
     )
     gate_repr = eval(str(gate))
-    assert gate_repr == gate
+    and3 = gate_repr.outputs['and3']
+    assert and3.op == BOps.AND
+    assert and3.src[0].op == BOps.AND
+    assert and3.src[0].src[0].input_name == 'a'
+    assert and3.src[0].src[1].input_name == 'b'
+    assert and3.src[1].input_name == 'c'
+    xor4 = gate_repr.outputs['xor4']
+    assert xor4.op == BOps.XOR
+    assert xor4.src[0].op == BOps.XOR
+    assert xor4.src[0].src[0].input_name == 'd'
+    assert xor4.src[0].src[1].input_name == 'e'
+    assert xor4.src[1].op == BOps.XOR
+    assert xor4.src[1].src[0].val == 1
+    assert xor4.src[1].src[1].val == 0

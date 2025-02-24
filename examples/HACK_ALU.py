@@ -56,18 +56,14 @@ if __name__ == '__main__':
     'logisim': LogisimCompiler,
     'verilog': VerilogCompiler,
   }
-  alu_bits = {
-    'logisim': 4,
-    'verilog': 4,
-  }
 
   if len(sys.argv) != 2 or sys.argv[1] not in compiler_classes:
     print('Usage: ./HACK_ALU.py <logisim/verilog>')
     print('e.g. ./HACK_ALU.py logisim')
     exit(1)
 
-  alu = hack_alu(alu_bits[sys.argv[1]])
-  print(f'compiling {alu_bits[sys.argv[1]]}-bit HACK ALU from BOp tree to {sys.argv[1]}...', end='', flush=True)
+  alu = hack_alu(16)
+  print(f'compiling HACK ALU from BOp tree to {sys.argv[1]}...', end='', flush=True)
   stime = time.time()
   cres = compiler_classes[sys.argv[1]](alu).compile()
   print(f' done in {time.time() - stime} seconds')

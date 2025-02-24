@@ -37,6 +37,7 @@ class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
   _bits: Optional[int] = field(default=None, compare=False)
+  _hash: int = 0
 
   # only for INPUT
   input_name: Optional[str] = None
@@ -49,6 +50,17 @@ class BOp:
 
   # only for BIT
   bit_index: Optional[int] = None
+
+  def __post_init__(self):
+    object.__setattr__(self, '_hash', hash((
+      self.op,
+      tuple(id(v) for v in self.src),
+      self.input_name,
+      self.val,
+      self.bit_index,
+    )))
+
+  def __hash__(self) -> int: return self._hash
 
   def pretty(self, indent: int=0, whitespace: bool=False) -> str:
     sep = '  ' if whitespace else ''
