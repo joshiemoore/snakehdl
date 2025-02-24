@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+
+"""
+Implementation of the 16-bit HACK ALU from "The Elements of Computing Systems" by Nisan and Schocken
+https://www.nand2tetris.org/book
+"""
+
 import sys
 import time
 from snakehdl import BOp, BOps, input_bits, output, const_bits, neg, conj, bit
@@ -22,13 +28,10 @@ def hack_alu(DATA_BITS: int) -> BOp:
   ny = input_bits('ny')
 
   # function selector
-  # 0 -> out = x & y
-  # 1 -> out = x + y
   f = input_bits('f')
 
   # negate output
   no = input_bits('no')
-
 
   ###### ALU IMPLEMENTATION ######
 
