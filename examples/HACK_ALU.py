@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import time
 from snakehdl import BOp, BOps, input_bits, output, const_bits, neg, conj, bit
 from snakehdl.components import adder, mux, multiway
 from snakehdl.compilers import LogisimCompiler, VerilogCompiler
@@ -67,8 +68,9 @@ if __name__ == '__main__':
 
   alu = hack_alu(alu_bits[sys.argv[1]])
   print(f'compiling {alu_bits[sys.argv[1]]}-bit HACK ALU from BOp tree to {sys.argv[1]}...', end='', flush=True)
+  stime = time.time()
   cres = compiler_classes[sys.argv[1]](alu).compile()
-  print(' done')
+  print(f' done in {time.time() - stime} seconds')
 
   if sys.argv[1] == 'logisim':
     cres.save('HACK_ALU.circ')
