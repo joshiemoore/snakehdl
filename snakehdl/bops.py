@@ -36,7 +36,7 @@ class BOpGroup:
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
-  _bits: int = field(default=0, compare=False)
+  _bits: Optional[int] = field(default=None, compare=False)
 
   # only for INPUT
   input_name: Optional[str] = None

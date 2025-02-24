@@ -8,7 +8,7 @@ from snakehdl import (
   output, const_bits, input_bits, bit, join,
   neg, conj, nand, disj, nor, xor, xnor
 )
-from snakehdl.compilers import Compiler, PythonCompiler, VerilogCompiler
+from snakehdl.compilers import PythonCompiler, VerilogCompiler
 
 with warnings.catch_warnings():
   warnings.filterwarnings(action='ignore', category=UserWarning)
@@ -210,29 +210,29 @@ class TestValidations:
         input_bits('in_c', 4),
       ),
     )
-    Compiler(out)._assign_bits()
+    PythonCompiler(out).compile()
     assert out.outputs['a']._bits == 3
     assert out.outputs['b']._bits == 4
 
   def test_assign_bits_invalid_src(self):
     # all of a node's src nodes must have the same bit width
     with pytest.raises(RuntimeError):
-      Compiler(output(
+      PythonCompiler(output(
         a=conj(
           const_bits(0, 2),
           const_bits(0, 3),
         ),
-      ))._assign_bits()
+      )).compile()
 
   def test_validation_bit_index(self):
     with pytest.raises(IndexError):
-      Compiler(bit(const_bits(0, 2), 2))._assign_bits()
+      PythonCompiler(output(out=bit(const_bits(0, 2), 2))).compile()
     with pytest.raises(IndexError):
-      Compiler(bit(const_bits(0, 2), -1))._assign_bits()
+      PythonCompiler(output(out=bit(const_bits(0, 2), -1))).compile()
 
   def test_validation_join_1_bit(self):
     with pytest.raises(ValueError):
-      Compiler(join(const_bits(0, 2), const_bits(0, 2)))._assign_bits()
+      PythonCompiler(output(out=join(const_bits(0, 2), const_bits(0, 2)))).compile()
 
   def test_validation_duplicate_input_labels_different_widths(self):
     # no duplicate input labels for inputs of differing widths

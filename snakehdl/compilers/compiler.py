@@ -28,7 +28,7 @@ class Compiler:
     self._toposort(self.tree, set())
     dupes = set(self._inputs.keys()).intersection(set(self._outputs.keys()))
     if dupes: raise RuntimeError(f'duplicate labels for inputs and outputs not allowed: {", ".join(dupes)}')
-    self._assign_bits()
+    for op in self._sorted: self._assign_bits(op)
     return Compiled(self._compile())
 
   def _compile(self) -> bytes:
@@ -57,32 +57,26 @@ class Compiler:
     for v in op.src: self._toposort(v, seen)
     self._sorted.append(op)
 
-  def _assign_bits(self, tree: Optional[BOp]=None) -> int:
-    # recurse up the tree and infer bit widths based on inputs
-    if tree is None: tree = self.tree
-    if tree.op is BOps.INPUT or tree.op is BOps.CONST:
-      if tree._bits < 1 or tree._bits > 64: raise RuntimeError('INPUT/CONST bits must be 1-64')
-      return tree._bits
-    elif tree.op is BOps.OUTPUT:
-      if tree.outputs is not None:
-        for k,v in tree.outputs.items():
-          self._assign_bits(v)
-      return 0
-    elif tree.op is BOps.BIT:
-      self._assign_bits(tree.src[0])
-      if tree.bit_index is None: raise RuntimeError('BIT missing index\n' + str(tree))
-      if tree.bit_index < 0 or tree.bit_index >= tree.src[0]._bits: raise IndexError(f'bit index {tree.bit_index} out of range\n' + str(tree))
-      object.__setattr__(tree, '_bits', 1)
+  def _assign_bits(self, op: BOp) -> int:
+    if op.op is BOps.INPUT or op.op is BOps.CONST:
+      if op._bits is None: raise RuntimeError(f'{op.op} missing bits\n' + str(op))
+      if op._bits < 1 or op._bits > 64: raise RuntimeError(f'{op.op} bits must be 1-64\n' + str(op))
+      return op._bits
+    elif op.op is BOps.BIT:
+      res = self._assign_bits(op.src[0])
+      if op.bit_index is None: raise RuntimeError('BIT missing index\n' + str(op))
+      if op.bit_index < 0 or op.bit_index >= res: raise IndexError(f'bit index {op.bit_index} out of range\n' + str(op))
+      object.__setattr__(op, '_bits', 1)
       return 1
-    elif tree.op is BOps.JOIN:
-      for v in tree.src:
-        self._assign_bits(v)
-        if v._bits != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(tree))
-      b = len(tree.src)
-      object.__setattr__(tree, '_bits', b)
+    if op._bits is not None: return op._bits
+    if op.op is BOps.JOIN:
+      b = len(op.src)
+      if b < 1: raise RuntimeError('JOIN must have at least one input\n' + str(op))
+      for v in op.src:
+        if self._assign_bits(v) != 1: raise ValueError('All JOIN inputs must be 1 bit wide\n' + str(op))
+      object.__setattr__(op, '_bits', b)
       return b
-    else:
-      parent_bits = list([self._assign_bits(v) for v in tree.src])
-      if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(tree))
-      object.__setattr__(tree, '_bits', parent_bits[0])
-      return parent_bits[0]
+    parent_bits = list([self._assign_bits(v) for v in op.src])
+    if not all(v == parent_bits[0] for v in parent_bits): raise RuntimeError('parent bit width mismatch\n' + str(op))
+    object.__setattr__(op, '_bits', parent_bits[0])
+    return parent_bits[0]

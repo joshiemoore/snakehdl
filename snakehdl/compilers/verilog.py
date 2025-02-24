@@ -22,7 +22,9 @@ endmodule
 '''
     return bytes(out, 'ascii')
 
-  def _render_bits(self, op: BOp): return f'[{op._bits - 1}:0] ' if op._bits > 1 else ''
+  def _render_bits(self, op: BOp):
+    if op._bits is None: raise RuntimeError(f'{op.op} missing bits\n' + str(op))
+    return f'[{op._bits - 1}:0] ' if op._bits > 1 else ''
 
   def _cse_id(self, op_hash: int) -> str: return 'shared_' + str(op_hash).replace('-', '_')
 

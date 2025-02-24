@@ -72,6 +72,7 @@ class LogisimGate(LogisimRender):
       props['appear'] = 'center'
       props['incoming'] = str(self.op.src[0]._bits)
       props['fanout'] = '1'
+      if self.op.src[0]._bits is None: raise RuntimeError(f'{self.op.src[0].op} missing bits\n' + str(self.op.src[0]))
       for i in range(self.op.src[0]._bits):
         bit_key = 'bit' + str(i)
         if i == self.op.bit_index: props[bit_key] = '0'
