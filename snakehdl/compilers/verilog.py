@@ -7,25 +7,19 @@ _NL = '\n'
 
 class VerilogCompiler(Compiler):
   def _compile(self) -> bytes:
-    # module header
-    out = f'module {"circuit" if self.name is None else self.name} (' + _NL
+    inputs = [f'{_SEP}input {self._render_bits(op)}{k},' for k, op in self._inputs.items()]
+    outputs= [f'{_SEP}output wire {self._render_bits(op)}{k}' for k, op in self._outputs.items()]
+    cse_wires = [f'{_SEP}wire {self._render_bits(op)}{self._cse_id(hash(op))} = {self._render(op, cseroot=True)};' for op in self._shared]
+    ops = [f'{_SEP}assign {k} = {self._render(op)};' for k, op in self._outputs.items()]
 
-    # inputs
-    for on in self._inputs:
-      out += _SEP + 'input ' + self._render_bits(self._inputs[on]) + on + f',{_NL}'
-
-    # outputs
-    out += (',' + _NL).join([_SEP + 'output wire ' + self._render_bits(self._outputs[on]) + on for on in self._outputs])
-    out += _NL + ');' + _NL
-
-    # CSE - intermediate wires
-    for op in self._shared:
-      out += _NL+ _SEP + 'wire ' + self._render_bits(op) + self._cse_id(hash(op)) + ' = ' + self._render(op, cseroot=True) + ';'
-
-    for on, op in self._outputs.items(): out += _NL + _SEP + f'assign {on} = {self._render(op)};'
-
-    out += _NL + 'endmodule' + _NL
-
+    out = f'''module {"circuit" if self.name is None else self.name} (
+{_NL.join(inputs)}
+{(',' + _NL).join(outputs)}
+);
+{_NL.join(cse_wires)}
+{_NL.join(ops)}
+endmodule
+'''
     return bytes(out, 'ascii')
 
   def _render_bits(self, op: BOp): return f'[{op._bits - 1}:0] ' if op._bits > 1 else ''
