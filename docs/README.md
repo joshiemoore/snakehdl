@@ -17,8 +17,8 @@
 ## Classes
 
 - [`bops.BOp`](./bops.md#class-bop): Primitive binary operations that must be implemented in hardware.
-- [`bops.BOpGroup`](./bops.md#class-bopgroup)
-- [`bops.BOps`](./bops.md#class-bops): Primitive binary operations that must be implemented in hardware.
+- [`bops.BOpGroup`](./bops.md#class-bopgroup): Utility class for grouping related `BOps`.
+- [`bops.BOps`](./bops.md#class-bops): Enum representing a specific type of primitive binary operation.
 - [`compiler.Compiled`](./compilers.compiler.md#class-compiled): Compiled(data: bytes)
 - [`compiler.Compiler`](./compilers.compiler.md#class-compiler): Compiler(tree: snakehdl.bops.BOp, name: Optional[str] = None, _shared: set[snakehdl.bops.BOp] = <factory>, _sorted: List[snakehdl.bops.BOp] = <factory>, _inputs: dict[str, snakehdl.bops.BOp] = <factory>, _outputs: dict[str, snakehdl.bops.BOp] = <factory>)
 - [`python.PythonCompiler`](./compilers.python.md#class-pythoncompiler)

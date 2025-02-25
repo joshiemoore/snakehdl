@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../snakehdl/bops.py#L95"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `const_bits`
 
@@ -25,7 +25,7 @@ const_bits(val: 'uint | int', bits: 'int' = 1) → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L96"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L98"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `input_bits`
 
@@ -40,7 +40,7 @@ input_bits(name: 'str', bits: 'int' = 1) → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L99"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `output`
 
@@ -55,7 +55,7 @@ output(**kwargs: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L98"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L100"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `bit`
 
@@ -70,7 +70,7 @@ bit(src: 'BOp', index: 'int') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L99"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `join`
 
@@ -85,7 +85,7 @@ join(*args: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L102"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `neg`
 
@@ -100,7 +100,7 @@ neg(a: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L103"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L105"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `conj`
 
@@ -115,7 +115,7 @@ conj(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nand`
 
@@ -130,7 +130,7 @@ nand(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L105"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `disj`
 
@@ -145,7 +145,7 @@ disj(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nor`
 
@@ -160,7 +160,7 @@ nor(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L109"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xor`
 
@@ -175,7 +175,7 @@ xor(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xnor`
 
@@ -193,7 +193,7 @@ xnor(a: 'BOp', b: 'BOp') → BOp
 <a href="../snakehdl/bops.py#L8"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOps`
-Primitive binary operations that must be implemented in hardware.  
+Enum representing a specific type of primitive binary operation.  
 
 
 
@@ -206,7 +206,7 @@ Primitive binary operations that must be implemented in hardware.
 <a href="../snakehdl/bops.py#L30"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOpGroup`
-
+Utility class for grouping related `BOps`.  
 
 
 
@@ -216,7 +216,7 @@ Primitive binary operations that must be implemented in hardware.
 
 ---
 
-<a href="../snakehdl/bops.py#L34"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L36"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOp`
 Primitive binary operations that must be implemented in hardware. 
@@ -249,7 +249,7 @@ __init__(
 
 ---
 
-<a href="../snakehdl/bops.py#L71"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L73"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `pretty`
 

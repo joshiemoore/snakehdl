@@ -6,7 +6,7 @@ import numpy as np
 
 
 class BOps(Enum):
-  """Primitive binary operations that must be implemented in hardware.
+  """Enum representing a specific type of primitive binary operation.
   """
 
   # I/O operations
@@ -28,6 +28,8 @@ class BOps(Enum):
   def __str__(self) -> str: return super().__str__().split('.')[1]
 
 class BOpGroup:
+  """Utility class for grouping related `BOps`.
+  """
   IO = {BOps.INPUT, BOps.OUTPUT, BOps.CONST, BOps.BIT, BOps.JOIN}
   COMBINATIONAL = {BOps.NOT, BOps.AND, BOps.NAND, BOps.OR, BOps.NOR, BOps.XOR, BOps.XNOR}
 
