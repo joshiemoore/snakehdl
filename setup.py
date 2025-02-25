@@ -28,6 +28,7 @@ setup(
   ],
   install_requires=[
     'numpy',
+    'dill',
   ],
   extras_require={
     'testing': [
