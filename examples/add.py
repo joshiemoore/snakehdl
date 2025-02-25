@@ -5,7 +5,7 @@ from snakehdl.components import adder
 from snakehdl.compilers import VHDLCompiler, VerilogCompiler
 
 
-BITS = 4
+BITS = 8
 
 res, cout = adder(BITS, input_bits('a', BITS), input_bits('b', BITS), input_bits('cin'))
 out = output(res=res, cout=cout)
