@@ -10,7 +10,7 @@ Compile your circuit to Verilog, VHDL, or a dill-pickled Python function!
 
 </p>
 <p align="center">
-  <i>The 16-bit HACK ALU from</i> The Elements of Computing Systems <i> by Nisan and Schocken implemented in snakeHDL, compiled to VHDL,
+  <i>The 16-bit HACK ALU from</i> "The Elements of Computing Systems" by Nisan and Schocken <i>implemented in snakeHDL, compiled to VHDL,
   and imported to Logisim. See</i> <a href="https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py">examples/HACK_ALU.py</a>
 </p>
 
