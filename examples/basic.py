@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # A simple 3-bit AND gate, 3-bit OR gate, and 3-bit negation
 
 import dill
