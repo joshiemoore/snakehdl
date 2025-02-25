@@ -1,0 +1,26 @@
+name: Tests, Linter, Type Checker
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  noncocotbtests:
+    name: Non-cocotb Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.12
+      - name: Install dependencies
+        run: pip install -e '.[testing]'
+      - name: Run Tests
+        run: pytest -k 'not TestVerilogCompiler and not TestVHDLCompiler'
