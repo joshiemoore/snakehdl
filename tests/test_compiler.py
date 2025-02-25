@@ -112,9 +112,6 @@ class TestPythonCompiler:
   # TODO test components
 
 
-# TODO test LogisimCompiler
-
-
 class TestVerilogCompiler:
   def run(self, tree: BOp, tdir: Path, name: str):
     # compile verilog and save to tmp directory

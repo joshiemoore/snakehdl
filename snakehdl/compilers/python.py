@@ -6,7 +6,7 @@ from snakehdl import BOp, BOps
 
 class PythonCompiler(Compiler):
   def _compile(self, inputs: tuple[BOp, ...]=tuple()) -> bytes:
-    def _func(**kwargs) -> dict[str, np.uint]:
+    def _func(**kwargs) -> dict[str, int]:
       def _func_helper(op: BOp) -> np.uint:
         if op.op is BOps.NOT:
           return ~_func_helper(op.src[0])
@@ -42,6 +42,6 @@ class PythonCompiler(Compiler):
       for k in self.tree.outputs:
         op = self.tree.outputs[k]
         if op._bits is None: raise RuntimeError(f'missing bits for output {k}\n' + str(op))
-        res[k] = _func_helper(op) & np.uint(2**op._bits - 1)
+        res[k] = int(_func_helper(op) & np.uint(2**op._bits - 1))
       return res
     return bytes(dill.dumps(_func))
