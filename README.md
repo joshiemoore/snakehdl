@@ -5,6 +5,15 @@ snakeHDL is a tool for creating digital logic circuits with a focus on simplicit
 This project is intended to be a fun and easy way for anyone to design real hardware with a few lines of Python.
 Compile your circuit to Verilog, VHDL, or a dill-pickled Python function!
 
+<p align="center">
+  <img src="https://github.com/joshiemoore/snakehdl/blob/master/HACK_ALU.png" />
+
+</p>
+<p align="center">
+  <i>The 16-bit HACK ALU from</i> The Elements of Computing Systems <i> by Nisan and Schocken implemented in snakeHDL, compiled to VHDL,
+  and imported to Logisim. See</i> <a href="https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py">examples/HACK_ALU.py</a>
+</p>
+
 ## Introduction
 snakeHDL has two main components: an API for expressing abstract trees of boolean logic, and an optimizing compiler that translates
 these abstract logic trees into logic circuits. The compiler handles hardware-specific concerns, so you can focus purely on your
@@ -33,7 +42,7 @@ and even full ALUs starting from these fundamental BOps. Output bit widths
 are automatically inferred based on the tree structure at compile time.
 
 Since only twelve primitive BOps are specified by snakeHDL, it is straightforward to
-create compiler backends for new target platforms.
+create new compiler backends.
 
 Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
