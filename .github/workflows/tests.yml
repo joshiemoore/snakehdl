@@ -22,7 +22,7 @@ jobs:
   verilogtests:
     name: VerilogCompiler Tests
     runs-on: ubuntu-latest
-    using: verilator/verilator:latest
+    container: verilator/verilator:latest
     timeout-minutes: 10
     steps:
       - name: Checkout Code
