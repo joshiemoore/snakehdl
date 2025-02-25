@@ -7,7 +7,6 @@ _NL = '\n'
 
 class VerilogCompiler(Compiler):
   def _compile(self) -> bytes:
-    assert False
     inputs = [f'{_SEP}input {self._render_bits(op)}{k},' for k, op in self._inputs.items()]
     outputs= [f'{_SEP}output wire {self._render_bits(op)}{k}' for k, op in self._outputs.items()]
     cse_wires = [f'{_SEP}wire {self._render_bits(op)}{op._cse_id()} = {self._render(op, cseroot=True)};' for op in self._shared]
