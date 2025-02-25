@@ -19,6 +19,7 @@ class TestCreateBOps:
     op = input_bits('b', range(2,6))
     assert len(op._bits) == 4
     for i in range(2, 6): assert i in op._bits
+    assert False
 
   def test_output(self):
     op = output()
