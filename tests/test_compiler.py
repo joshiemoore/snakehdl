@@ -111,43 +111,48 @@ class TestPythonCompiler:
 
   # TODO test components
 
-class TestVerilogAndVHDLCompilers:
-  def run(self, backend: Literal['verilog', 'vhdl'], tree: BOp, tdir: Path, name: str):
-    opath = tdir / (name + ('.v' if backend == 'verilog' else '.vhdl'))
+class CocotbTest:
+  def run(self, tree: BOp, tdir: Path, name: str):
+    extensions = {
+      TestVerilogCompiler: '.v',
+      TestVHDLCompiler: '.vhdl',
+    }
+    compiler_classes = {
+      TestVerilogCompiler: VerilogCompiler,
+      TestVHDLCompiler: VHDLCompiler,
+    }
+    runners = {
+      TestVerilogCompiler: 'verilator',
+      TestVHDLCompiler: 'ghdl',
+    }
+    testclass = self.__class__
+    opath = tdir / (name + extensions[testclass])
 
     # compile tree and save to tmp directory
-    compiler_classes = {
-      'verilog': VerilogCompiler,
-      'vhdl': VHDLCompiler,
-    }
-    compiler_classes[backend](tree, name).compile().save(opath)
+    compiler_classes[testclass](tree, name).compile().save(opath)
 
     # build and run the cocotb test
-    runner = get_runner('verilator' if backend == 'verilog' else 'ghdl')
+    runner = get_runner(runners[testclass])
     runner.build(sources=[opath], hdl_toplevel=name)
     runner.test(hdl_toplevel=name, test_module='tests.cocotb_testbenches.' + name)
 
   def test_const_bits(self, tmp_path):
     tree = output(out0=const_bits(0xdead, 16), out1=const_bits(0xbeef, 16))
-    self.run('verilog', tree, tmp_path, 'const_bits')
-    self.run('vhdl', tree, tmp_path, 'const_bits')
+    self.run(tree, tmp_path, 'const_bits')
 
   def test_basic_relay8(self, tmp_path):
     tree = output(res=inputs[0])
-    self.run('verilog', tree, tmp_path, 'basic_relay8')
-    self.run('vhdl', tree, tmp_path, 'basic_relay8')
+    self.run(tree, tmp_path, 'basic_relay8')
 
   def test_bit8(self, tmp_path):
     # select bit from input
     tree = output(res=bit(inputs[0], 1))
-    self.run('verilog', tree, tmp_path, 'bit8')
-    self.run('vhdl', tree, tmp_path, 'bit8')
+    self.run(tree, tmp_path, 'bit8')
 
   def test_neg_bit8(self, tmp_path):
     # select bit from BOp
     tree = output(res=bit(neg(inputs[0]), 1))
-    self.run('verilog', tree, tmp_path, 'neg_bit8')
-    self.run('vhdl', tree, tmp_path, 'neg_bit8')
+    self.run(tree, tmp_path, 'neg_bit8')
 
   def test_join8(self, tmp_path):
     tree = output(res=join(
@@ -160,43 +165,35 @@ class TestVerilogAndVHDLCompilers:
       const_bits(0),
       const_bits(1),
     ))
-    self.run('verilog', tree, tmp_path, 'join8')
-    self.run('vhdl', tree, tmp_path, 'join8')
+    self.run(tree, tmp_path, 'join8')
 
   def test_not8(self, tmp_path):
     tree = output(res=neg(inputs[0]))
-    self.run('verilog', tree, tmp_path, 'not8')
-    self.run('vhdl', tree, tmp_path, 'not8')
+    self.run(tree, tmp_path, 'not8')
 
   def test_and8(self, tmp_path):
     tree = output(res=conj(*inputs))
-    self.run('verilog', tree, tmp_path, 'and8')
-    self.run('vhdl', tree, tmp_path, 'and8')
+    self.run(tree, tmp_path, 'and8')
 
   def test_nand8(self, tmp_path):
     tree = output(res=nand(*inputs))
-    self.run('verilog', tree, tmp_path, 'nand8')
-    self.run('vhdl', tree, tmp_path, 'nand8')
+    self.run(tree, tmp_path, 'nand8')
 
   def test_or8(self, tmp_path):
     tree = output(res=disj(*inputs))
-    self.run('verilog', tree, tmp_path, 'or8')
-    self.run('vhdl', tree, tmp_path, 'or8')
+    self.run(tree, tmp_path, 'or8')
 
   def test_nor8(self, tmp_path):
     tree = output(res=nor(*inputs))
-    self.run('verilog', tree, tmp_path, 'nor8')
-    self.run('vhdl', tree, tmp_path, 'nor8')
+    self.run(tree, tmp_path, 'nor8')
 
   def test_xor8(self, tmp_path):
     tree = output(res=xor(*inputs))
-    self.run('verilog', tree, tmp_path, 'xor8')
-    self.run('vhdl', tree, tmp_path, 'xor8')
+    self.run(tree, tmp_path, 'xor8')
 
   def test_xnor8(self, tmp_path):
     tree = output(res=xnor(*inputs))
-    self.run('verilog', tree, tmp_path, 'xnor8')
-    self.run('vhdl', tree, tmp_path, 'xnor8')
+    self.run(tree, tmp_path, 'xnor8')
 
   def test_cse(self, tmp_path):
     x = xor(*inputs)
@@ -207,10 +204,15 @@ class TestVerilogAndVHDLCompilers:
     assert len(tmp_c._shared) == 1
     assert x in tmp_c._shared
     assert nx.src[0] in tmp_c._shared
-    self.run('verilog', out, tmp_path, 'cse')
-    self.run('vhdl', out, tmp_path, 'cse')
+    self.run(out, tmp_path, 'cse')
 
   # TODO test components
+
+class TestVerilogCompiler(CocotbTest):
+  pass
+
+class TestVHDLCompiler(CocotbTest):
+  pass
 
 class TestValidations:
   def test_assign_bits(self):
