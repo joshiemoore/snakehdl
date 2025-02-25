@@ -49,6 +49,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout Code
+        uses: actions/checkout@v4
       - name: Setup Enviroment
         uses: ./.github/actions/setup-environment
       - name: Install ruff
