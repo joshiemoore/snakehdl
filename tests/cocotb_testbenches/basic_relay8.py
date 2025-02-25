@@ -6,12 +6,12 @@ from cocotb.triggers import Timer
 async def testbench(dut):
   dut.ina.value = 0x00
   await Timer(1, units='ns')
-  assert dut.out.value == 0x00
+  assert dut.res.value == 0x00
 
   dut.ina.value = 0xff
   await Timer(1, units='ns')
-  assert dut.out.value == 0xff
+  assert dut.res.value == 0xff
 
   dut.ina.value = 0b10101010
   await Timer(1, units='ns')
-  assert dut.out.value == 0b10101010
+  assert dut.res.value == 0b10101010
