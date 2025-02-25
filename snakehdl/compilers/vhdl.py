@@ -8,7 +8,7 @@ _NL = '\n'
 class VHDLCompiler(Compiler):
   def _compile(self) -> bytes:
     module_name = "circuit" if self.name is None else self.name
-    inputs = [f'{_SEP*2}{k} :aasdasddds in {self._render_bits(op)};' for k, op in self._inputs.items()]
+    inputs = [f'{_SEP*2}{k} : in {self._render_bits(op)};' for k, op in self._inputs.items()]
     outputs = []
     cse_signals = []
     ops = []
