@@ -16,7 +16,7 @@
 
 ## Classes
 
-- [`bops.BOp`](./bops.md#class-bop): BOp(op: 'BOps', src: 'tuple[BOp, ...]' = (), _bits: 'Optional[int]' = None, _hash: 'int' = 0, input_name: 'Optional[str]' = None, outputs: 'Optional[dict[str, BOp]]' = None, val: 'Optional[np.uint]' = None, bit_index: 'Optional[int]' = None)
+- [`bops.BOp`](./bops.md#class-bop): Primitive binary operations that must be implemented in hardware.
 - [`bops.BOpGroup`](./bops.md#class-bopgroup)
 - [`bops.BOps`](./bops.md#class-bops): Primitive binary operations that must be implemented in hardware.
 - [`compiler.Compiled`](./compilers.compiler.md#class-compiled): Compiled(data: bytes)

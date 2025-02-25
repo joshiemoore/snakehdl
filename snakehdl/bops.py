@@ -6,8 +6,7 @@ import numpy as np
 
 
 class BOps(Enum):
-  """
-  Primitive binary operations that must be implemented in hardware.
+  """Primitive binary operations that must be implemented in hardware.
   """
 
   # I/O operations
@@ -34,6 +33,12 @@ class BOpGroup:
 
 @dataclass(frozen=True)
 class BOp:
+  """Primitive binary operations that must be implemented in hardware.
+
+  Users should not instantiate `BOp` objects directly, but rather create
+  them through the API functions available in this module.
+  """
+
   op: BOps
   src: tuple[BOp, ...] = tuple()
   _bits: Optional[int] = field(default=None)
