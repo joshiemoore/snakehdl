@@ -18,14 +18,24 @@
 const_bits(val: 'uint | int', bits: 'int' = 1) → BOp
 ```
 
+CONST - constant value 
 
 
 
+**Args:**
+ 
+ - <b>`val`</b>:  The value to assign to this constant. 
+ - <b>`bits`</b>:  The bit width of the constant value. 
+
+
+
+**Returns:**
+ A `BOp` representing a constant value with a defined bit width. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L98"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L109"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `input_bits`
 
@@ -33,14 +43,24 @@ const_bits(val: 'uint | int', bits: 'int' = 1) → BOp
 input_bits(name: 'str', bits: 'int' = 1) → BOp
 ```
 
+INPUT - named circuit input 
 
 
 
+**Args:**
+ 
+ - <b>`name`</b>:  The name to assign to this input. Make sure not to use reserved  keywords from Verilog or VHDL. 
+ - <b>`bits`</b>:  The bit width of the input. 
+
+
+
+**Returns:**
+ A `BOp` representing a named input 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L99"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L122"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `output`
 
@@ -48,14 +68,23 @@ input_bits(name: 'str', bits: 'int' = 1) → BOp
 output(**kwargs: 'BOp') → BOp
 ```
 
+OUTPUT - named circuit output 
 
 
 
+**Args:**
+ 
+ - <b>`**kwargs`</b>:  Each kwarg represents a named output in your circuit. Make sure  not to use reserved keywords from Verilog or VHDL. 
+
+
+
+**Returns:**
+ A `BOp` representing a collection of named outputs. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L100"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `bit`
 
@@ -63,14 +92,24 @@ output(**kwargs: 'BOp') → BOp
 bit(src: 'BOp', index: 'int') → BOp
 ```
 
+BIT - select one bit from `src` 
 
 
 
+**Args:**
+ 
+ - <b>`src`</b>:  The `BOp` to select a bit from. 
+ - <b>`index`</b>:  The index of the bit to select (indexed from LSB to MSB). 
+
+
+
+**Returns:**
+ A `BOp` representing a bit selected from `src`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L146"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `join`
 
@@ -78,14 +117,23 @@ bit(src: 'BOp', index: 'int') → BOp
 join(*args: 'BOp') → BOp
 ```
 
+JOIN - combine `n` 1-bit signals into one `n`-bit signal 
 
 
 
+**Args:**
+ 
+ - <b>`*args`</b>:  The list of `BOp`s to join into one signal. Each  arg must have a bit width of 1. 
+
+
+
+**Returns:**
+ A `BOp` of bit width `n`, where `n` is the length of `args`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L159"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `neg`
 
@@ -100,7 +148,7 @@ neg(a: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L105"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `conj`
 
@@ -115,7 +163,7 @@ conj(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L161"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nand`
 
@@ -130,7 +178,7 @@ nand(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L162"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `disj`
 
@@ -145,7 +193,7 @@ disj(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nor`
 
@@ -160,7 +208,7 @@ nor(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L109"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L164"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xor`
 
@@ -175,7 +223,7 @@ xor(a: 'BOp', b: 'BOp') → BOp
 
 ---
 
-<a href="../snakehdl/bops.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xnor`
 

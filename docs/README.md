@@ -27,16 +27,16 @@
 
 ## Functions
 
-- [`bops.bit`](./bops.md#function-bit)
+- [`bops.bit`](./bops.md#function-bit): BIT - select one bit from `src`
 - [`bops.conj`](./bops.md#function-conj)
-- [`bops.const_bits`](./bops.md#function-const_bits)
+- [`bops.const_bits`](./bops.md#function-const_bits): CONST - constant value
 - [`bops.disj`](./bops.md#function-disj)
-- [`bops.input_bits`](./bops.md#function-input_bits)
-- [`bops.join`](./bops.md#function-join)
+- [`bops.input_bits`](./bops.md#function-input_bits): INPUT - named circuit input
+- [`bops.join`](./bops.md#function-join): JOIN - combine `n` 1-bit signals into one `n`-bit signal
 - [`bops.nand`](./bops.md#function-nand)
 - [`bops.neg`](./bops.md#function-neg)
 - [`bops.nor`](./bops.md#function-nor)
-- [`bops.output`](./bops.md#function-output)
+- [`bops.output`](./bops.md#function-output): OUTPUT - named circuit output
 - [`bops.xnor`](./bops.md#function-xnor)
 - [`bops.xor`](./bops.md#function-xor)
 - [`arithmetic.adder`](./components.arithmetic.md#function-adder): N-bit full adder.
