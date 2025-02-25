@@ -3,10 +3,7 @@
 
 snakeHDL is a tool for creating digital logic circuits with a focus on simplicity and accessibility.
 This project is intended to be a fun and easy way for anyone to design real hardware with a few lines of Python.
-Compile your circuit to Logisim, Verilog, or a dill-pickled Python function!
-
-![](HACK_ALU.png)
-*Screenshot of part of the HACK ALU from* [Elements of Computing Systems](https://www.nand2tetris.org/book) *implemented in* [examples/HACK_ALU.py](https://github.com/joshiemoore/snakehdl/blob/master/examples/HACK_ALU.py) *and compiled to Logisim*
+Compile your circuit to Verilog, VHDL, or a dill-pickled Python function!
 
 ## Introduction
 snakeHDL has two main components: an API for expressing abstract trees of boolean logic, and an optimizing compiler that translates
@@ -27,8 +24,8 @@ This creates a simple BOp tree representing a circuit with one output named `res
 BOps are naturally composable into larger circuits because they are lazily evaluated. When you create a tree of BOps, nothing actually happens until you compile it:
 
 ```
-  >>> from snakehdl.compilers import LogisimCompiler
-  >>> LogisimCompiler(out, name='xor_ab').compile().save('xor_ab.circ')
+  >>> from snakehdl.compilers import VerilogCompiler
+  >>> VerilogCompiler(out, name='xor_ab').compile().save('xor_ab.v')
 ```
 
 We can build composite logical structures like adders, multiplexers,
@@ -41,8 +38,8 @@ create compiler backends for new target platforms.
 Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
 ## Compiler Targets
-- [x] Logisim Evolution 3.9.0 .circ files
 - [x] Verilog
+- [x] VHDL
 - [x] Python - compile your circuit to a pickled Python function that accepts your named inputs
     as kwargs and returns the result as a dict of your named outputs. Useful for automated logic testing.
 - [ ] Arduino
