@@ -1,0 +1,10 @@
+name: 'Install Python and snakeHDL dependencies'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10.12
+    - name: Install dependencies
+      run: pip install -e '.[testing]'
