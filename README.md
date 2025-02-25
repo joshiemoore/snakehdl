@@ -5,6 +5,9 @@ snakeHDL is a tool for creating digital logic circuits with a focus on simplicit
 This project is intended to be a fun and easy way for anyone to design real hardware with a few lines of Python.
 Compile your circuit to Verilog, VHDL, or a dill-pickled Python function!
 
+snakeHDL is Free Software licensed under the terms of the MIT License. The project is still early in development,
+so bugs and general instability may occur.
+
 <p align="center">
   <img src="https://github.com/joshiemoore/snakehdl/blob/master/HACK_ALU.png" />
 
