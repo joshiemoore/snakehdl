@@ -2,6 +2,8 @@
 *.pyc
 *.circ
 *.v
+*.vhdl
+*.vhd
 
 __pycache__/
 tmp/

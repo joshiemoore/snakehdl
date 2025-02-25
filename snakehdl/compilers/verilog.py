@@ -9,7 +9,7 @@ class VerilogCompiler(Compiler):
   def _compile(self) -> bytes:
     inputs = [f'{_SEP}input {self._render_bits(op)}{k},' for k, op in self._inputs.items()]
     outputs= [f'{_SEP}output wire {self._render_bits(op)}{k}' for k, op in self._outputs.items()]
-    cse_wires = [f'{_SEP}wire {self._render_bits(op)}{self._cse_id(hash(op))} = {self._render(op, cseroot=True)};' for op in self._shared]
+    cse_wires = [f'{_SEP}wire {self._render_bits(op)}{op._cse_id()} = {self._render(op, cseroot=True)};' for op in self._shared]
     ops = [f'{_SEP}assign {k} = {self._render(op)};' for k, op in self._outputs.items()]
 
     out = f'''module {"circuit" if self.name is None else self.name} (
@@ -26,12 +26,10 @@ endmodule
     if op._bits is None: raise RuntimeError(f'{op.op} missing bits\n' + str(op))
     return f'[{op._bits - 1}:0] ' if op._bits > 1 else ''
 
-  def _cse_id(self, op_hash: int) -> str: return 'shared_' + str(op_hash).replace('-', '_')
-
   def _render(self, op: BOp, cseroot=False) -> str:
     if not cseroot and op.op is not BOps.OUTPUT:
       # CSE
-      if op in self._shared: return self._cse_id(hash(op))
+      if op in self._shared: return op._cse_id()
     if op.op is BOps.INPUT:
       if op.input_name is None: raise RuntimeError('INPUT missing name:\n' + str(op))
       return op.input_name

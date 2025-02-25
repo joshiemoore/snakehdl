@@ -9,7 +9,7 @@ import sys
 import time
 from snakehdl import BOp, BOps, input_bits, output, const_bits, neg, conj, bit
 from snakehdl.components import adder, mux, multiway
-from snakehdl.compilers import LogisimCompiler, VerilogCompiler
+from snakehdl.compilers import VerilogCompiler, VHDLCompiler
 
 
 def hack_alu(DATA_BITS: int) -> BOp:
@@ -49,31 +49,32 @@ def hack_alu(DATA_BITS: int) -> BOp:
   # negate output
   out_neg = mux(DATA_BITS, no, out, neg(out))
 
-  zr = multiway(BOps.NOR, *[bit(out_neg, i) for i in range(DATA_BITS)])
+  ng = bit(out_neg, DATA_BITS-1)
+  zr = neg(multiway(BOps.OR, *[bit(out_neg, i) for i in range(DATA_BITS)]))
 
   # HACK ALU!
-  return output(out=out_neg, ng=bit(out_neg, DATA_BITS-1), zr=zr)
+  return output(output=out_neg, ng=ng, zr=zr)
 
 if __name__ == '__main__':
   compiler_classes = {
-    'logisim': LogisimCompiler,
     'verilog': VerilogCompiler,
+    'vhdl': VHDLCompiler,
   }
 
   if len(sys.argv) != 2 or sys.argv[1] not in compiler_classes:
-    print('Usage: ./HACK_ALU.py <logisim/verilog>')
-    print('e.g. ./HACK_ALU.py logisim')
+    print('Usage: ./HACK_ALU.py <verilog/vhdl>')
+    print('e.g. ./HACK_ALU.py verilog')
     exit(1)
 
   alu = hack_alu(16)
   print(f'compiling HACK ALU from BOp tree to {sys.argv[1]}...', end='', flush=True)
   stime = time.time()
-  cres = compiler_classes[sys.argv[1]](alu).compile()
+  cres = compiler_classes[sys.argv[1]](alu, 'HACK_ALU').compile()
   print(f' done in {time.time() - stime} seconds')
 
-  if sys.argv[1] == 'logisim':
-    cres.save('HACK_ALU.circ')
-    print('HACK ALU Logisim circuit saved to HACK_ALU.circ')
+  if sys.argv[1] == 'vhdl':
+    cres.save('HACK_ALU.vhdl')
+    print('HACK ALU VHDL saved to HACK_ALU.vhdl')
   elif sys.argv[1] == 'verilog':
     cres.save('HACK_ALU.v')
     print('HACK ALU Verilog saved to HACK_ALU.v')

@@ -36,7 +36,7 @@ class BOpGroup:
 class BOp:
   op: BOps
   src: tuple[BOp, ...] = tuple()
-  _bits: Optional[int] = field(default=None, compare=False)
+  _bits: Optional[int] = field(default=None)
   _hash: int = 0
 
   # only for INPUT
@@ -55,6 +55,7 @@ class BOp:
     object.__setattr__(self, '_hash', hash((
       self.op,
       tuple(id(v) for v in self.src),
+      self._bits,
       self.input_name,
       self.val,
       self.bit_index,
@@ -82,6 +83,8 @@ class BOp:
   def __repr__(self): return self.pretty()
 
   def __str__(self): return self.pretty(whitespace=True)
+
+  def _cse_id(self) -> str: return 'shared_' + str(self._hash).replace('-', 'n')
 
 # I/O operations
 def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(BOps.CONST, val=np.uint(val), _bits=bits)

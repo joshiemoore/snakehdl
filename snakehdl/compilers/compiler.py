@@ -51,7 +51,7 @@ class Compiler:
       return
     if op in self._shared: return
     if op in seen:
-      self._shared.add(op)
+      if op.op is not BOps.INPUT: self._shared.add(op)
       return
     seen.add(op)
     for v in op.src: self._toposort(v, seen)
