@@ -12,7 +12,6 @@ jobs:
     name: Non-cocotb Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -20,3 +19,15 @@ jobs:
         uses: ./.github/actions/setup-environment
       - name: Run Tests
         run: pytest -k 'not TestVerilogCompiler and not TestVHDLCompiler'
+  verilogtests:
+    name: VerilogCompiler Tests
+    runs-on: ubuntu-latest
+    container: verilator/verilator:latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+      - name: Run Tests
+        run: pytest -k TestVerilogCompiler
