@@ -49,17 +49,17 @@ create new compiler backends.
 
 Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
-## Binary/Bitwise Operations (BOps)
+## Binary Operations (BOps)
 The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
 
 ### Combinational Operations
-* NOT
 * AND
 * NAND
 * OR
 * NOR
 * XOR
 * XNOR
+* NOT (unary)
 
 ### I/O Operations
 * CONST
