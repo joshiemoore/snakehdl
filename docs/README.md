@@ -4,7 +4,7 @@
 
 ## Modules
 
-- [`bops`](./bops.md#module-bops)
+- [`bops`](./bops.md#module-bops): Binary operations
 - [`compilers`](./compilers.md#module-compilers)
 - [`compilers.compiler`](./compilers.compiler.md#module-compilerscompiler)
 - [`compilers.python`](./compilers.python.md#module-compilerspython)
@@ -18,7 +18,7 @@
 
 - [`bops.BOp`](./bops.md#class-bop): Primitive binary operations that must be implemented in hardware.
 - [`bops.BOpGroup`](./bops.md#class-bopgroup): Utility class for grouping related `BOps`.
-- [`bops.BOps`](./bops.md#class-bops): Enum representing a specific type of primitive binary operation.
+- [`bops.BOps`](./bops.md#class-bops): Enum representing specific types of primitive binary operations.
 - [`compiler.Compiled`](./compilers.compiler.md#class-compiled): Compiled(data: bytes)
 - [`compiler.Compiler`](./compilers.compiler.md#class-compiler): Compiler(tree: snakehdl.bops.BOp, name: Optional[str] = None, _shared: set[snakehdl.bops.BOp] = <factory>, _sorted: List[snakehdl.bops.BOp] = <factory>, _inputs: dict[str, snakehdl.bops.BOp] = <factory>, _outputs: dict[str, snakehdl.bops.BOp] = <factory>)
 - [`python.PythonCompiler`](./compilers.python.md#class-pythoncompiler)
@@ -27,18 +27,18 @@
 
 ## Functions
 
-- [`bops.bit`](./bops.md#function-bit)
-- [`bops.conj`](./bops.md#function-conj)
-- [`bops.const_bits`](./bops.md#function-const_bits)
-- [`bops.disj`](./bops.md#function-disj)
-- [`bops.input_bits`](./bops.md#function-input_bits)
-- [`bops.join`](./bops.md#function-join)
-- [`bops.nand`](./bops.md#function-nand)
-- [`bops.neg`](./bops.md#function-neg)
-- [`bops.nor`](./bops.md#function-nor)
-- [`bops.output`](./bops.md#function-output)
-- [`bops.xnor`](./bops.md#function-xnor)
-- [`bops.xor`](./bops.md#function-xor)
+- [`bops.bit`](./bops.md#function-bit): BIT - select one bit from `src`
+- [`bops.conj`](./bops.md#function-conj): AND - conjunction
+- [`bops.const_bits`](./bops.md#function-const_bits): CONST - constant value
+- [`bops.disj`](./bops.md#function-disj): OR - disjunction
+- [`bops.input_bits`](./bops.md#function-input_bits): INPUT - named circuit input
+- [`bops.join`](./bops.md#function-join): JOIN - combine `n` 1-bit signals into one `n`-bit signal
+- [`bops.nand`](./bops.md#function-nand): NAND - non-conjunction
+- [`bops.neg`](./bops.md#function-neg): NOT - negation
+- [`bops.nor`](./bops.md#function-nor): NOR - non-disjunction
+- [`bops.output`](./bops.md#function-output): OUTPUT - named circuit output
+- [`bops.xnor`](./bops.md#function-xnor): XNOR - biconditional
+- [`bops.xor`](./bops.md#function-xor): XOR - exclusive disjunction
 - [`arithmetic.adder`](./components.arithmetic.md#function-adder): N-bit full adder.
 - [`logical.multiway`](./components.logical.md#function-multiway)
 - [`logical.mux`](./components.logical.md#function-mux)

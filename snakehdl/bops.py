@@ -1,3 +1,11 @@
+"""Binary operations
+
+The `BOp` is the core data structure of snakeHDL. Each `BOp` represents
+a low-level primitive binary operation that must be implemented in hardware.
+
+`BOp` objects are immutable. They should not be modified by the user
+after initialization.
+"""
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum, auto
@@ -6,7 +14,7 @@ import numpy as np
 
 
 class BOps(Enum):
-  """Enum representing a specific type of primitive binary operation.
+  """Enum representing specific types of primitive binary operations.
   """
 
   # I/O operations
@@ -93,21 +101,149 @@ class BOp:
 
   def _cse_id(self) -> str: return 'shared_' + str(self._hash).replace('-', 'n')
 
-# I/O operations
-def const_bits(val: np.uint | int, bits: int=1) -> BOp: return BOp(BOps.CONST, val=np.uint(val), _bits=bits)
-def input_bits(name: str, bits: int=1) -> BOp: return BOp(BOps.INPUT, input_name=name, _bits=bits)
-def output(**kwargs: BOp) -> BOp: return BOp(BOps.OUTPUT, outputs=kwargs)
-def bit(src: BOp, index: int) -> BOp: return BOp(BOps.BIT, src=(src,), bit_index=index)
-def join(*args: BOp) -> BOp: return BOp(BOps.JOIN, src=tuple(args))
+def const_bits(val: np.uint | int, bits: int=1) -> BOp:
+  """CONST - constant value
 
-# combinational operations
-def neg(a: BOp) -> BOp: return BOp(BOps.NOT, src=(a,))
-def conj(a: BOp, b: BOp) -> BOp: return BOp(BOps.AND, src=(a,b))
-def nand(a: BOp, b: BOp) -> BOp: return BOp(BOps.NAND, src=(a,b))
-def disj(a: BOp, b: BOp) -> BOp: return BOp(BOps.OR, src=(a,b))
-def nor(a: BOp, b: BOp) -> BOp: return BOp(BOps.NOR, src=(a,b))
-def xor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XOR, src=(a,b))
-def xnor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XNOR, src=(a,b))
+  Args:
+    val: The value to assign to this constant.
+    bits: The bit width of the constant value.
+
+  Returns:
+    A `BOp` representing a constant value with a defined bit width.
+  """
+  return BOp(BOps.CONST, val=np.uint(val), _bits=bits)
+
+def input_bits(name: str, bits: int=1) -> BOp:
+  """INPUT - named circuit input
+
+  Args:
+    name: The name to assign to this input. Make sure not to use reserved
+      keywords from Verilog or VHDL.
+    bits: The bit width of the input.
+
+  Returns:
+    A `BOp` representing a named input.
+  """
+  return BOp(BOps.INPUT, input_name=name, _bits=bits)
+
+def output(**kwargs: BOp) -> BOp:
+  """OUTPUT - named circuit output
+
+  Args:
+    **kwargs: Each kwarg represents a named output in your circuit. Make sure
+      not to use reserved keywords from Verilog or VHDL.
+
+  Returns:
+    A `BOp` representing a collection of named outputs.
+  """
+  return BOp(BOps.OUTPUT, outputs=kwargs)
+
+def bit(src: BOp, index: int) -> BOp:
+  """BIT - select one bit from `src`
+
+  Args:
+    src: The `BOp` to select a bit from.
+    index: The index of the bit to select (indexed from LSB to MSB).
+
+  Returns:
+    A `BOp` representing a bit selected from `src`.
+  """
+  return BOp(BOps.BIT, src=(src,), bit_index=index)
+
+def join(*args: BOp) -> BOp:
+  """JOIN - combine `n` 1-bit signals into one `n`-bit signal
+
+  Args:
+    *args: The `BOp` list to join into one signal. Each
+      arg must have a bit width of 1.
+
+  Returns:
+    A `BOp` of bit width `n`, where `n` is the length of `args`.
+  """
+  return BOp(BOps.JOIN, src=tuple(args))
+
+def neg(a: BOp) -> BOp:
+  """NOT - negation
+
+  Args:
+    a: The `BOp` to negate.
+
+  Returns:
+    A `BOp` representing the unary operation `NOT a`.
+  """
+  return BOp(BOps.NOT, src=(a,))
+
+def conj(a: BOp, b: BOp) -> BOp:
+  """AND - conjunction
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a AND b`.
+  """
+  return BOp(BOps.AND, src=(a,b))
+
+def nand(a: BOp, b: BOp) -> BOp:
+  """NAND - non-conjunction
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a NAND b`.
+  """
+  return BOp(BOps.NAND, src=(a,b))
+
+def disj(a: BOp, b: BOp) -> BOp:
+  """OR - disjunction
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a OR b`.
+  """
+  return BOp(BOps.OR, src=(a,b))
+
+def nor(a: BOp, b: BOp) -> BOp:
+  """NOR - non-disjunction
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a NOR b`.
+  """
+  return BOp(BOps.NOR, src=(a,b))
+
+def xor(a: BOp, b: BOp) -> BOp:
+  """XOR - exclusive disjunction
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a XOR b`.
+  """
+  return BOp(BOps.XOR, src=(a,b))
+
+def xnor(a: BOp, b: BOp) -> BOp:
+  """XNOR - biconditional
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the binary operation `a XNOR b`.
+  """
+  return BOp(BOps.XNOR, src=(a,b))
 
 _BOP_FUNCS = {
   BOps.CONST: const_bits,
