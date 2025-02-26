@@ -68,7 +68,7 @@ The following binary operations are specified by the snakeHDL API and must be im
 * BIT - `bit(src: BOp, index: int) -> BOp`
 * JOIN - `join(*args: BOp) -> BOp`
 
-...and that's it! See [examples/](https://github.com/joshiemoore/snakehdl/tree/master/examples) for demonstrations of these operations.
+...and that's it! Check out the [BOp documentation](https://github.com/joshiemoore/snakehdl/blob/master/docs/bops.md) to learn more or look at the [examples](https://github.com/joshiemoore/snakehdl/tree/master/examples) to see BOps in action.
 
 ## Compiler Targets
 - [x] Verilog
