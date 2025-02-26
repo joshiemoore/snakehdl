@@ -49,24 +49,24 @@ create new compiler backends.
 
 Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
 
-## Binary Operations (BOps)
+## Binary/Bitwise Operations (BOps)
 The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
 
 ### Combinational Operations
-* NOT - `neg(a: BOp) -> BOp`
-* AND - `conj(a: BOp, b: BOp) -> BOp`
-* NAND - `nand(a: BOp, b: BOp) -> BOp`
-* OR - `disj(a: BOp, b: BOp) -> BOp`
-* NOR - `nor(a: BOp, b: BOp) -> BOp`
-* XOR - `xor(a: BOp, b: BOp) -> BOp`
-* XNOR - `xnor(a: BOp, b: BOp) -> BOp`
+* NOT
+* AND
+* NAND
+* OR
+* NOR
+* XOR
+* XNOR
 
 ### I/O Operations
-* CONST - `const_bits(val: np.uint | int, bits: int=1) -> BOp`
-* INPUT - `input_bits(name: str, bits: int=1) -> BOp`
-* OUTPUT - `output(**kwargs: BOp) -> BOp`
-* BIT - `bit(src: BOp, index: int) -> BOp`
-* JOIN - `join(*args: BOp) -> BOp`
+* CONST
+* INPUT
+* OUTPUT
+* BIT
+* JOIN
 
 ...and that's it! Check out the [BOp documentation](https://github.com/joshiemoore/snakehdl/blob/master/docs/bops.md) to learn more or look at the [examples](https://github.com/joshiemoore/snakehdl/tree/master/examples) to see BOps in action.
 
