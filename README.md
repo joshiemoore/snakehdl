@@ -70,7 +70,8 @@ The following binary operations are specified by the snakeHDL API and must be im
 * BIT
 * JOIN
 
-...and that's it! Check out the [BOp documentation](https://github.com/joshiemoore/snakehdl/blob/master/docs/bops.md) to learn more or look at the [examples](https://github.com/joshiemoore/snakehdl/tree/master/examples) to see BOps in action.
+...and that's it! snakeHDL is based on a RISC-type philosophy.
+Check out the [BOp documentation](https://github.com/joshiemoore/snakehdl/blob/master/docs/bops.md) to learn more or look at the [examples](https://github.com/joshiemoore/snakehdl/tree/master/examples) to see BOps in action.
 
 ## Compiler Targets
 - [x] Verilog
@@ -80,3 +81,17 @@ The following binary operations are specified by the snakeHDL API and must be im
 - [ ] Arduino
 - [ ] Minecraft Redstone
 - [ ] ...
+
+## Optimizations
+The following is a list of current and planned compiler optimizations:
+- [x] Cached BOp hashing
+- [x] Common Subexpression Elimination
+- [ ] Constant folding (i.e. `A & 0 -> 0`)
+- [ ] Gate pruning (i.e. `AND(A, AND(A, B)) -> AND(A, B)`)
+- [ ] ...
+
+## TODO
+* Improve documentation
+* Add more components to component library
+* Add useful examples demonstrating snakeHDL functionality
+* Optimize compiler output (constant folding, gate pruning, etc.)
