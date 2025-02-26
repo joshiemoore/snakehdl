@@ -41,7 +41,7 @@ endmodule
       if pop._bits is None: raise RuntimeError('BIT missing index\n' + str(op))
       return f'{self._render(pop)}[{op.bit_index}]' if pop._bits > 1 else f'{self._render(pop)}'
     elif op.op is BOps.JOIN: return '{' + ', '.join([self._render(v) for v in reversed(op.src)]) + '}'
-    elif op.op is BOps.NOT: return f'~({self._render(op.src[0])})'
+    elif op.op is BOps.NOT: return f'~{self._render(op.src[0])}'
     elif op.op is BOps.AND: return f'({self._render(op.src[0])} & {self._render(op.src[1])})'
     elif op.op is BOps.NAND: return f'~({self._render(op.src[0])} & {self._render(op.src[1])})'
     elif op.op is BOps.OR: return f'({self._render(op.src[0])} | {self._render(op.src[1])})'
