@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../snakehdl/bops.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L96"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `const_bits`
 
@@ -35,7 +35,7 @@ CONST - constant value
 
 ---
 
-<a href="../snakehdl/bops.py#L109"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `input_bits`
 
@@ -60,7 +60,7 @@ INPUT - named circuit input
 
 ---
 
-<a href="../snakehdl/bops.py#L122"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L121"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `output`
 
@@ -84,7 +84,7 @@ OUTPUT - named circuit output
 
 ---
 
-<a href="../snakehdl/bops.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L133"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `bit`
 
@@ -109,7 +109,7 @@ BIT - select one bit from `src`
 
 ---
 
-<a href="../snakehdl/bops.py#L146"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L145"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `join`
 
@@ -133,7 +133,7 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 
 ---
 
-<a href="../snakehdl/bops.py#L159"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `neg`
 
@@ -141,7 +141,7 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 neg(a: 'BOp') → BOp
 ```
 
-NOT `a` 
+NOT - negation 
 
 
 
@@ -152,12 +152,12 @@ NOT `a`
 
 
 **Returns:**
- A `BOp` representing the bitwise negation of `a`. 
+ A `BOp` representing the unary operation `NOT a`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `conj`
 
@@ -165,7 +165,7 @@ NOT `a`
 conj(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` AND `b` 
+AND - conjunction 
 
 
 
@@ -177,12 +177,12 @@ conj(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise conjunction of `a` and `b`. 
+ A `BOp` representing the binary operation `a AND b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L182"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L180"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nand`
 
@@ -190,7 +190,7 @@ conj(a: 'BOp', b: 'BOp') → BOp
 nand(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` NAND `b` 
+NAND - non-conjunction 
 
 
 
@@ -202,12 +202,12 @@ nand(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise non-conjunction of `a` and `b`. 
+ A `BOp` representing the binary operation `a NAND b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L192"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `disj`
 
@@ -215,7 +215,7 @@ nand(a: 'BOp', b: 'BOp') → BOp
 disj(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` OR `b` 
+OR - disjunction 
 
 
 
@@ -227,12 +227,12 @@ disj(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise disjunction of `a` and `b`. 
+ A `BOp` representing the binary operation `a OR b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L206"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L204"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nor`
 
@@ -240,7 +240,7 @@ disj(a: 'BOp', b: 'BOp') → BOp
 nor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` NOR `b` 
+NOR - non-disjunction 
 
 
 
@@ -252,12 +252,12 @@ nor(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise non-disjunction of `a` and `b`. 
+ A `BOp` representing the binary operation `a NOR b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L218"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L216"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xor`
 
@@ -265,7 +265,7 @@ nor(a: 'BOp', b: 'BOp') → BOp
 xor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` XOR `b` 
+XOR - exclusive disjunction 
 
 
 
@@ -277,12 +277,12 @@ xor(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise exclusive disjunction of `a` and `b`. 
+ A `BOp` representing the binary operation `a XOR b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L230"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L228"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xnor`
 
@@ -290,7 +290,7 @@ xor(a: 'BOp', b: 'BOp') → BOp
 xnor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a` XNOR `b` 
+XNOR - biconditional 
 
 
 
@@ -302,7 +302,7 @@ xnor(a: 'BOp', b: 'BOp') → BOp
 
 
 **Returns:**
- A `BOp` representing the bitwise biconditional of `a` and `b`. 
+ A `BOp` representing the binary operation `a XNOR b`. 
 
 
 ---

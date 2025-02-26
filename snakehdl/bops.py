@@ -93,7 +93,6 @@ class BOp:
 
   def _cse_id(self) -> str: return 'shared_' + str(self._hash).replace('-', 'n')
 
-# I/O operations
 def const_bits(val: np.uint | int, bits: int=1) -> BOp:
   """CONST - constant value
 
@@ -155,87 +154,86 @@ def join(*args: BOp) -> BOp:
   """
   return BOp(BOps.JOIN, src=tuple(args))
 
-# combinational operations
 def neg(a: BOp) -> BOp:
-  """NOT `a`
+  """NOT - negation
 
   Args:
     a: The `BOp` to negate.
 
   Returns:
-    A `BOp` representing the bitwise negation of `a`.
+    A `BOp` representing the unary operation `NOT a`.
   """
   return BOp(BOps.NOT, src=(a,))
 
 def conj(a: BOp, b: BOp) -> BOp:
-  """`a` AND `b`
+  """AND - conjunction
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise conjunction of `a` and `b`.
+    A `BOp` representing the binary operation `a AND b`.
   """
   return BOp(BOps.AND, src=(a,b))
 
 def nand(a: BOp, b: BOp) -> BOp:
-  """`a` NAND `b`
+  """NAND - non-conjunction
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise non-conjunction of `a` and `b`.
+    A `BOp` representing the binary operation `a NAND b`.
   """
   return BOp(BOps.NAND, src=(a,b))
 
 def disj(a: BOp, b: BOp) -> BOp:
-  """`a` OR `b`
+  """OR - disjunction
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise disjunction of `a` and `b`.
+    A `BOp` representing the binary operation `a OR b`.
   """
   return BOp(BOps.OR, src=(a,b))
 
 def nor(a: BOp, b: BOp) -> BOp:
-  """`a` NOR `b`
+  """NOR - non-disjunction
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise non-disjunction of `a` and `b`.
+    A `BOp` representing the binary operation `a NOR b`.
   """
   return BOp(BOps.NOR, src=(a,b))
 
 def xor(a: BOp, b: BOp) -> BOp:
-  """`a` XOR `b`
+  """XOR - exclusive disjunction
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise exclusive disjunction of `a` and `b`.
+    A `BOp` representing the binary operation `a XOR b`.
   """
   return BOp(BOps.XOR, src=(a,b))
 
 def xnor(a: BOp, b: BOp) -> BOp:
-  """`a` XNOR `b`
+  """XNOR - biconditional
 
   Args:
     a: The first operand.
     b: The second operand.
 
   Returns:
-    A `BOp` representing the bitwise biconditional of `a` and `b`.
+    A `BOp` representing the binary operation `a XNOR b`.
   """
   return BOp(BOps.XNOR, src=(a,b))
 
