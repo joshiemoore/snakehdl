@@ -53,7 +53,7 @@ def hack_alu(DATA_BITS: int) -> BOp:
   zr = neg(multiway(BOps.OR, *[bit(out_neg, i) for i in range(DATA_BITS)]))
 
   # HACK ALU!
-  return output(output=out_neg, ng=ng, zr=zr)
+  return output(result=out_neg, ng=ng, zr=zr)
 
 if __name__ == '__main__':
   compiler_classes = {
