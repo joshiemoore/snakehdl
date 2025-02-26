@@ -1,3 +1,11 @@
+"""Binary operations
+
+The `BOp` is the core data structure of snakeHDL. Each `BOp` represents
+a low-level primitive binary operation that must be implemented in hardware.
+
+`BOp` objects are immutable. They should not be modified by the user
+after initialization.
+"""
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum, auto
@@ -6,7 +14,7 @@ import numpy as np
 
 
 class BOps(Enum):
-  """Enum representing a specific type of primitive binary operation.
+  """Enum representing specific types of primitive binary operations.
   """
 
   # I/O operations
