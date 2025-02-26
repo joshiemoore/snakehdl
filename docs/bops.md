@@ -55,7 +55,7 @@ INPUT - named circuit input
 
 
 **Returns:**
- A `BOp` representing a named input 
+ A `BOp` representing a named input. 
 
 
 ---
@@ -123,7 +123,7 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 
 **Args:**
  
- - <b>`*args`</b>:  The list of `BOp`s to join into one signal. Each  arg must have a bit width of 1. 
+ - <b>`*args`</b>:  The `BOp` list to join into one signal. Each  arg must have a bit width of 1. 
 
 
 
@@ -141,14 +141,23 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 neg(a: 'BOp') → BOp
 ```
 
+`NOT a` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The `BOp` to negate. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise negation of `a`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L170"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `conj`
 
@@ -156,14 +165,24 @@ neg(a: 'BOp') → BOp
 conj(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a AND b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise conjunction of `a` and `b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L161"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L182"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nand`
 
@@ -171,14 +190,24 @@ conj(a: 'BOp', b: 'BOp') → BOp
 nand(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a NAND b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise non-conjunction of `a` and `b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L162"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `disj`
 
@@ -186,14 +215,24 @@ nand(a: 'BOp', b: 'BOp') → BOp
 disj(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a OR b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise disjunction of `a` and `b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L206"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nor`
 
@@ -201,14 +240,24 @@ disj(a: 'BOp', b: 'BOp') → BOp
 nor(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a NOR b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise non-disjunction of `a` and `b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L164"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L218"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xor`
 
@@ -216,14 +265,24 @@ nor(a: 'BOp', b: 'BOp') → BOp
 xor(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a XOR b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise exclusive disjunction of `a` and `b`. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L230"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xnor`
 
@@ -231,9 +290,19 @@ xor(a: 'BOp', b: 'BOp') → BOp
 xnor(a: 'BOp', b: 'BOp') → BOp
 ```
 
+`a XNOR b` 
 
 
 
+**Args:**
+ 
+ - <b>`a`</b>:  The first operand. 
+ - <b>`b`</b>:  The second operand. 
+
+
+
+**Returns:**
+ A `BOp` representing the bitwise biconditional of `a` and `b`. 
 
 
 ---

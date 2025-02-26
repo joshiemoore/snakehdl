@@ -115,7 +115,7 @@ def input_bits(name: str, bits: int=1) -> BOp:
     bits: The bit width of the input.
 
   Returns:
-    A `BOp` representing a named input
+    A `BOp` representing a named input.
   """
   return BOp(BOps.INPUT, input_name=name, _bits=bits)
 
@@ -147,7 +147,7 @@ def join(*args: BOp) -> BOp:
   """JOIN - combine `n` 1-bit signals into one `n`-bit signal
 
   Args:
-    *args: The list of `BOp`s to join into one signal. Each
+    *args: The `BOp` list to join into one signal. Each
       arg must have a bit width of 1.
 
   Returns:
@@ -156,13 +156,88 @@ def join(*args: BOp) -> BOp:
   return BOp(BOps.JOIN, src=tuple(args))
 
 # combinational operations
-def neg(a: BOp) -> BOp: return BOp(BOps.NOT, src=(a,))
-def conj(a: BOp, b: BOp) -> BOp: return BOp(BOps.AND, src=(a,b))
-def nand(a: BOp, b: BOp) -> BOp: return BOp(BOps.NAND, src=(a,b))
-def disj(a: BOp, b: BOp) -> BOp: return BOp(BOps.OR, src=(a,b))
-def nor(a: BOp, b: BOp) -> BOp: return BOp(BOps.NOR, src=(a,b))
-def xor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XOR, src=(a,b))
-def xnor(a: BOp, b: BOp) -> BOp: return BOp(BOps.XNOR, src=(a,b))
+def neg(a: BOp) -> BOp:
+  """`NOT a`
+
+  Args:
+    a: The `BOp` to negate.
+
+  Returns:
+    A `BOp` representing the bitwise negation of `a`.
+  """
+  return BOp(BOps.NOT, src=(a,))
+
+def conj(a: BOp, b: BOp) -> BOp:
+  """`a AND b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise conjunction of `a` and `b`.
+  """
+  return BOp(BOps.AND, src=(a,b))
+
+def nand(a: BOp, b: BOp) -> BOp:
+  """`a NAND b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise non-conjunction of `a` and `b`.
+  """
+  return BOp(BOps.NAND, src=(a,b))
+
+def disj(a: BOp, b: BOp) -> BOp:
+  """`a OR b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise disjunction of `a` and `b`.
+  """
+  return BOp(BOps.OR, src=(a,b))
+
+def nor(a: BOp, b: BOp) -> BOp:
+  """`a NOR b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise non-disjunction of `a` and `b`.
+  """
+  return BOp(BOps.NOR, src=(a,b))
+
+def xor(a: BOp, b: BOp) -> BOp:
+  """`a XOR b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise exclusive disjunction of `a` and `b`.
+  """
+  return BOp(BOps.XOR, src=(a,b))
+
+def xnor(a: BOp, b: BOp) -> BOp:
+  """`a XNOR b`
+
+  Args:
+    a: The first operand.
+    b: The second operand.
+
+  Returns:
+    A `BOp` representing the bitwise biconditional of `a` and `b`.
+  """
+  return BOp(BOps.XNOR, src=(a,b))
 
 _BOP_FUNCS = {
   BOps.CONST: const_bits,
