@@ -1,7 +1,8 @@
 """Binary operations
 
 The `BOp` is the core data structure of snakeHDL. Each `BOp` represents
-a low-level primitive binary operation that must be implemented in hardware.
+a low-level primitive binary operation that must be implemented in hardware
+by the compiler backends.
 
 `BOp` objects are immutable. They should not be modified by the user
 after initialization.

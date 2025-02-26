@@ -5,14 +5,14 @@
 # <kbd>module</kbd> `bops`
 Binary operations 
 
-The `BOp` is the core data structure of snakeHDL. Each `BOp` represents a low-level primitive binary operation that must be implemented in hardware. 
+The `BOp` is the core data structure of snakeHDL. Each `BOp` represents a low-level primitive binary operation that must be implemented in hardware by the compiler backends. 
 
 `BOp` objects are immutable. They should not be modified by the user after initialization. 
 
 
 ---
 
-<a href="../snakehdl/bops.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L105"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `const_bits`
 
@@ -37,7 +37,7 @@ CONST - constant value
 
 ---
 
-<a href="../snakehdl/bops.py#L116"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L117"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `input_bits`
 
@@ -62,7 +62,7 @@ INPUT - named circuit input
 
 ---
 
-<a href="../snakehdl/bops.py#L129"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L130"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `output`
 
@@ -86,7 +86,7 @@ OUTPUT - named circuit output
 
 ---
 
-<a href="../snakehdl/bops.py#L141"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L142"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `bit`
 
@@ -111,7 +111,7 @@ BIT - select one bit from `src`
 
 ---
 
-<a href="../snakehdl/bops.py#L153"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L154"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `join`
 
@@ -135,7 +135,7 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 
 ---
 
-<a href="../snakehdl/bops.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `neg`
 
@@ -159,7 +159,7 @@ NOT - negation
 
 ---
 
-<a href="../snakehdl/bops.py#L176"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L177"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `conj`
 
@@ -184,7 +184,7 @@ AND - conjunction
 
 ---
 
-<a href="../snakehdl/bops.py#L188"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L189"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nand`
 
@@ -209,7 +209,7 @@ NAND - non-conjunction
 
 ---
 
-<a href="../snakehdl/bops.py#L200"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L201"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `disj`
 
@@ -234,7 +234,7 @@ OR - disjunction
 
 ---
 
-<a href="../snakehdl/bops.py#L212"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L213"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `nor`
 
@@ -259,7 +259,7 @@ NOR - non-disjunction
 
 ---
 
-<a href="../snakehdl/bops.py#L224"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L225"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xor`
 
@@ -284,7 +284,7 @@ XOR - exclusive disjunction
 
 ---
 
-<a href="../snakehdl/bops.py#L236"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L237"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `xnor`
 
@@ -309,7 +309,7 @@ XNOR - biconditional
 
 ---
 
-<a href="../snakehdl/bops.py#L16"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L17"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOps`
 Enum representing specific types of primitive binary operations.  
@@ -322,7 +322,7 @@ Enum representing specific types of primitive binary operations.
 
 ---
 
-<a href="../snakehdl/bops.py#L38"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOpGroup`
 Utility class for grouping related `BOps`.  
@@ -335,7 +335,7 @@ Utility class for grouping related `BOps`.
 
 ---
 
-<a href="../snakehdl/bops.py#L44"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L45"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOp`
 Primitive binary operations that must be implemented in hardware. 
@@ -368,7 +368,7 @@ __init__(
 
 ---
 
-<a href="../snakehdl/bops.py#L81"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../snakehdl/bops.py#L82"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>method</kbd> `pretty`
 
