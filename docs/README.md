@@ -28,17 +28,17 @@
 ## Functions
 
 - [`bops.bit`](./bops.md#function-bit): BIT - select one bit from `src`
-- [`bops.conj`](./bops.md#function-conj): `a AND b`
+- [`bops.conj`](./bops.md#function-conj): `a` AND `b`
 - [`bops.const_bits`](./bops.md#function-const_bits): CONST - constant value
-- [`bops.disj`](./bops.md#function-disj): `a OR b`
+- [`bops.disj`](./bops.md#function-disj): `a` OR `b`
 - [`bops.input_bits`](./bops.md#function-input_bits): INPUT - named circuit input
 - [`bops.join`](./bops.md#function-join): JOIN - combine `n` 1-bit signals into one `n`-bit signal
-- [`bops.nand`](./bops.md#function-nand): `a NAND b`
-- [`bops.neg`](./bops.md#function-neg): `NOT a`
-- [`bops.nor`](./bops.md#function-nor): `a NOR b`
+- [`bops.nand`](./bops.md#function-nand): `a` NAND `b`
+- [`bops.neg`](./bops.md#function-neg): NOT `a`
+- [`bops.nor`](./bops.md#function-nor): `a` NOR `b`
 - [`bops.output`](./bops.md#function-output): OUTPUT - named circuit output
-- [`bops.xnor`](./bops.md#function-xnor): `a XNOR b`
-- [`bops.xor`](./bops.md#function-xor): `a XOR b`
+- [`bops.xnor`](./bops.md#function-xnor): `a` XNOR `b`
+- [`bops.xor`](./bops.md#function-xor): `a` XOR `b`
 - [`arithmetic.adder`](./components.arithmetic.md#function-adder): N-bit full adder.
 - [`logical.multiway`](./components.logical.md#function-multiway)
 - [`logical.mux`](./components.logical.md#function-mux)

@@ -157,7 +157,7 @@ def join(*args: BOp) -> BOp:
 
 # combinational operations
 def neg(a: BOp) -> BOp:
-  """`NOT a`
+  """NOT `a`
 
   Args:
     a: The `BOp` to negate.
@@ -168,7 +168,7 @@ def neg(a: BOp) -> BOp:
   return BOp(BOps.NOT, src=(a,))
 
 def conj(a: BOp, b: BOp) -> BOp:
-  """`a AND b`
+  """`a` AND `b`
 
   Args:
     a: The first operand.
@@ -180,7 +180,7 @@ def conj(a: BOp, b: BOp) -> BOp:
   return BOp(BOps.AND, src=(a,b))
 
 def nand(a: BOp, b: BOp) -> BOp:
-  """`a NAND b`
+  """`a` NAND `b`
 
   Args:
     a: The first operand.
@@ -192,7 +192,7 @@ def nand(a: BOp, b: BOp) -> BOp:
   return BOp(BOps.NAND, src=(a,b))
 
 def disj(a: BOp, b: BOp) -> BOp:
-  """`a OR b`
+  """`a` OR `b`
 
   Args:
     a: The first operand.
@@ -204,7 +204,7 @@ def disj(a: BOp, b: BOp) -> BOp:
   return BOp(BOps.OR, src=(a,b))
 
 def nor(a: BOp, b: BOp) -> BOp:
-  """`a NOR b`
+  """`a` NOR `b`
 
   Args:
     a: The first operand.
@@ -216,7 +216,7 @@ def nor(a: BOp, b: BOp) -> BOp:
   return BOp(BOps.NOR, src=(a,b))
 
 def xor(a: BOp, b: BOp) -> BOp:
-  """`a XOR b`
+  """`a` XOR `b`
 
   Args:
     a: The first operand.
@@ -228,7 +228,7 @@ def xor(a: BOp, b: BOp) -> BOp:
   return BOp(BOps.XOR, src=(a,b))
 
 def xnor(a: BOp, b: BOp) -> BOp:
-  """`a XNOR b`
+  """`a` XNOR `b`
 
   Args:
     a: The first operand.

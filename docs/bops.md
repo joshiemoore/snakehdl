@@ -141,7 +141,7 @@ JOIN - combine `n` 1-bit signals into one `n`-bit signal
 neg(a: 'BOp') → BOp
 ```
 
-`NOT a` 
+NOT `a` 
 
 
 
@@ -165,7 +165,7 @@ neg(a: 'BOp') → BOp
 conj(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a AND b` 
+`a` AND `b` 
 
 
 
@@ -190,7 +190,7 @@ conj(a: 'BOp', b: 'BOp') → BOp
 nand(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a NAND b` 
+`a` NAND `b` 
 
 
 
@@ -215,7 +215,7 @@ nand(a: 'BOp', b: 'BOp') → BOp
 disj(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a OR b` 
+`a` OR `b` 
 
 
 
@@ -240,7 +240,7 @@ disj(a: 'BOp', b: 'BOp') → BOp
 nor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a NOR b` 
+`a` NOR `b` 
 
 
 
@@ -265,7 +265,7 @@ nor(a: 'BOp', b: 'BOp') → BOp
 xor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a XOR b` 
+`a` XOR `b` 
 
 
 
@@ -290,7 +290,7 @@ xor(a: 'BOp', b: 'BOp') → BOp
 xnor(a: 'BOp', b: 'BOp') → BOp
 ```
 
-`a XNOR b` 
+`a` XNOR `b` 
 
 
 
