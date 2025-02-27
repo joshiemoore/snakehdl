@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import dis
 import sys
 
 

@@ -1,4 +1,4 @@
-from snakehdl import *
+from snakehdl import input_bits, output
 
 
 BITS = 64
