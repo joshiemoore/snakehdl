@@ -49,7 +49,8 @@ are automatically inferred based on the tree structure at compile time.
 Since only twelve primitive BOps are specified by snakeHDL, it is straightforward to
 create new compiler backends.
 
-Wanna use this to implement a Python bytecode interpreter on an FPGA and then make [Snakeware 2](https://github.com/joshiemoore/snakeware) without Linux? Let's build the SNAKE PROCESSOR!!!
+We will use snakeHDL to implement the ALU and control logic for the [Snake Processing Unit](https://github.com/joshiemoore/snakehdl/blob/master/examples/snakepu/design.txt), and then combine
+this with the necessary sequential elements (registers, stack, RAM) to make the snakePU a mega-fast Python coprocessor chip.
 
 ## Binary Operations (BOps)
 The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
@@ -70,7 +71,7 @@ The following binary operations are specified by the snakeHDL API and must be im
 * BIT
 * JOIN
 
-...and that's it! snakeHDL is based on a RISC-type philosophy.
+...and that's it!
 Check out the [BOp documentation](https://github.com/joshiemoore/snakehdl/blob/master/docs/bops.md) to learn more or look at the [examples](https://github.com/joshiemoore/snakehdl/tree/master/examples) to see BOps in action.
 
 ## Compiler Targets
@@ -95,3 +96,4 @@ The following is a list of current and planned compiler optimizations:
 * Add more components to component library
 * Add useful examples demonstrating snakeHDL functionality
 * Optimize compiler output (constant folding, gate pruning, etc.)
+* ***MAKE THE snakePU REAL***
