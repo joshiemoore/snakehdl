@@ -16,7 +16,7 @@ snakePU MAIN REGISTERS:
      IR - Instruction register
 
   -- data
-     AR - Argument register - second byte of opcode (32bit)
+     AR - Argument register - second byte of opcode (64bit)
 
 INSTRUCTION PHASES:
   1. Fetch opcode -> IR, AR
