@@ -1,0 +1,111 @@
+snakePU (Snake Processing Unit) Rough Initial Design Doc
+Coming Soon(TM) To A Datacenter Near You
+
+
+The basic idea is to implement a Python bytecode interpreter in hardware ("snakePU") to
+  serve as a mega-fast Python coprocessor chip.
+
+More specifically, we create a stack-based RISC microarchitecture ("microsnake") so
+  that we can implement the complex behaviors specified by each Python opcode as a series
+  of elementary microinstructions across multiple clock cycles.
+
+
+snakePU MAIN REGISTERS:
+  -- control
+     PC - Program counter (64bit)
+     IR - Instruction register
+
+  -- data
+     AR - Argument register - second byte of opcode (64bit)
+
+INSTRUCTION PHASES:
+  1. Fetch opcode -> IR, AR
+  2. Decode opcode -> load ROM address of microroutine (opcode << 4) into MPC
+  3. Execute microroutine starting at [MPC]
+
+
+== MICROCODE ("microsnake") ==
+
+The Python opcode is just an index into a list of microroutines stored in (3 * 16 * 256) bytes of ROM
+  (microroutines can be at most 16 instructions long, and there are 256 Python opcodes max (cuz it's BYTEcode))
+
+These microroutines enable us to implement the complex behavior specified by the Python opcode across multiple clock cycles
+
+Each microinstruction is 24 bits and each bit directly represents a signal that controls various parts of the processor
+  (i.e store destinations, ALU ops, etc)
+
+A key benefit of this approach is that we don't need to change the hardware as the opcode values change between
+  Python versions. We can just update the layout of the microroutine list in ROM to put each microroutine at the
+  correct index, and this can happen automatically when we're flashing the chip.
+
+
+MICROSNAKE REGISTERS:
+  -- control
+     MPC - Microprogram counter (12bit) (16 * 256 total possible instructions)
+
+  -- data
+     SP - Stack pointer (64bit)
+     TMP[0-3] - temporary registers (64bit)
+
+
+*** microsnake instruction set ***
+
+-- stack operations
+PUSH src
+POKE src
+POP dst
+PEEK dst
+
+-- control operations
+RET - unconditionally exit microroutine (opcode 0x0000)
+SZ - skip next instruction if STACK_TOP is zero (opcode 0x0001)
+SNZ - skip next instruction if STACK_TOP is nonzero (opcode 0x0002)
+
+-- load/store operations
+LGLOBAL (load/store in global table)
+SGLOBAL
+LLOCAL (load/store in local frame)
+SLOCAL
+LCONST (load from constant table)
+
+-- arithmetic operations
+ADD src
+MUL src
+[TODO...]
+
+-- logical operations
+NOT
+AND src
+XOR src
+OR src
+SHL src (shift left - where src is the number of bits to shift)
+SHR src (shift right - same as above)
+[TODO...]
+
+
+
+SRC/DST registers
+PC
+AR
+TMP0
+TMP1
+TMP2
+TMP3
+RAM - treat the value at the top of the stack as a pointer into RAM
+
+
+CONTROL SIGNALS (microinstruction layout, LSB to MSB):
+  1 - SNT
+  1 - SNF
+  1 - W_PC
+  1 - W_AR
+  1 - W_RAM
+  1 - W_TMP0
+  1 - W_TMP1
+  1 - W_TMP2
+  1 - W_TMP3
+  1 - S_PUSH
+  1 - S_POP
+  2 - D_SEL - select STACK_IN data source (ALU_OUT, GLOBALS[AR], LOCALS[AR], CONST[AR])
+  5 - ALU_OP (decoded into ALU op inputs)
+  6 - RESERVED
