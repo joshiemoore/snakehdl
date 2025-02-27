@@ -78,7 +78,7 @@ NOT
 AND src
 XOR src
 OR src
-SHL src (shift left - where src is the number of bits to shift)
+SHL src (shift left - where src contains the number of bits to shift)
 SHR src (shift right - same as above)
 [TODO...]
 
