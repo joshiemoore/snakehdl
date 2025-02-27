@@ -95,8 +95,8 @@ RAM - treat the value at the top of the stack as a pointer into RAM
 
 
 CONTROL SIGNALS (microinstruction layout, LSB to MSB):
-  1 - SNT
-  1 - SNF
+  1 - SZ
+  1 - SNZ
   1 - W_PC
   1 - W_AR
   1 - W_RAM
