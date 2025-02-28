@@ -3,9 +3,9 @@
 <a href="../snakehdl/bops.py#L0"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 # <kbd>module</kbd> `bops`
-Binary operations 
+Boolean operations 
 
-The `BOp` is the core data structure of snakeHDL. Each `BOp` represents a low-level primitive binary operation that must be implemented in hardware by the compiler backends. 
+The `BOp` is the core data structure of snakeHDL. Each `BOp` represents a low-level primitive boolean operation that must be implemented in hardware by the compiler backends. 
 
 `BOp` objects are immutable. They should not be modified by the user after initialization. 
 
@@ -179,7 +179,7 @@ AND - conjunction
 
 
 **Returns:**
- A `BOp` representing the binary operation `a AND b`. 
+ A `BOp` representing the boolean operation `a AND b`. 
 
 
 ---
@@ -204,7 +204,7 @@ NAND - non-conjunction
 
 
 **Returns:**
- A `BOp` representing the binary operation `a NAND b`. 
+ A `BOp` representing the boolean operation `a NAND b`. 
 
 
 ---
@@ -229,7 +229,7 @@ OR - disjunction
 
 
 **Returns:**
- A `BOp` representing the binary operation `a OR b`. 
+ A `BOp` representing the boolean operation `a OR b`. 
 
 
 ---
@@ -254,7 +254,7 @@ NOR - non-disjunction
 
 
 **Returns:**
- A `BOp` representing the binary operation `a NOR b`. 
+ A `BOp` representing the boolean operation `a NOR b`. 
 
 
 ---
@@ -279,7 +279,7 @@ XOR - exclusive disjunction
 
 
 **Returns:**
- A `BOp` representing the binary operation `a XOR b`. 
+ A `BOp` representing the boolean operation `a XOR b`. 
 
 
 ---
@@ -304,7 +304,7 @@ XNOR - biconditional
 
 
 **Returns:**
- A `BOp` representing the binary operation `a XNOR b`. 
+ A `BOp` representing the boolean operation `a XNOR b`. 
 
 
 ---
@@ -312,7 +312,7 @@ XNOR - biconditional
 <a href="../snakehdl/bops.py#L17"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOps`
-Enum representing specific types of primitive binary operations.  
+Enum representing specific types of primitive boolean operations.  
 
 
 
@@ -338,7 +338,7 @@ Utility class for grouping related `BOps`.
 <a href="../snakehdl/bops.py#L45"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>class</kbd> `BOp`
-Primitive binary operations that must be implemented in hardware. 
+Primitive boolean operations that must be implemented in hardware. 
 
 Users should not instantiate `BOp` objects directly, but rather create them through the API functions available in this module. 
 

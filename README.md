@@ -52,8 +52,8 @@ create new compiler backends.
 We will use snakeHDL to implement the ALU and control logic for the [Snake Processing Unit](https://github.com/joshiemoore/snakehdl/blob/master/examples/snakepu/design.txt), and then combine
 this with the necessary sequential elements (registers, stack, RAM) to make the snakePU a mega-fast Python coprocessor chip.
 
-## Binary Operations (BOps)
-The following binary operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
+## Boolean Operations (BOps)
+The following boolean operations are specified by the snakeHDL API and must be implemented in hardware (or simulated hardware) by the compiler backends:
 
 ### Combinational Operations
 * AND

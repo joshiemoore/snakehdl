@@ -1,7 +1,7 @@
-"""Binary operations
+"""Boolean operations
 
 The `BOp` is the core data structure of snakeHDL. Each `BOp` represents
-a low-level primitive binary operation that must be implemented in hardware
+a low-level primitive boolean operation that must be implemented in hardware
 by the compiler backends.
 
 `BOp` objects are immutable. They should not be modified by the user
@@ -15,7 +15,7 @@ import numpy as np
 
 
 class BOps(Enum):
-  """Enum representing specific types of primitive binary operations.
+  """Enum representing specific types of primitive boolean operations.
   """
 
   # I/O operations
@@ -44,7 +44,7 @@ class BOpGroup:
 
 @dataclass(frozen=True)
 class BOp:
-  """Primitive binary operations that must be implemented in hardware.
+  """Primitive boolean operations that must be implemented in hardware.
 
   Users should not instantiate `BOp` objects directly, but rather create
   them through the API functions available in this module.
@@ -182,7 +182,7 @@ def conj(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a AND b`.
+    A `BOp` representing the boolean operation `a AND b`.
   """
   return BOp(BOps.AND, src=(a,b))
 
@@ -194,7 +194,7 @@ def nand(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a NAND b`.
+    A `BOp` representing the boolean operation `a NAND b`.
   """
   return BOp(BOps.NAND, src=(a,b))
 
@@ -206,7 +206,7 @@ def disj(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a OR b`.
+    A `BOp` representing the boolean operation `a OR b`.
   """
   return BOp(BOps.OR, src=(a,b))
 
@@ -218,7 +218,7 @@ def nor(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a NOR b`.
+    A `BOp` representing the boolean operation `a NOR b`.
   """
   return BOp(BOps.NOR, src=(a,b))
 
@@ -230,7 +230,7 @@ def xor(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a XOR b`.
+    A `BOp` representing the boolean operation `a XOR b`.
   """
   return BOp(BOps.XOR, src=(a,b))
 
@@ -242,7 +242,7 @@ def xnor(a: BOp, b: BOp) -> BOp:
     b: The second operand.
 
   Returns:
-    A `BOp` representing the binary operation `a XNOR b`.
+    A `BOp` representing the boolean operation `a XNOR b`.
   """
   return BOp(BOps.XNOR, src=(a,b))
 
