@@ -269,6 +269,10 @@ class TestValidations:
     with pytest.raises(RuntimeError):
       PythonCompiler(output(a=input_bits(None))).compile()
 
+  def test_validation_bits(self):
+    with pytest.raises(RuntimeError):
+      PythonCompiler(output(a=const_bits(0, 0))).compile()
+
 class TestOptimizations:
   def test_opt_populate_shared(self):
     x = xor(input_bits('a'), input_bits('b'))

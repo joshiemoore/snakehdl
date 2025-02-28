@@ -60,7 +60,7 @@ class Compiler:
   def _assign_bits(self, op: BOp) -> int:
     if op.op is BOps.INPUT or op.op is BOps.CONST:
       if op._bits is None: raise RuntimeError(f'{op.op} missing bits\n' + str(op))
-      if op._bits < 1 or op._bits > 64: raise RuntimeError(f'{op.op} bits must be 1-64\n' + str(op))
+      if op._bits < 1: raise RuntimeError(f'{op.op} bits must be > 0\n' + str(op))
       return op._bits
     elif op.op is BOps.BIT:
       res = self._assign_bits(op.src[0])
