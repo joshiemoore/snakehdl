@@ -8,7 +8,7 @@ Compile your circuit to Verilog, VHDL, or a dill-pickled Python function!
 snakeHDL is Free Software licensed under the terms of the MIT License. The project is still early in development,
 so bugs and general instability may occur.
 
-DEMO VIDEO: [YouTube](https://www.youtube.com/watch?v=aDuJA2l15ew)
+DEMO VIDEO: [YouTube](https://youtu.be/SjTPqguMc84)
 
 Join us on [Discord](https://discord.gg/Vc6BrkTW)!
 
