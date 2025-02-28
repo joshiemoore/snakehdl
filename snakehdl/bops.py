@@ -89,7 +89,7 @@ class BOp:
       elif self.op is BOps.CONST: out += nl + (indent+1)*sep + f'val={self.val},'
     elif self.op is BOps.OUTPUT:
       if self.outputs is not None:
-        for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={v.pretty(indent=indent + 2, whitespace=whitespace)},'
+        for k,v in self.outputs.items(): out += nl + (indent+1)*sep + f'{k}={nl + v.pretty(indent=indent + 2, whitespace=whitespace)},'
     else:
       for v in self.src: out += nl + f'{v.pretty(indent=indent + 1, whitespace=whitespace)},'
     if self.op is BOps.BIT: out += nl + (indent+1)*sep + f'index={self.bit_index},'
