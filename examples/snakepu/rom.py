@@ -1,2 +1,4 @@
-def main():
-  return 1337
+def asdf(x, y):
+  return x + y
+
+asdf(1,2)

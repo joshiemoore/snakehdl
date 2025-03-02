@@ -12,100 +12,169 @@ More specifically, we create a stack-based RISC microarchitecture ("microsnake")
 
 snakePU MAIN REGISTERS:
   -- control
-     PC - Program counter (64bit)
-     IR - Instruction register
+     PC - Program counter (word)
+          bits 2 -> n index words within Firmware ROM
+          low two bits index individual bytecode instructions (opcode + arg) with muxes for loading into IR and ARG
+     IR - Instruction register (byte)
 
   -- data
-     AR - Argument register - second byte of opcode (64bit)
+     ARG - Argument register - second byte of opcode (4 byte)
 
 INSTRUCTION PHASES:
-  1. Fetch opcode -> IR, AR
+  1. Fetch opcode -> IR, ARG
   2. Decode opcode -> load ROM address of microroutine (opcode << 4) into MPC
   3. Execute microroutine starting at [MPC]
 
 
 == MICROCODE ("microsnake") ==
 
-The Python opcode is just an index into a list of microroutines stored in (3 * 16 * 256) bytes of ROM
+The Python opcode is just an index into a list of microroutines stored in ROM (16 * 256 instruction entries)
   (microroutines can be at most 16 instructions long, and there are 256 Python opcodes max (cuz it's BYTEcode))
 
 These microroutines enable us to implement the complex behavior specified by the Python opcode across multiple clock cycles
 
-Each microinstruction is 24 bits and each bit directly represents a signal that controls various parts of the processor
+Each microinstruction is 4 bytes, and each bit directly represents a signal that controls various parts of the processor
   (i.e store destinations, ALU ops, etc)
 
 A key benefit of this approach is that we don't need to change the hardware as the opcode values change between
   Python versions. We can just update the layout of the microroutine list in ROM to put each microroutine at the
   correct index, and this can happen automatically when we're flashing the chip.
 
+constants (including Python bytecode) are stored separately in the ROM chip, after the microcode section
+
 
 MICROSNAKE REGISTERS:
   -- control
-     MPC - Microprogram counter (12bit) (16 * 256 total possible instructions)
+     MPC - Microprogram counter (14bit) (index into microcode ROM)
+           First 256 microroutines implement internal processor functionality (init, etc.)
+           Second 256 microroutines implement the functionality of Python opcodes
 
   -- data
-     SP - Stack pointer (64bit)
-     TMP[0-3] - temporary registers (64bit)
+     SP - Stack pointer (word)
+     FP - Frame pointer (word)
+     ADDR - address register (word) for arbitrary RAM reads/writes
+     TMP[0-3] - temporary registers (word)
+     CMP - stores comparison results
 
 
 *** microsnake instruction set ***
 
--- stack operations
+src can be a register or an immediate value
+
+-- register operations
+MOV dst, src
+
+-- stack operations (stack starts at memory address 0)
 PUSH src
 POKE src
 POP dst
 PEEK dst
 
 -- control operations
-RET - unconditionally exit microroutine (opcode 0x0000)
-SZ - skip next instruction if STACK_TOP is zero (opcode 0x0001)
-SNZ - skip next instruction if STACK_TOP is nonzero (opcode 0x0002)
+RET - exit microroutine (uopcode 0x0000)
+JMP <loc>
+JZ <loc>
+JNZ <loc>
 
--- load/store operations
-LGLOBAL (load/store in global table)
-SGLOBAL
-LLOCAL (load/store in local frame)
-SLOCAL
-LCONST (load from constant table)
+-- comparison operations
+EQ a, b
+GT a, b      (a > b)
+LT a, b      (a < b)
+GEQ a, b     (a >= b)
+LEQ a, b     (a <= b)
 
 -- arithmetic operations
-ADD src
-MUL src
+ADD dst, a, b
+SUB dst, a, b      (a-b)
+MUL dst, a, b
+DIV dst, a, b      (a / b)
 [TODO...]
 
 -- logical operations
-NOT
-AND src
-XOR src
-OR src
-SHL src (shift left - where src contains the number of bits to shift)
-SHR src (shift right - same as above)
+NOT dst, a
+AND dst, a, b
+XOR dst, a, b
+OR dst, a, b
+SHL dst, a, b (shift left - where b is the number of bits to shift)
+SHR dst, a, b (shift right - same as above)
 [TODO...]
 
 
+DST/A/B operand values
+ 0 - 0
+ 1 - IMM
+ 2 - IR
+ 3 - SP
+ 4 - PEEK/POKE    (stack top)
+ 5 - FP
+ 6 - ARG
+ 7 - PC
+ 8 - ADDR
+ 9 - RAM[ADDR]
+10 - ROM[ADDR]
+11 - TMP0
+12 - TMP1
+13 - TMP2
+14 - TMP3
 
-SRC/DST registers
-PC
-AR
-TMP0
-TMP1
-TMP2
-TMP3
-RAM - treat the value at the top of the stack as a pointer into RAM
-
+CMP operand values
+ 0 - no comparison
+ 1 - EQ
+ 2 - GT
+ 3 - LT
+ 4 - GEQ
+ 5 - LEQ
 
 CONTROL SIGNALS (microinstruction layout, LSB to MSB):
-  1 - SZ
-  1 - SNZ
-  1 - W_PC
-  1 - W_AR
-  1 - W_RAM
-  1 - W_TMP0
-  1 - W_TMP1
-  1 - W_TMP2
-  1 - W_TMP3
-  1 - S_PUSH
-  1 - S_POP
-  2 - D_SEL - select STACK_IN data source (ALU_OUT, GLOBALS[AR], LOCALS[AR], CONST[AR])
+  If WRITE_STACK is 1, then we are writing from SRC to STACK_TOP
+  If WRITE_STACK is 0 and a SRC bit is set, we are writing from SRC to STACK_TOP
+
   5 - ALU_OP (decoded into ALU op inputs)
-  6 - RESERVED
+  1 - INC_SP
+  1 - DEC_SP
+
+  4 - DST
+  4 - A
+  4 - B
+
+  1 - JZ
+  1 - JNZ
+
+  3 - comparison ops
+
+  8 - reserved
+
+MICROCODE ROM LAYOUT (4-byte addressed):
+  uinst[16 * 256] snake_microroutines: microroutines for internal processor functions that
+                                       don't correspond to python bytecode ops (init, etc.)
+  uinst[16 * 256] py_microroutines: microroutine table for implementing python bytecode
+
+FIRMWARE ROM LAYOUT (word-addressed):
+  word* entry: pointer to the first instruction in the program
+  word nglobals: total number of globals
+  word nconsts: total number of constants
+  word*[nconsts]: constant table (pointers to constant values)
+  word[] constants: word-aligned constant data
+
+OBJECT STRUCTURE:
+  word type: constant type
+  word n: nlocals for code objects, length for non-primitives like list and dict
+  word(*) val: object's value for primitive types (int, float, bool)
+            heap pointer for non-primitive objects
+            Firmware ROM pointer for consts (including code objects)
+
+FRAME STRUCTURE:
+  word* return_address
+  word* prev_fp
+  word nlocals
+  object[nlocals] locals: list of local objects
+
+
+For the root frame, "locals" is actually globals
+So any non-root frame that references globals will be referencing the root frame's locals
+
+Object structures are stored directly in the frame on the stack,
+  but I think we will need a MAU (Memory Allocation Unit) to allocate heap memory for objects of non-primitive type
+
+
+EXCEPTIONS: TODO

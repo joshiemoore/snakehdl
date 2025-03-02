@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import dis
 import sys
 
 
@@ -15,3 +16,4 @@ if __name__ == '__main__':
   # TODO add initial global table to ROM
   with open(source, 'rb') as f: co = compile(f.read(), source, 'exec')
   with open(dest, 'wb') as f: f.write(co.co_code)
+  dis.dis(co)
