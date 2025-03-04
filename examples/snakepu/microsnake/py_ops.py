@@ -2,18 +2,18 @@
 
 
 POP_TOP = '''
-  sub sp, sp, 1
+  sub sp, 1
   ret
 '''
 
 LOAD_CONST = '''
   mov addr, arg
-  add tmp0, tmp0, 3
+  add tmp0, 3
   push ram
   geq ram, $PYOBJTYPE_FUNCTION
-  add addr, addr, 1
+  add addr, 1
   push ram
-  add addr, addr, 1
+  add addr, 1
   jz prim
   push addr
   ret
@@ -26,24 +26,24 @@ MAKE_FUNCTION = '''
   ; we already have the function object on the stack through
   ; LOAD_CONST, so just move the stack to it
   ; TODO is there anything else we need to do here?
-  sub sp, sp, 4
+  sub sp, 4
   ret
 '''
 
 CALL_FUNCTION = '''
-  ; TODO fix this, function object is on the stack
+  ; TODO fix this, function object is already on the stack
   mov addr, sp
   push pc
   push fp
   mov fp, addr
-  sub addr, addr, arg
+  sub addr, arg
   mov addr, ram
-  add addr, addr, 1
+  add addr, 1
   mov pc, ram
-  add addr, addr, 1
+  add addr, 1
   mov tmp0, ram
-  mul tmp0, tmp0, 3
-  add sp, sp, tmp0
+  mul tmp0, 3
+  add sp, tmp0
   ret
 '''
 

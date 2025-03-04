@@ -76,7 +76,7 @@ JMP <loc>
 JZ <loc>
 JNZ <loc>
 
--- comparison operations
+-- comparison operations (result stored in CMP register)
 EQ a, b
 GT a, b      (a > b)
 LT a, b      (a < b)
@@ -84,19 +84,19 @@ GEQ a, b     (a >= b)
 LEQ a, b     (a <= b)
 
 -- arithmetic operations
-ADD dst, a, b
-SUB dst, a, b      (a-b)
-MUL dst, a, b
-DIV dst, a, b      (a / b)
+ADD dst, src
+SUB dst, src      (dst-src)
+MUL dst, src
+DIV dst, src      (dst / src)
 [TODO...]
 
 -- logical operations
-NOT dst, a
-AND dst, a, b
-XOR dst, a, b
-OR dst, a, b
-SHL dst, a, b (shift left - where b is the number of bits to shift)
-SHR dst, a, b (shift right - same as above)
+NOT dst
+AND dst, src
+XOR dst, src
+OR dst, src
+SHL dst, src (shift left - where b is the number of bits to shift)
+SHR dst, src (shift right - same as above)
 [TODO...]
 
 
@@ -129,13 +129,12 @@ CONTROL SIGNALS (microinstruction layout, LSB to MSB):
   If WRITE_STACK is 1, then we are writing from SRC to STACK_TOP
   If WRITE_STACK is 0 and a SRC bit is set, we are writing from SRC to STACK_TOP
 
-  5 - ALU_OP (decoded into ALU op inputs)
+  5 - ALU_OP (decoded into ALU control inputs)
   1 - INC_SP
   1 - DEC_SP
 
   4 - DST
-  4 - A
-  4 - B
+  4 - SRC
 
   1 - JZ
   1 - JNZ
