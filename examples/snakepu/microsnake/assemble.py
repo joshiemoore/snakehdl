@@ -7,10 +7,11 @@ from typing import List
 
 
 class Register(Enum):
+  NONE = 0
   IMM = auto()
   IR = auto()
   SP = auto()
-  STACK_TOP = auto()
+  STACK = auto()
   FP = auto()
   ARG = auto()
   PC = auto()
@@ -39,18 +40,37 @@ class ALUOp(Enum):
   SHL = auto()
   SHR = auto()
 
+class CMPOp(Enum):
+  NONE = 0
+  EQ = auto()
+  GT = auto()
+  LT = auto()
+  GEQ = auto()
+  LEQ = auto()
+
+class JMPOp(Enum):
+  NONE = 0
+  RET = auto()
+  JMP = auto()
+  JZ = auto()
+  JNZ = auto()
+
 @dataclass(frozen=True)
 class UInst:
-  ALU_OP: ALUOp
   DST: Register
   SRC: Register | int
-  # TODO rest of instruction fields
+  ALU_OP: ALUOp = ALUOp.NONE
+  JMP_OP: JMPOp = JMPOp.NONE
+  CMP_OP: CMPOp = CMPOp.NONE
+  INC_SP: bool = False
+  DEC_SP: bool = False
+  IMM: int = 0
 
 def parse_uinst(inst: str) -> UInst:
-  inst = inst.strip().upper()
-  sp_idx: int = inst.index(' ')
-  op: str = inst[:sp_idx]
-  args: List[str] = inst[sp_idx + 1:].replace(' ', '').split(',')
+  inst_u = inst.strip().upper()
+  sp_idx: int = inst_u.index(' ')
+  op: str = inst_u[:sp_idx]
+  args: List[str] = inst_u[sp_idx + 1:].replace(' ', '').split(',')
   args_enc: List[Register | int] = []
   for arg in args:
     if arg in Register.__members__: args_enc.append(Register[arg])
@@ -59,10 +79,9 @@ def parse_uinst(inst: str) -> UInst:
   print(args_enc)
   # TODO create and return UInst instance with populated fields
   return UInst(
-    ALUOp.NONE,
     Register.IMM,
     Register.IMM,
   )
 
 if __name__ == '__main__':
-  parse_uinst('mov sp, arg')
+  parse_uinst('eq stack, 0')

@@ -117,7 +117,7 @@ DST/A/B operand values
 13 - TMP2
 14 - TMP3
 
-CMP operand values
+CMP op values
  0 - no comparison
  1 - EQ
  2 - GT
@@ -125,23 +125,23 @@ CMP operand values
  4 - GEQ
  5 - LEQ
 
-CONTROL SIGNALS (microinstruction layout, LSB to MSB):
-  If WRITE_STACK is 1, then we are writing from SRC to STACK_TOP
-  If WRITE_STACK is 0 and a SRC bit is set, we are writing from SRC to STACK_TOP
+JMP op values
+ 0 - no jump
+ 1 - JMP
+ 2 - JZ
+ 3 - JNZ
 
+CONTROL SIGNALS (microinstruction layout, LSB to MSB):
   5 - ALU_OP (decoded into ALU control inputs)
+  4 - JMP OP
+  3 - CMP OP
   1 - INC_SP
   1 - DEC_SP
 
   4 - DST
   4 - SRC
 
-  1 - JZ
-  1 - JNZ
-
-  3 - comparison ops
-
-  8 - reserved
+  10 - immediate value
 
 MICROCODE ROM LAYOUT (4-byte addressed):
   uinst[16 * 256] snake_microroutines: microroutines for internal processor functions that
