@@ -28,7 +28,7 @@ INSTRUCTION PHASES:
 
 == MICROCODE ("microsnake") ==
 
-The Python opcode is just an index into a list of microroutines stored in ROM (16 * 256 instruction entries)
+The Python opcode is just an index into a list of microroutines stored in Microcode ROM (16 * 256 instruction entries)
   (microroutines can be at most 16 instructions long, and there are 256 Python opcodes max (cuz it's BYTEcode))
 
 These microroutines enable us to implement the complex behavior specified by the Python opcode across multiple clock cycles
@@ -40,7 +40,7 @@ A key benefit of this approach is that we don't need to change the hardware as t
   Python versions. We can just update the layout of the microroutine list in ROM to put each microroutine at the
   correct index, and this can happen automatically when we're flashing the chip.
 
-constants (including Python bytecode) are stored separately in the ROM chip, after the microcode section
+constants (including Python bytecode) are stored separately in Firmware ROM
 
 
 MICROSNAKE REGISTERS:
