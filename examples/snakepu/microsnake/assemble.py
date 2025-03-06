@@ -4,7 +4,7 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List
-from uroutines.python import PY_UROUTINES
+#from uroutines.python import PY_UROUTINES
 
 
 class Register(Enum):
@@ -68,6 +68,16 @@ class UInst:
   DEC_SP: bool = False
   IMM: int = 0
 
+def nargs_error(inst: str) -> None:
+  raise RuntimeError('incorrect number of operands: ' + inst)
+
+def dst_error(inst: str) -> None:
+  raise RuntimeError('dst must be a register: ' + inst)
+
+def validate_dst(inst: str, dst: Register | int) -> Register:
+  if type(dst) is not Register or dst is Register.IMM: raise RuntimeError('dst must be a register: ' + inst)
+  return dst
+
 def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
   try:
     sp_idx: int = inst.index(' ')
@@ -80,15 +90,18 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
   for arg in args:
     if arg in Register.__members__: args_enc.append(Register[arg])
     else:
-      if arg in labels: args_enc.append(labels[arg])
-      elif arg[0] == '$': args_enc.append(0) # TODO resolve builtin variables
-      else: args_enc.append(int(arg))
-  # TODO create and return UInst instance with populated fields
-  return UInst(
-    op,
-    Register.IMM,
-    Register.IMM,
-  )
+      try:
+        args_enc.append(int(arg))
+      except ValueError:
+        if arg in labels: args_enc.append(labels[arg])
+        elif arg[0] == '$': args_enc.append(0) # TODO resolve builtin variables
+  if op == 'MOV':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src)
+  raise RuntimeError('invalid instruction: ' + inst)
 
 def assemble_uroutine(routine: str) -> List[UInst]:
   # initial pass over uinsts to resolve labels and remove comments/empty lines
@@ -110,5 +123,6 @@ def assemble_uroutine(routine: str) -> List[UInst]:
   return res
 
 if __name__ == '__main__':
-  for uname in PY_UROUTINES:
-    assemble_uroutine(PY_UROUTINES[uname])
+  #for uname in PY_UROUTINES:
+  #  assemble_uroutine(PY_UROUTINES[uname])
+  print(parse_uinst('MOV TMP0, TMP1'))
