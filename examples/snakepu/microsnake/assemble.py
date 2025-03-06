@@ -103,8 +103,6 @@ def assemble_uroutine(routine: str) -> List[UInst]:
       continue
     uinsts.append(uinst_u)
     idx += 1
-  print(uinsts)
-  print(labels)
   res: List[UInst] = []
   for uinst in uinsts:
     if uinst[-1] == ':': continue
@@ -113,5 +111,4 @@ def assemble_uroutine(routine: str) -> List[UInst]:
 
 if __name__ == '__main__':
   for uname in PY_UROUTINES:
-    print(uname)
     assemble_uroutine(PY_UROUTINES[uname])
