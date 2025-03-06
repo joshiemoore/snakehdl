@@ -95,12 +95,18 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
       except ValueError:
         if arg in labels: args_enc.append(labels[arg])
         elif arg[0] == '$': args_enc.append(0) # TODO resolve builtin variables
+  # TODO DRY this up
   if op == 'MOV':
     if len(args_enc) != 2: nargs_error(inst)
     src = args_enc[1]
     dst = validate_dst(inst, args_enc[0])
     if type(src) is Register: return UInst(op, dst, src)
     elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src)
+  elif op == 'PUSH':
+    if len(args_enc) != 1: nargs_error(inst)
+    src = args_enc[0]
+    if type(src) is Register: return UInst(op, Register.STACK, src, INC_SP=True)
+    elif type(src) is int: return UInst(op, Register.STACK, Register.IMM, INC_SP=True, IMM=src)
   raise RuntimeError('invalid instruction: ' + inst)
 
 def assemble_uroutine(routine: str) -> List[UInst]:
@@ -125,4 +131,4 @@ def assemble_uroutine(routine: str) -> List[UInst]:
 if __name__ == '__main__':
   #for uname in PY_UROUTINES:
   #  assemble_uroutine(PY_UROUTINES[uname])
-  print(parse_uinst('MOV TMP0, TMP1'))
+  print(parse_uinst('PUSH TMP0'))
