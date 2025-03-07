@@ -81,8 +81,10 @@ def validate_dst(inst: str, dst: Register | int) -> Register:
 
 def resolve_loc(inst: str, loc: int | str, labels: dict[str, int]) -> int:
   if type(loc) is int: return loc
-  if loc not in labels: raise RuntimeError('label not found: ' + inst)
-  return labels[loc]
+  if type(loc) is str:
+    if loc not in labels: raise RuntimeError('label not found: ' + inst)
+    return labels[loc]
+  raise RuntimeError('invalid loc ' + inst)
 
 def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
   try:
@@ -133,14 +135,17 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
     return UInst(op, Register.NONE, Register.NONE, JMP_OP=JMPOp.RET)
   elif op == 'JMP':
     if len(args_enc) != 1: nargs_error(inst)
+    if type(args_enc[0]) is not int: raise RuntimeError('jump loc must be immediate or label: ' + inst)
     loc = resolve_loc(inst, args_enc[0], labels)
     return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JMP)
   elif op == 'JZ':
     if len(args_enc) != 1: nargs_error(inst)
+    if type(args_enc[0]) is not int: raise RuntimeError('jump loc must be immediate or label: ' + inst)
     loc = resolve_loc(inst, args_enc[0], labels)
     return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JZ)
   elif op == 'JNZ':
     if len(args_enc) != 1: nargs_error(inst)
+    if type(args_enc[0]) is not int: raise RuntimeError('jump loc must be immediate or label: ' + inst)
     loc = resolve_loc(inst, args_enc[0], labels)
     return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JNZ)
   elif op == 'EQ':
