@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # assemble.py - assembler for snakePU microroutines
+# TODO write tests!
 
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -102,6 +103,7 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
         elif arg[0] == '$': args_enc.append(0) # TODO resolve builtin variables
   # TODO DRY this up
   # we can DRY CMP and JMP ops at least
+  # also ALU ops can be DRY'd up
   if op == 'MOV':
     if len(args_enc) != 2: nargs_error(inst)
     src = args_enc[1]
@@ -171,6 +173,66 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
     dst = validate_dst(inst, args_enc[0])
     if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.LEQ)
     elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.LEQ)
+  elif op == 'ADD':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.ADD)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.ADD)
+  elif op == 'SUB':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.SUB)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.SUB)
+  elif op == 'MUL':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.MUL)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.MUL)
+  elif op == 'DIV':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.DIV)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.DIV)
+  elif op == 'NOT':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.NOT)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.NOT)
+  elif op == 'AND':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.AND)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.AND)
+  elif op == 'XOR':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.XOR)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.XOR)
+  elif op == 'OR':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.OR)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.OR)
+  elif op == 'SHL':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.SHL)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.SHL)
+  elif op == 'SHR':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, ALU_OP=ALUOp.SHR)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, ALU_OP=ALUOp.SHR)
   raise RuntimeError('invalid instruction: ' + inst)
 
 def assemble_uroutine(routine: str) -> List[UInst]:
@@ -195,4 +257,4 @@ def assemble_uroutine(routine: str) -> List[UInst]:
 if __name__ == '__main__':
   #for uname in PY_UROUTINES:
   #  assemble_uroutine(PY_UROUTINES[uname])
-  print(parse_uinst('LEQ TMP0, 0'))
+  print(parse_uinst('SHR TMP0, TMP1'))

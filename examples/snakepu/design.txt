@@ -91,7 +91,7 @@ DIV dst, src      (dst / src)
 [TODO...]
 
 -- logical operations
-NOT dst
+NOT dst, src   (unary - NOT(src) gets stored in dst)
 AND dst, src
 XOR dst, src
 OR dst, src
