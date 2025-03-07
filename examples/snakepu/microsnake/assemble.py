@@ -78,6 +78,11 @@ def validate_dst(inst: str, dst: Register | int) -> Register:
   if type(dst) is not Register or dst is Register.IMM: raise RuntimeError('dst must be a register: ' + inst)
   return dst
 
+def resolve_loc(inst: str, loc: int | str, labels: dict[str, int]) -> int:
+  if type(loc) is int: return loc
+  if loc not in labels: raise RuntimeError('label not found: ' + inst)
+  return labels[loc]
+
 def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
   try:
     sp_idx: int = inst.index(' ')
@@ -96,6 +101,7 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
         if arg in labels: args_enc.append(labels[arg])
         elif arg[0] == '$': args_enc.append(0) # TODO resolve builtin variables
   # TODO DRY this up
+  # we can DRY CMP and JMP ops at least
   if op == 'MOV':
     if len(args_enc) != 2: nargs_error(inst)
     src = args_enc[1]
@@ -107,6 +113,64 @@ def parse_uinst(inst: str, labels: dict[str, int]={}) -> UInst:
     src = args_enc[0]
     if type(src) is Register: return UInst(op, Register.STACK, src, INC_SP=True)
     elif type(src) is int: return UInst(op, Register.STACK, Register.IMM, INC_SP=True, IMM=src)
+  elif op == 'POKE':
+    if len(args_enc) != 1: nargs_error(inst)
+    src = args_enc[0]
+    if type(src) is Register: return UInst(op, Register.STACK, src)
+    elif type(src) is int: return UInst(op, Register.STACK, Register.IMM, IMM=src)
+  elif op == 'POP':
+    if len(args_enc) != 1: nargs_error(inst)
+    dst = validate_dst(inst, args_enc[0])
+    return UInst(op, dst, Register.STACK, DEC_SP=True)
+  elif op == 'PEEK':
+    if len(args_enc) != 1: nargs_error(inst)
+    dst = validate_dst(inst, args_enc[0])
+    return UInst(op, dst, Register.STACK)
+  elif op == 'RET':
+    if len(args_enc) != 0: nargs_error(inst)
+    return UInst(op, Register.NONE, Register.NONE, JMP_OP=JMPOp.RET)
+  elif op == 'JMP':
+    if len(args_enc) != 1: nargs_error(inst)
+    loc = resolve_loc(inst, args_enc[0], labels)
+    return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JMP)
+  elif op == 'JZ':
+    if len(args_enc) != 1: nargs_error(inst)
+    loc = resolve_loc(inst, args_enc[0], labels)
+    return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JZ)
+  elif op == 'JNZ':
+    if len(args_enc) != 1: nargs_error(inst)
+    loc = resolve_loc(inst, args_enc[0], labels)
+    return UInst(op, Register.NONE, Register.IMM, IMM=loc, JMP_OP=JMPOp.JNZ)
+  elif op == 'EQ':
+    if len(args_enc) != 2 : nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.EQ)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.EQ)
+  elif op == 'GT':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.GT)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.GT)
+  elif op == 'LT':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.LT)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.LT)
+  elif op == 'GEQ':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.GEQ)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.GEQ)
+  elif op == 'LEQ':
+    if len(args_enc) != 2: nargs_error(inst)
+    src = args_enc[1]
+    dst = validate_dst(inst, args_enc[0])
+    if type(src) is Register: return UInst(op, dst, src, CMP_OP=CMPOp.LEQ)
+    elif type(src) is int: return UInst(op, dst, Register.IMM, IMM=src, CMP_OP=CMPOp.LEQ)
   raise RuntimeError('invalid instruction: ' + inst)
 
 def assemble_uroutine(routine: str) -> List[UInst]:
@@ -131,4 +195,4 @@ def assemble_uroutine(routine: str) -> List[UInst]:
 if __name__ == '__main__':
   #for uname in PY_UROUTINES:
   #  assemble_uroutine(PY_UROUTINES[uname])
-  print(parse_uinst('PUSH TMP0'))
+  print(parse_uinst('LEQ TMP0, 0'))
